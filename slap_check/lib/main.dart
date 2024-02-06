@@ -19,6 +19,11 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
+        darkTheme: ThemeData(
+          brightness:Brightness.dark,
+        ),
+        themeMode: ThemeMode.system,
+        debugShowCheckedModeBanner: false,
         home: MyHomePage(),
       ),
     );
@@ -38,6 +43,7 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         children: [
           Text('A random idea:'),
+          Text('I love Max Shroyer'),
           Text(appState.current.asLowerCase),
         ],
       ),
