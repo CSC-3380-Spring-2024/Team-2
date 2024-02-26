@@ -1,7 +1,6 @@
 Do you all want to scope this app to be an overall budget tracker not just including Groceries? 
   Overall budget tracker works just like using receipts the groceries (pantry) can be an additional thing
 
-
 Core Features
 _Scan receipts-> Scanner/Immage Parssing -> Store Scanned Receipts > table/sheet breakdown > access to the original image > add purchases without a receipt, (item name store cost)
 _Budget -> set grocery/{other categories} budgets >suggested stores for saving money > price tracking on items
