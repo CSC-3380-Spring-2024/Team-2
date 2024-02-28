@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Button, StyleSheet, Image, Text } from 'react-native';
+import { View, Button, StyleSheet, Image, Text, Platform } from 'react-native';
+import { createWorker } from 'tesseract.js';
 
 const App = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [recognizedText, setRecognizedText] = useState('');
 
   const handleTakePicture = () => {
-    // code here for taking picture
+    // Add code to take a picture (mobile only)
   };
 
   const handleChooseFromGallery = (e) => {
@@ -22,7 +23,18 @@ const App = () => {
   };
 
   const processImage = async (imageData) => {
-    // image processing logic goes here
+    const worker = createWorker();
+    try {
+      await worker.load();
+      await worker.loadLanguage('eng');
+      await worker.initialize('eng');
+      const { data: { text } } = await worker.recognize(imageData);
+      setRecognizedText(text);
+      await worker.terminate();
+    } catch (error) {
+      console.error('Error processing image:', error);
+      setRecognizedText('Error processing image');
+    }
   };
 
   const handleClear = () => {
@@ -36,8 +48,11 @@ const App = () => {
         {selectedImage && <Image source={{ uri: selectedImage }} style={styles.image} />}
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Take Picture" onPress={handleTakePicture} />
-        <input type="file" accept="image/*" onChange={handleChooseFromGallery} />
+        {Platform.OS === 'web' ? (
+          <input type="file" accept="image/*" onChange={handleChooseFromGallery} />
+        ) : (
+          <Button title="Take Picture" onPress={handleTakePicture} />
+        )}
         <Button title="Clear" onPress={handleClear} />
       </View>
       {recognizedText ? (
