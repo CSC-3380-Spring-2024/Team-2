@@ -17,9 +17,10 @@
     "metro": "^0.80.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.73.4",
-    "react-native-camera": "^4.2.1",
-    "react-native-web": "~0.19.6"
+    "react-native": "^0.73.5",
+    "react-native-image-picker": "^7.1.0",
+    "react-native-web": "^0.19.10",
+    "tesseract-ocr": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
