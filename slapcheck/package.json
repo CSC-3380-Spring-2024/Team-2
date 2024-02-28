@@ -20,7 +20,8 @@
     "react-native": "^0.73.5",
     "react-native-image-picker": "^7.1.0",
     "react-native-web": "^0.19.10",
-    "tesseract-ocr": "^1.0.0"
+    "tesseract-ocr": "^1.0.0",
+    "tesseract.js": "^5.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
