@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "slapcheck",
+    "slug": "slapcheck",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
