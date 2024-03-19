@@ -3,8 +3,8 @@
 ### To Run Dev
 
 + npm install
-+ npm run start
-chose what env you are running the device in 
++ `npm start` then in another window run `npm run android` or `npm run ios` 
+
 
 
 ### Core Features
