@@ -1,5 +1,13 @@
 # Team Wicked Pissahs
 
+### To Run Dev
+
++ npm install
++ `npm start` then in another window run `npm run android` or `npm run ios` 
+
++ to debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
+
+
 ### Core Features
 + Scan receipts-> Scanner/Immage Parssing -> Store Scanned Receipts > table/sheet breakdown > access to the original image > add purchases without a receipt, (item name store cost)
 + Budget -> set grocery/{other categories} budgets >suggested stores for saving money > price tracking on items
