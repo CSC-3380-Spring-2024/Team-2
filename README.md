@@ -5,6 +5,7 @@
 + npm install
 + `npm start` then in another window run `npm run android` or `npm run ios` 
 
++ to debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
 
 
 ### Core Features

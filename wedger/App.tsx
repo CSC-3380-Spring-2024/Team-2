@@ -79,6 +79,7 @@ function LoadingScreen() {
 }
 function TabsScreen() {
   const {theme} = useTheme();
+  console.log('test');
   return (
     <Tabs.Navigator
       initialRouteName="OverviewTab"
@@ -109,6 +110,7 @@ function TabsScreen() {
         name="OverviewTab"
         component={OverviewScreen}
         options={{
+          tabBarShowLabel: false,
           tabBarLabel: 'Overview',
           tabBarIcon: ({focused}) => (
             <Icon
@@ -123,6 +125,7 @@ function TabsScreen() {
         name="ShoppingListTab"
         component={ShoppingListScreen}
         options={{
+          tabBarShowLabel: false,
           tabBarLabel: 'ShoppingList',
           tabBarIcon: ({focused}) => (
             <Icon
@@ -137,6 +140,7 @@ function TabsScreen() {
         name="ScannerTab"
         component={ScannerScreen}
         options={{
+          tabBarShowLabel: false,
           tabBarLabel: 'Scanner',
           tabBarIcon: ({focused}) => (
             <Icon
@@ -151,6 +155,7 @@ function TabsScreen() {
         name="AnalyticsTab"
         component={AnalyticsScreen}
         options={{
+          tabBarShowLabel: false,
           tabBarLabel: 'Analytics',
           tabBarIcon: ({focused}) => (
             <Icon
@@ -165,6 +170,7 @@ function TabsScreen() {
         name="ProfileTab"
         component={ProfileScreen}
         options={{
+          tabBarShowLabel: false,
           tabBarLabel: 'Profile',
           tabBarIcon: ({focused}) => (
             <Icon
@@ -261,25 +267,11 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={backgroundStyle}>
-        <ThemeProvider theme={customTheme}>
-          <NavigationContainer>
-            <SafeAreaView
-              mode="padding"
-              style={{
-                flex: 1,
-                backgroundColor: isDarkMode ? '#161618' : '#fff',
-              }}>
-              <Navigator />
-              <View style={{backgroundColor: '#f00', height: 20}}>
-                <Text style={{color: 'black'}}>APP TSX DISPAY </Text>
-              </View>
-            </SafeAreaView>
-          </NavigationContainer>
-        </ThemeProvider>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <ThemeProvider theme={customTheme}>
+      <NavigationContainer>
+        <Navigator />
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }
 
