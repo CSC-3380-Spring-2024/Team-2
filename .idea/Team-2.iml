@@ -6,11 +6,15 @@
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/wedger/android/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint" />
+      <excludeFolder url="file://$MODULE_DIR$/wedger/android/app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/wedger/android/build" />
+      <excludeFolder url="file://$MODULE_DIR$/wedger/ios/wedger.xcodeproj/project.xcworkspace" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="SonarLintModuleSettings">
-    <option name="uniqueId" value="17e06cf2-348c-4ebf-9b90-80d9ee22554e" />
+    <option name="uniqueId" value="c74946b1-d398-4887-aafb-5b8b2587f883" />
   </component>
 </module>
