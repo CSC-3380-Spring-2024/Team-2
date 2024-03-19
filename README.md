@@ -1,5 +1,12 @@
 # Team Wicked Pissahs
 
+### To Run Dev
+
++ npm install
++ npm run start
+chose what env you are running the device in 
+
+
 ### Core Features
 + Scan receipts-> Scanner/Immage Parssing -> Store Scanned Receipts > table/sheet breakdown > access to the original image > add purchases without a receipt, (item name store cost)
 + Budget -> set grocery/{other categories} budgets >suggested stores for saving money > price tracking on items

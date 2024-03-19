@@ -1,14 +1,14 @@
 import {Text, View} from 'react-native';
 import React, {Component} from 'react';
 
-export class AnalyticsPage extends Component {
+export class SignUpPage extends Component {
   render() {
     return (
       <View>
-        <Text>AnalyticsPage</Text>
+        <Text>SignUpPage</Text>
       </View>
     );
   }
 }
 
-export default AnalyticsPage;
+export default SignUpPage;
