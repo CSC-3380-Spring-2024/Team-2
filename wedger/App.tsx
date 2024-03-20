@@ -79,7 +79,6 @@ function LoadingScreen() {
 }
 function TabsScreen() {
   const {theme} = useTheme();
-  console.log('test');
   return (
     <Tabs.Navigator
       initialRouteName="OverviewTab"
