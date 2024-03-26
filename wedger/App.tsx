@@ -57,6 +57,7 @@ function ScannerScreen() {
 }
 function AnalyticsScreen() {
   return (
+    // subscription show page else call to action to subscribe
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="AnalyticsHome" component={AnalyticsPage} />
     </ContentStack.Navigator>
@@ -79,7 +80,6 @@ function LoadingScreen() {
 }
 function TabsScreen() {
   const {theme} = useTheme();
-  console.log('test');
   return (
     <Tabs.Navigator
       initialRouteName="OverviewTab"
@@ -253,8 +253,7 @@ function Navigator() {
   return (
     <ContentStack.Navigator
       screenOptions={{...defaultScreenOptions, gestureEnabled: false}}>
-      {/* {getScreen()} */}
-      <ContentStack.Screen name="Tabs" component={TabsScreen} />
+      {getScreen()}
     </ContentStack.Navigator>
   );
 }
