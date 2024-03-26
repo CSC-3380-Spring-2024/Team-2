@@ -17,10 +17,10 @@ function OverviewPage() {
       <PopupModal
         isVisible={modalOpen}
         description="Test popup"
-        onContinue={() => {
+        firstButtonPress={() => {
           setModalOpen(!modalOpen);
         }}
-        buttonText="Continue"
+        firstButtonText="Continue"
       />
     </View>
   );

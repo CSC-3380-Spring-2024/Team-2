@@ -6,26 +6,30 @@ import Modal from 'react-native-modal';
 import RoundedButton from './StyledButton';
 
 interface Props {
-  onContinue: () => void;
-  onCancel?: () => void;
+  firstButtonPress: () => void;
+  secondButtonPress?: () => void;
+  cancelButtonPress?: () => void;
   header?: string;
   description: string;
-  buttonText: string;
+  firstButtonText: string;
+  secondButtonText?: string;
+  cancelButtonText?: string;
   isVisible: boolean;
-  buttonLoading?: boolean;
-  secondButtonLoading?: boolean;
+  buttonsLoading?: boolean;
 }
 
 export default function PopupModal(props: Props) {
   const {
-    onContinue,
-    onCancel,
+    firstButtonPress,
+    secondButtonPress,
+    cancelButtonPress,
     header,
     description,
-    buttonText,
+    firstButtonText,
+    secondButtonText,
+    cancelButtonText,
     isVisible,
-    buttonLoading,
-    secondButtonLoading,
+    buttonsLoading,
   } = props;
   const styles = useStyles();
   return (
@@ -42,24 +46,31 @@ export default function PopupModal(props: Props) {
           <Text style={styles.description}>{description}</Text>
           <View style={styles.buttonContainer}>
             <RoundedButton
-              loading={buttonLoading}
+              loading={buttonsLoading}
               buttonStyle={styles.button}
               titleStyle={styles.button}
               loadingProps={{color: 'white'}}
-              onPress={onContinue}>
-              {buttonText}
+              onPress={firstButtonPress}>
+              {firstButtonText}
             </RoundedButton>
-            {onCancel ? (
+            {secondButtonPress ? (
               <RoundedButton
                 buttonStyle={styles.button}
                 titleStyle={styles.button}
-                onPress={onCancel}
-                loading={secondButtonLoading}>
-                cancel
+                onPress={secondButtonPress}
+                loading={buttonsLoading}>
+                {secondButtonText}
               </RoundedButton>
-            ) : (
-              <></>
-            )}
+            ) : null}
+            {cancelButtonPress ? (
+              <RoundedButton
+                buttonStyle={styles.button}
+                titleStyle={styles.button}
+                onPress={cancelButtonPress}
+                loading={buttonsLoading}>
+                {cancelButtonText}
+              </RoundedButton>
+            ) : null}
           </View>
         </Card>
       </View>
