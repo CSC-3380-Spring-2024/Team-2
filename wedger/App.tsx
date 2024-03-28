@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {View, useColorScheme, PermissionsAndroid} from 'react-native';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {PermissionsAndroid, Platform, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {ThemeProvider, useTheme} from '@rneui/themed';
@@ -14,40 +13,22 @@ import WelcomePage from './Pages/WelcomePage';
 import LoginPage from './Pages/LoginPage';
 import ForgotPasswordPage from './Pages/ForgotPasswordPage';
 import SignUpPage from './Pages/SignUpPage';
-import {useGetProfile} from './api/hooks/profile';
 import NextStepsPage from './Pages/NextStepsPage';
 // import {useAuth} from './Context/AuthContext';
-import {Icon, Text} from '@rneui/base';
+import {Icon} from '@rneui/base';
 import customTheme from './theme';
 import ProfilePage from './Pages/ProfilePage';
 import AnalyticsPage from './Pages/AnalyticsPage';
 import ImageScannerPage from './Pages/ImageScannerPage';
 import ShoppingListPage from './Pages/ShoppingListPage';
-import {Platform} from 'react-native';
+import { labelImage } from "vision-camera-image-labeler";
+
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
 const defaultScreenOptions = {
   headerShown: false,
   cardStyle: {backgroundColor: '#161618'},
 };
-
-async function requestCameraPermission() {
-    try {
-        if (Platform.OS === 'android') {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: 'Camera Permission',
-                    message: 'Camera permissions are required for functionality',
-                    buttonPositive: 'Allow',
-                    buttonNegative: 'Refuse',
-                }
-            )
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
-        }
-    }
-}
-
 function OverviewScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
