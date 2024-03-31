@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, useColorScheme} from 'react-native';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -14,15 +15,15 @@ import WelcomePage from './Pages/WelcomePage';
 import LoginPage from './Pages/LoginPage';
 import ForgotPasswordPage from './Pages/ForgotPasswordPage';
 import SignUpPage from './Pages/SignUpPage';
-import {useGetProfile} from './api/hooks/profile';
+import {useGetProfile} from './api/hooks/UserProfileContext';
 import NextStepsPage from './Pages/NextStepsPage';
-// import {useAuth} from './Context/AuthContext';
 import {Icon, Text} from '@rneui/base';
 import customTheme from './theme';
 import ProfilePage from './Pages/ProfilePage';
 import AnalyticsPage from './Pages/AnalyticsPage';
 import ImageScannerPage from './Pages/ImageScannerPage';
 import ShoppingListPage from './Pages/ShoppingListPage';
+import {AuthProvider, useAuth} from './Context/userAuthContext';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -188,7 +189,7 @@ function TabsScreen() {
 function AuthScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
-      <ContentStack.Screen name="Welcome" component={WelcomePage} />
+      {/* <ContentStack.Screen name="Welcome" component={WelcomePage} /> */}
       <ContentStack.Screen name="Login" component={LoginPage} />
       <ContentStack.Screen
         name="ForgotPassword"
@@ -209,43 +210,15 @@ function OnboardingNavigator() {
 }
 
 function Navigator() {
-  //TODO: lots of backend stuff
-
-  // const {isLoggedIn, checkingAuthStatus, accessToken} = useAuth();
-  // const isLoggedIn = true;
-  // const checkingAuthStatus = false;
-  // const accessToken = 'true';
-
-  // const {data: profile, isFetching, isLoading} = useGetProfile(accessToken);
-
-  // const [initialLoadFinished, setInitialLoadFinished] = useState(false);
-
-  // useEffect(() => {
-  //   //Brief initial load period so API requests can start being made.
-  //   setTimeout(() => setInitialLoadFinished(true), 100);
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log('Base API Path: ', process.env.REACT_APP_API_URL);
-  // }, [isLoading]);
-
+  const {isLoggedIn, loggedInUser, loadingAuth} = useAuth();
   const getScreen = () => {
-    // if (isFetching || isLoading || profile === undefined) {
-    //   return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
-    // }
+    if (loadingAuth && loggedInUser === undefined) {
+      return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
+    }
 
-    // if (!isLoggedIn) {
-    //   return <ContentStack.Screen name="Auth" component={AuthScreen} />;
-    // }
-
-    // if (!profile) {
-    //   return (
-    //     <ContentStack.Screen
-    //       name="Onboarding"
-    //       component={OnboardingNavigator}
-    //     />
-    //   );
-    // }
+    if (!isLoggedIn) {
+      return <ContentStack.Screen name="Auth" component={AuthScreen} />;
+    }
 
     return <ContentStack.Screen name="Tabs" component={TabsScreen} />;
   };
@@ -259,17 +232,13 @@ function Navigator() {
 }
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
     <ThemeProvider theme={customTheme}>
-      <NavigationContainer>
-        <Navigator />
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer>
+          <Navigator />
+        </NavigationContainer>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
