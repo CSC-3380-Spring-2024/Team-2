@@ -50,7 +50,6 @@ export function LoginPage() {
       try {
         await loginWithEmail(email, password);
       } catch (e) {
-        console.log(e, 'WWWWWWWW ERROR LOGIN');
         setLoginError(userAuthError);
       } finally {
         setIsSubmitting(false);
@@ -103,7 +102,7 @@ export function LoginPage() {
       <Error
         align="center"
         topPadding={16}
-        error={userAuthError + loginError}
+        error={loginError ? loginError : userAuthError}
       />
     </AuthContainer>
   );

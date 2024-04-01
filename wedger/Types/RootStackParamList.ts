@@ -4,6 +4,7 @@ export type RootStackParamList = {
   // Main
   Tabs: undefined;
   Loading: undefined;
+  LoadingPage: undefined;
   Onboarding: undefined;
 
   //Overview

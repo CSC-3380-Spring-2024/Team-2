@@ -25,7 +25,6 @@ const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
 const defaultScreenOptions = {
   headerShown: false,
-  cardStyle: {backgroundColor: '#161618'},
 };
 
 function OverviewScreen() {
@@ -71,7 +70,7 @@ function ProfileScreen() {
 function LoadingScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
-      <ContentStack.Screen name="Loading" component={LoadingPage} />
+      <ContentStack.Screen name="LoadingPage" component={LoadingPage} />
     </ContentStack.Navigator>
   );
 }
