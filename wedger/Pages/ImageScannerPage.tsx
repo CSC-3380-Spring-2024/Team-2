@@ -32,7 +32,7 @@ async function requestCameraPermission() {
   }
 }
 
-export function ImageScannerPage() = () => {
+export function ImageScannerPage() {
   useEffect(() => {
     async function checkAndRequestPermissions() {
       if (Platform.OS === 'android') {
@@ -51,13 +51,11 @@ export function ImageScannerPage() = () => {
     checkAndRequestPermissions();
   }, []);
   return (
-      <View>
-          <Text>
-              ImageScannerPage
-          </Text>
-      </View>
-  )
+    <View>
+      <Text>ImageScannerPage</Text>
+    </View>
+  );
   // Render your app's UI
-};
+}
 
 export default ImageScannerPage;
