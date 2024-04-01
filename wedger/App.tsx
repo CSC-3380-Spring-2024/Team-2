@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useEffect} from 'react';
-import {View, useColorScheme} from 'react-native';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {ThemeProvider, useTheme} from '@rneui/themed';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -15,9 +12,8 @@ import WelcomePage from './Pages/WelcomePage';
 import LoginPage from './Pages/LoginPage';
 import ForgotPasswordPage from './Pages/ForgotPasswordPage';
 import SignUpPage from './Pages/SignUpPage';
-import {useGetProfile} from './api/hooks/UserProfileContext';
 import NextStepsPage from './Pages/NextStepsPage';
-import {Icon, Text} from '@rneui/base';
+import {Icon} from '@rneui/base';
 import customTheme from './theme';
 import ProfilePage from './Pages/ProfilePage';
 import AnalyticsPage from './Pages/AnalyticsPage';
@@ -189,7 +185,7 @@ function TabsScreen() {
 function AuthScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
-      {/* <ContentStack.Screen name="Welcome" component={WelcomePage} /> */}
+      <ContentStack.Screen name="Welcome" component={WelcomePage} />
       <ContentStack.Screen name="Login" component={LoginPage} />
       <ContentStack.Screen
         name="ForgotPassword"
