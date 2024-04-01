@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   Unsubscribe,
   User,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 
 import {auth} from '../environment/firebase';
@@ -21,6 +22,7 @@ interface AuthContextType {
     password: string,
     confirmPassword: string,
   ) => void;
+  forgotPassword: (email: string) => void;
   logout: () => void;
   userAuthError: string;
 }
@@ -111,6 +113,15 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
+  const forgotPassword = async (email: string) => {
+    console.log('passwordReset', email);
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (e: any) {
+      addError(e.code);
+    }
+  };
+
   function addError(arg0: string) {
     setUserAuthError(arg0);
   }
@@ -122,6 +133,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         loadingAuth,
         createEmailAccount,
         loginWithEmail,
+        forgotPassword,
         logout,
         checkIfLoggedIn,
         loggedInUser,

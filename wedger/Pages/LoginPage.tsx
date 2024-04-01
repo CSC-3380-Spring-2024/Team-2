@@ -1,5 +1,5 @@
 /* eslint-disable no-catch-shadow */
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import TextInputField from '../Components/TextInputField';
 import StyledButton from '../Components/StyledButton';
@@ -23,7 +23,7 @@ export function LoginPage() {
   const [password, setPassword] = useState<string>('');
   const [loginError, setLoginError] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const {loginWithEmail, userAuthError, isLoggedIn} = useAuth();
+  const {loginWithEmail, userAuthError} = useAuth();
 
   const [errorOptions, setErrorOptions] = useState<{
     underlineEmail?: boolean;
@@ -72,8 +72,7 @@ export function LoginPage() {
       handleSwitchAuthPage={() => navigator.navigate('SignUp')}>
       <View>
         <View>
-          <Text>Wedger</Text>
-          <Text>The Budgeting App - {isLoggedIn ? 'true' : 'BUTT CHECKS'}</Text>
+          <Text>The Budgeting App</Text>
         </View>
         <View>
           <TextInputField
@@ -97,6 +96,9 @@ export function LoginPage() {
         <StyledButton onPress={handleLogin} loading={isSubmitting}>
           Login
         </StyledButton>
+        <TouchableOpacity onPress={() => navigator.navigate('ForgotPassword')}>
+          <Text>Forgot your password? </Text>
+        </TouchableOpacity>
       </View>
       <Error
         align="center"
