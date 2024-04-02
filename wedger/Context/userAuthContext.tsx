@@ -92,6 +92,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   ) => {
     try {
       if (password === confirmPassword) {
+        setLoadingAuth(true);
         try {
           const userCredential = await createUserWithEmailAndPassword(
             auth,
@@ -105,6 +106,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
             addError('An account with this email already exists');
           }
         }
+        setLoadingAuth(false);
       } else {
         addError("Passwords don't match");
       }
