@@ -19,6 +19,7 @@ import {
   FYEB_APPID,
   FYEB_MEASURMENTID,
 } from '@env';
+import {getFirestore} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: FYEB_APIKEY,
@@ -34,6 +35,7 @@ const reactNativePersistence = (firebaseAuth as any).getReactNativePersistence;
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 // const analytics = getAnalytics(app);
 export default app;
 export const auth = firebaseAuth.initializeAuth(app, {
