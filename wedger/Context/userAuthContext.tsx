@@ -8,8 +8,9 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 
-import {auth} from '../environment/firebase';
+import {auth, db} from '../environment/firebase';
 import React, {ReactNode, createContext, useContext, useState} from 'react';
+import { addDoc, collection } from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -18,6 +19,7 @@ interface AuthContextType {
   loggedInUser: User | undefined;
   loginWithEmail: (username: string, password: string) => Promise<void>;
   createEmailAccount: (
+    name: string,
     email: string,
     password: string,
     confirmPassword: string,
@@ -86,6 +88,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const createEmailAccount = async (
+    name: string,
     email: string,
     password: string,
     confirmPassword: string,
@@ -93,17 +96,29 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     try {
       if (password === confirmPassword) {
         setLoadingAuth(true);
+        setIsLoggedIn(true);
         try {
           const userCredential = await createUserWithEmailAndPassword(
             auth,
             email,
             password,
           );
-          setLoggedInUser(userCredential.user);
+          const user = userCredential.user
+          await addDoc(collection(db, "users"), {
+            uid: user.uid,
+            name,
+            authProvider: "local",
+            email,
+          });
+          setLoggedInUser(user);
           checkIfLoggedIn();
         } catch (error: any) {
+          console.error(error.message)
           if (error.code === 'auth/email-already-in-use') {
             addError('An account with this email already exists');
+          }
+          if (error.code === 'auth/weak-password'){
+            addError('Password must be at least 6 Characters long')
           }
         }
         setLoadingAuth(false);

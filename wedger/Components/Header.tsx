@@ -3,19 +3,40 @@ import WedgerLogo from '../Assets/Static/Wedger_App_logo.svg';
 import React from 'react';
 import Svg, {Image} from 'react-native-svg';
 import {makeStyles, Text} from '@rneui/themed';
+import BackButton from './BackButton';
+import {useNavigation} from '@react-navigation/native';
 
 export interface HeaderProps {
   logo?: boolean;
   title?: string;
+  backButton?: boolean;
   explanation?: string;
   moreSpace?: boolean;
   marginTop?: boolean;
+  paddingTop?: boolean;
 }
 
-export function Header({logo, title, explanation, moreSpace, marginTop}: HeaderProps) {
+export function Header({
+  logo,
+  title,
+  explanation,
+  moreSpace,
+  marginTop,
+  backButton,
+  paddingTop,
+}: HeaderProps) {
   const styles = useStyles();
+  const navigator = useNavigation();
+
   return (
-    <View style={[styles.container, moreSpace && styles.containerPadding, marginTop && styles.marginTop]}>
+    <View
+      style={[
+        styles.container,
+        moreSpace && styles.containerPadding,
+        marginTop && styles.marginTop,
+        paddingTop && styles.paddingTop,
+      ]}>
+      {backButton && <BackButton onPress={() => navigator.goBack()} />}
       {logo && <WedgerLogo />}
       {title && (
         <Text h2 style={[styles.title, moreSpace && styles.titlePadding]}>
@@ -49,6 +70,9 @@ const useStyles = makeStyles(() => ({
   marginTop: {
     marginTop: 200,
   },
+  paddingTop: {
+    marginTop: 50,
+  }
 }));
 
 export default Header;

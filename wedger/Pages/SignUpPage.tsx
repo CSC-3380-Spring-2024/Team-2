@@ -14,11 +14,13 @@ type SignUpError =
   | 'PasswordNoMatch'
   | 'InvalidPasswordException'
   | 'UsernameExistsException'
+  | 'NameExistsException'
   | 'Other';
 export function SignUpPage() {
   const navigator = useNavigation();
   const styles = useStyles();
   const {createEmailAccount, userAuthError} = useAuth();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,6 +31,7 @@ export function SignUpPage() {
     underlinePassword?: boolean;
     underlineConfirmPassword?: boolean;
     errorMessage?: string;
+    underlineName?: boolean;
   }>({});
 
   const setError = (error: SignUpError, payload?: string) => {
@@ -40,6 +43,7 @@ export function SignUpPage() {
       }
       case 'IncompleteFields': {
         setErrorOptions({
+          underlineName: !name,
           underlineEmail: !email,
           underlinePassword: !password,
           underlineConfirmPassword: !confirmPassword,
@@ -91,9 +95,10 @@ export function SignUpPage() {
     let isValid = true;
     let newError: SignUpError = 'NoError';
 
-    if (!(email && password && confirmPassword)) {
+    if (!(email && password && confirmPassword && name)) {
       newError = 'IncompleteFields';
       isValid = false;
+      setIsSubmitting(false);
     }
 
     setError(newError);
@@ -105,7 +110,7 @@ export function SignUpPage() {
     console.log('handle sign up');
     if (checkInputs()) {
       try {
-        await createEmailAccount(email, password, confirmPassword);
+        await createEmailAccount(name, email, password, confirmPassword);
       } catch (error) {
         console.log(error);
       } finally {
@@ -120,6 +125,14 @@ export function SignUpPage() {
       handleSwitchAuthPage={() => navigator.navigate('Login')}>
       <View>
         <View style={styles.buttonContainer}>
+        <TextInputField
+            placeholder="Name"
+            autoComplete="name"
+            textContentType="name"
+            autoCapitalize="none"
+            onChangeText={setName}
+            style={errorOptions?.underlineName ? styles.inputError : {}}
+          />
           <TextInputField
             placeholder="Email"
             autoComplete="email"
@@ -154,7 +167,7 @@ export function SignUpPage() {
           loading={isSubmitting}>
           Sign Up
         </StyledButton>
-        <Error align="center" topPadding={16} error={userAuthError} />
+        <Error align="center" topPadding={16} error={errorOptions.errorMessage ? errorOptions.errorMessage : userAuthError} />
       </View>
     </AuthContainer>
   );
