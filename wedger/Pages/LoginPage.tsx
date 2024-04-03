@@ -70,10 +70,7 @@ export function LoginPage() {
       switchPageLinkText="Register"
       handleSwitchAuthPage={() => navigator.navigate('SignUp')}>
       <View>
-        <View>
-          <Text>The Budgeting App</Text>
-        </View>
-        <View>
+        <View style={styles.buttonContainer}>
           <TextInputField
             placeholder="Email"
             autoComplete="email"
@@ -92,11 +89,11 @@ export function LoginPage() {
             style={errorOptions?.underlinePassword ? styles.inputError : {}}
           />
         </View>
-        <StyledButton onPress={handleLogin} loading={isSubmitting}>
+        <StyledButton onPress={handleLogin} loading={isSubmitting} containerStyle={styles.buttonContainer}>
           Login
         </StyledButton>
         <TouchableOpacity onPress={() => navigator.navigate('ForgotPassword')}>
-          <Text>Forgot your password? </Text>
+          <Text style={styles.forgotPasswordText}>Forgot your password? </Text>
         </TouchableOpacity>
       </View>
       <Error
@@ -114,10 +111,17 @@ const useStyles = makeStyles(theme => ({
   headerText: {
     marginBottom: 25,
   },
+  buttonContainer: {
+    marginTop: 25,
+  },
   forgotPasswordText: {
-    fontSize: 13,
+    fontSize: 14,
     color: theme.colors.grey3,
-    marginBottom: 35,
+    marginTop: 35,
+    textAlign: 'center',
+    width: '100%',
+    textDecorationLine: 'underline',
+
   },
   linkText: {
     fontSize: 13,

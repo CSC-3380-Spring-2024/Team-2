@@ -4,13 +4,13 @@ import {makeStyles} from '@rneui/themed';
 
 const useStyles = makeStyles(theme => ({
   button: {
-    backgroundColor: theme.colors.grey5,
-    borderRadius: 30,
+    backgroundColor: theme.colors.primary,
+    borderRadius: 10,
     paddingHorizontal: 35,
     paddingVertical: 8,
     alignSelf: 'center',
   },
-  title: {fontSize: 15, fontWeight: '400', color: theme.colors.black},
+  title: {fontSize: 15, fontWeight: '600', color: theme.colors.white},
 }));
 
 function StyledButton(props: ButtonProps) {

@@ -22,7 +22,7 @@ export default function AuthContainer({
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Header logo moreSpace />
+      <Header logo moreSpace marginTop/>
       <View style={{paddingHorizontal: 45}}>
         {children}
         <DividerWithLabel containerStyle={styles.dividerContainer}>
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 53,
   },
   dividerLabel: {
-    color: theme.colors.grey5,
+    color: theme.colors.black,
     fontSize: 15,
     marginHorizontal: 15,
   },
@@ -62,12 +62,12 @@ const useStyles = makeStyles(theme => ({
   switchPageText: {
     textAlign: 'center',
     fontSize: 15,
-    color: theme.colors.grey3,
+    color: theme.colors.black,
   },
   linkText: {
     textAlign: 'center',
     fontSize: 15,
-    color: theme.colors.grey5,
+    color: theme.colors.primary,
     textDecorationLine: 'underline',
   },
 }));

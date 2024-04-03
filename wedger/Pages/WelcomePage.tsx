@@ -20,11 +20,15 @@ export default function WelcomePage() {
 
   return hasSeenOnboarding ? null : (
     <ScrollView>
-      <Header logo />
+      <Header logo moreSpace marginTop />
       <View style={styles.root}>
-        <Text h2>Making Tracking spending in your everyday life a breeze</Text>
+        <Text style={styles.dividerText}>
+          Making Tracking spending in your everyday life a breeze
+        </Text>
         <View style={styles.buttonContainer}>
-          <StyledButton onPress={() => navigation.navigate('SignUp')}>
+          <StyledButton
+            onPress={() => navigation.navigate('SignUp')}
+            containerStyle={styles.buttonContainer}>
             Register Now
           </StyledButton>
         </View>
@@ -39,6 +43,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     marginHorizontal: 30,
     marginBottom: 41,
+    flexDirection: 'column',
   },
   logoContainer: {
     alignItems: 'center',
@@ -59,5 +64,8 @@ const useStyles = makeStyles(theme => ({
   },
   dividerText: {
     marginVertical: 12,
+    color: theme.colors.black,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 }));
