@@ -1,6 +1,5 @@
 import {Text, View} from 'react-native';
 import LottieView from 'lottie-react-native';
-import LoadingAnimation from '../Assets/Animations/Animation.json'
 import React, { useEffect, useRef } from 'react';
 
 export function LoadingPage() {

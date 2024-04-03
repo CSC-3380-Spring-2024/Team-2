@@ -22,6 +22,7 @@ export function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [errorOptions, setErrorOptions] = useState<{
     underlineEmail?: boolean;
@@ -100,12 +101,15 @@ export function SignUpPage() {
   };
 
   const handleSighup = async () => {
+    setIsSubmitting(true);
     console.log('handle sign up');
     if (checkInputs()) {
       try {
         await createEmailAccount(email, password, confirmPassword);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -115,11 +119,7 @@ export function SignUpPage() {
       switchPageLinkText="Log in"
       handleSwitchAuthPage={() => navigator.navigate('Login')}>
       <View>
-        <View>
-          <Text>Wedger</Text>
-          <Text>The Budgeting App</Text>
-        </View>
-        <View>
+        <View style={styles.buttonContainer}>
           <TextInputField
             placeholder="Email"
             autoComplete="email"
@@ -148,7 +148,12 @@ export function SignUpPage() {
             }
           />
         </View>
-        <StyledButton onPress={handleSighup}>Sign Up</StyledButton>
+        <StyledButton
+          onPress={handleSighup}
+          containerStyle={styles.buttonContainer}
+          loading={isSubmitting}>
+          Sign Up
+        </StyledButton>
         <Error align="center" topPadding={16} error={userAuthError} />
       </View>
     </AuthContainer>
@@ -161,10 +166,8 @@ const useStyles = makeStyles(theme => ({
   headerText: {
     marginBottom: 25,
   },
-  forgotPasswordText: {
-    fontSize: 13,
-    color: theme.colors.grey3,
-    marginBottom: 35,
+  buttonContainer: {
+    marginTop: 25,
   },
   linkText: {
     fontSize: 13,
