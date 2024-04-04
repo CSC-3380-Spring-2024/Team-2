@@ -8,16 +8,26 @@ import {
   createBudgetType,
 } from '../Types/BudgetTypes';
 import {User, UserCredential} from 'firebase/auth';
+import {
+  DocumentData,
+  DocumentReference,
+  addDoc,
+  collection,
+} from 'firebase/firestore';
+import {useAuth} from './userAuthContext';
+import {db} from '../environment/firebase';
 
 interface BudgetContextType {
   //budget handle
-  createBudget: (obj: createBudgetType) => Promise<BudgetType>;
+  createBudget: (
+    obj: createBudgetType,
+  ) => Promise<DocumentReference<DocumentData, DocumentData> | undefined>;
   editBudget: (newProperties: EditBudgetType) => Promise<void>;
   deleteBudget: (budgetToDelete: string) => void;
   getUsersBudgets: () => Promise<BudgetType[] | undefined>;
   getAllReceipts: (budgetUID: string) => Promise<URL[] | undefined>;
   //item handle
-  getRecept: (receptRefId: string) => Promise<URL>;
+  getRecept: (receptRefId: string) => void;
   getItemsExpended: (budgetUID: string) => Promise<ItemObject[] | undefined>;
   addExpendedItems: (itemsToAdd: ItemObject[], budgetUID: string) => void;
   editExpendedItem: (item: EditItemObject, budgetUID: string) => void;
@@ -30,13 +40,38 @@ interface BudgetContextType {
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
 
-export const BudgetProvider: React.FC<{children: ReactNode}> = ({
-  children,
-}) => {
+export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loadingBudget, setLoadingBudget] = useState<boolean>(true);
   const [userBudgetError, setUserBudgetError] = useState<string>('');
+  const {userRef} = useAuth();
 
-  const createBudget = async (obj: createBudgetType): Promise<BudgetType> => {};
+  const createBudget = async (obj: createBudgetType) => {
+    try {
+      if (!userRef) {
+        throw console.error('no userRef');
+      }
+      const newBudget = {
+        budgetName: obj.budgetName,
+        labelColor: obj.labelColor,
+        spendTarget: obj.spendTarget,
+        timeFrame: obj.timeFrame,
+        // filler
+        spendCurrent: 0,
+        itemsExpended: [],
+      };
+      const budgetCollectionRef = collection(
+        db,
+        'users',
+        userRef.uid,
+        'budgets',
+      );
+      const budget = await addDoc(budgetCollectionRef, newBudget);
+      console.log('new budget id: ', budget.id);
+      return budget;
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const editBudget = async (newProperties: EditBudgetType): Promise<void> => {};
   const deleteBudget = async (budgetToDelete: string): Promise<void> => {};
   const getUsersBudgets = async (): Promise<BudgetType[] | undefined> => {
@@ -48,7 +83,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({
     return undefined;
   };
   //item handle
-  const getRecept = async (receptRefId: string): Promise<URL> => {};
+  const getRecept = async (receptRefId: string) => {};
   const getItemsExpended = async (
     budgetUID: string,
   ): Promise<ItemObject[] | undefined> => {

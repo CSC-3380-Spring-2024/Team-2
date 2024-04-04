@@ -206,9 +206,9 @@ function OnboardingNavigator() {
 }
 
 function Navigator() {
-  const {isLoggedIn, loggedInUser, loadingAuth} = useAuth();
+  const {isLoggedIn, userRef, loadingAuth} = useAuth();
   const getScreen = () => {
-    if (loadingAuth && loggedInUser === undefined) {
+    if (loadingAuth && userRef === undefined) {
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
     }
 

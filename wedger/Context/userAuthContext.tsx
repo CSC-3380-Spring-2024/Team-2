@@ -10,13 +10,13 @@ import {
 
 import {auth, db} from '../environment/firebase';
 import React, {ReactNode, createContext, useContext, useState} from 'react';
-import { addDoc, collection } from 'firebase/firestore';
+import {addDoc, collection} from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
   loadingAuth: boolean;
   checkIfLoggedIn: Unsubscribe;
-  loggedInUser: User | undefined;
+  userRef: User | undefined;
   loginWithEmail: (username: string, password: string) => Promise<void>;
   createEmailAccount: (
     name: string,
@@ -35,18 +35,18 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loadingAuth, setLoadingAuth] = useState<boolean>(true);
   const [userAuthError, setUserAuthError] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<User | undefined>();
+  const [userRef, setUserRef] = useState<User | undefined>();
 
   const checkIfLoggedIn = onAuthStateChanged(auth, user => {
     if (user) {
       setIsLoggedIn(true);
       setLoadingAuth(false);
-      setLoggedInUser(user);
+      setUserRef(user);
       return true;
     } else {
       setIsLoggedIn(false);
       setLoadingAuth(false);
-      setLoggedInUser(undefined);
+      setUserRef(undefined);
       return false;
     }
   });
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         email,
         password,
       );
-      setLoggedInUser(userCredential.user);
+      setUserRef(userCredential.user);
       checkIfLoggedIn();
     } catch (error: any) {
       if (
@@ -103,22 +103,22 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
             email,
             password,
           );
-          const user = userCredential.user
-          await addDoc(collection(db, "users"), {
+          const user = userCredential.user;
+          await addDoc(collection(db, 'users', user.uid), {
             uid: user.uid,
             name,
-            authProvider: "local",
+            authProvider: 'local',
             email,
           });
-          setLoggedInUser(user);
+          setUserRef(user);
           checkIfLoggedIn();
         } catch (error: any) {
-          console.error(error.message)
+          console.error(error.message);
           if (error.code === 'auth/email-already-in-use') {
             addError('An account with this email already exists');
           }
-          if (error.code === 'auth/weak-password'){
-            addError('Password must be at least 6 Characters long')
+          if (error.code === 'auth/weak-password') {
+            addError('Password must be at least 6 Characters long');
           }
         }
         setLoadingAuth(false);
@@ -153,7 +153,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         forgotPassword,
         logout,
         checkIfLoggedIn,
-        loggedInUser,
+        userRef,
         userAuthError,
       }}>
       {children}
