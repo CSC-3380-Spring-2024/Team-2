@@ -20,6 +20,7 @@ import AnalyticsPage from './Pages/AnalyticsPage';
 import ImageScannerPage from './Pages/ImageScannerPage';
 import ShoppingListPage from './Pages/ShoppingListPage';
 import {AuthProvider, useAuth} from './Context/userAuthContext';
+import {BudgetProvider} from './Context/userBudgetContext';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -230,9 +231,11 @@ function App(): React.JSX.Element {
   return (
     <ThemeProvider theme={customTheme}>
       <AuthProvider>
-        <NavigationContainer>
-          <Navigator />
-        </NavigationContainer>
+        <BudgetProvider>
+          <NavigationContainer>
+            <Navigator />
+          </NavigationContainer>
+        </BudgetProvider>
       </AuthProvider>
     </ThemeProvider>
   );
