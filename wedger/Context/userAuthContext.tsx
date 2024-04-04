@@ -10,7 +10,7 @@ import {
 
 import {auth, db} from '../environment/firebase';
 import React, {ReactNode, createContext, useContext, useState} from 'react';
-import {addDoc, collection} from 'firebase/firestore';
+import {addDoc, collection, doc, setDoc} from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
             password,
           );
           const user = userCredential.user;
-          await addDoc(collection(db, 'users', user.uid), {
+          await setDoc(doc(db, 'users', user.uid), {
             uid: user.uid,
             name,
             authProvider: 'local',
