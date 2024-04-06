@@ -84,7 +84,6 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         labelColor: obj.labelColor,
         spendTarget: obj.spendTarget,
         timeFrame: obj.timeFrame,
-        // filler
         spendCurrent: 0,
       };
       const budgetCollectionRef = collection(
@@ -97,7 +96,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       getCurrentBudgets();
       return budget;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
@@ -122,7 +121,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       getCurrentBudgets();
       return updatedBudget;
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
@@ -144,7 +143,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       await deleteDoc(budgetDocRef);
       getCurrentBudgets();
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
@@ -164,15 +163,12 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'budgets',
       );
       const docsSnap = await getDocs(budgetCollectionRef);
+      if (docsSnap.empty) return undefined;
       docsSnap.forEach(doc => {
         const curDoc = doc.data() as unknown as BudgetType;
+        getItemsExpended(doc.id);
         BudgetsReturnArray.push(curDoc);
       });
-      if (BudgetsReturnArray.length === 0) {
-        return undefined;
-      }
-
-      BudgetsReturnArray.forEach(budget => getItemsExpended(budget.id));
       return BudgetsReturnArray;
     } catch (e: any) {
       console.error(e);
@@ -212,23 +208,28 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'expendedItems',
       );
       const docsSnap = await getDocs(budgetItemCollectionRef);
+      if (docsSnap.empty) return undefined;
       docsSnap.forEach(item => {
         const currItem = item as unknown as ItemObject;
         ItemReturnArray.push(currItem);
       });
 
       // attach to userBudgets
-      if (usersBudgets) {
-        let tempBudgets = usersBudgets;
-        const budgetSelectIndex = tempBudgets.findIndex(
-          budget => budget.id === budgetUID,
-        );
-        tempBudgets[budgetSelectIndex].itemsExpended.concat(ItemReturnArray);
-        setUsersBudgets(tempBudgets);
+      try {
+        if (usersBudgets) {
+          let tempBudgets = usersBudgets;
+          console.log(tempBudgets);
+          const budgetSelectIndex = tempBudgets.findIndex(
+            budget => budget.id === budgetUID,
+          );
+          tempBudgets[budgetSelectIndex].itemsExpended.concat(ItemReturnArray);
+          setUsersBudgets(tempBudgets);
+        }
+      } catch (e) {
+        console.log(e);
       }
 
       //return
-      if (ItemReturnArray.length === 0) return undefined;
       return ItemReturnArray;
     } catch (e: any) {
       console.error(e);
@@ -296,7 +297,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
       getCurrentBudgets();
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
@@ -335,7 +336,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       await updateDoc(ItemDocRef, editItemBuilder);
       getItemsExpended(budgetUID);
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
@@ -365,7 +366,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       });
       getItemsExpended(budgetUID);
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);

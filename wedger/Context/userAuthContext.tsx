@@ -131,7 +131,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const forgotPassword = async (email: string) => {
-    console.log('passwordReset', email);
     try {
       await sendPasswordResetEmail(auth, email);
     } catch (e: any) {
