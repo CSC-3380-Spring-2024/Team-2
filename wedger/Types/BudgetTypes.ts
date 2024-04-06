@@ -15,12 +15,12 @@ export interface createBudgetType {
 }
 
 export interface EditBudgetType {
-  id: string;
-  labelColor?: ColorValue;
-  budgetName?: string;
-  spendTarget?: number;
-  spendCurrent?: number;
-  timeFrame?: 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
+  docId: string;
+  labelColor: ColorValue;
+  budgetName: string;
+  spendTarget: number;
+  spendCurrent: number;
+  timeFrame: 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
 }
 
 export interface ItemObject {
@@ -34,9 +34,23 @@ export interface ItemObject {
   category: SpendCatagories;
   paymentType?: 'cash' | 'card' | CardWithDetails;
   addMethod: 'manual' | 'scanner';
-  receptRefId: string;
-  receptRefPhotoURL: URL;
+  receptRefId?: string;
+  receptRefPhotoURL?: URL;
   Reoccurring: false | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
+}
+export interface addItemObject {
+  name: string;
+  date?: Date;
+  location?: GeoPoint; //need better type
+  cost: number;
+  quantity?: number;
+  unitCost?: number;
+  category?: SpendCatagories;
+  paymentType?: 'cash' | 'card' | CardWithDetails;
+  addMethod: 'manual' | 'scanner';
+  receptRefId?: string;
+  receptRefPhotoURL?: URL;
+  Reoccurring?: false | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
 }
 
 export interface EditItemObject {
@@ -73,6 +87,6 @@ export interface SpendCatagories {
 
 export interface CardWithDetails {
   cardNickname: string;
-  cardType:'visa' | 'masterCard' | 'amex' | 'discover' | undefined;
+  cardType: 'visa' | 'masterCard' | 'amex' | 'discover' | undefined;
   last4: number;
 }
