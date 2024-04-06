@@ -64,10 +64,10 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const {userRef} = useAuth();
 
   useEffect(() => {
-    setCurrentBudgets();
+    getCurrentBudgets();
   }, [userRef]);
 
-  const setCurrentBudgets = async () => {
+  const getCurrentBudgets = async () => {
     if (!userRef) return;
     const bugArr = await getUsersBudgets();
     setUsersBudgets(bugArr);
@@ -86,7 +86,6 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         timeFrame: obj.timeFrame,
         // filler
         spendCurrent: 0,
-        itemsExpended: [],
       };
       const budgetCollectionRef = collection(
         db,
@@ -95,7 +94,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'budgets',
       );
       const budget = await addDoc(budgetCollectionRef, newBudget);
-      setCurrentBudgets();
+      getCurrentBudgets();
       return budget;
     } catch (e: any) {
       console.log(e);
@@ -120,7 +119,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       const budgetDocRef = doc(db, 'users', userRef.uid, 'budgets', obj.docId);
       await updateDoc(budgetDocRef, editDocData);
       const updatedBudget = await getDoc(budgetDocRef);
-      setCurrentBudgets();
+      getCurrentBudgets();
       return updatedBudget;
     } catch (e: any) {
       console.log(e);
@@ -135,9 +134,15 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       if (!userRef) {
         throw Error('No User Ref');
       }
-      const budgetDocRef = doc(db, 'users', userRef.uid, 'budgets', budgetToDelete);
+      const budgetDocRef = doc(
+        db,
+        'users',
+        userRef.uid,
+        'budgets',
+        budgetToDelete,
+      );
       await deleteDoc(budgetDocRef);
-      setCurrentBudgets();
+      getCurrentBudgets();
     } catch (e: any) {
       console.log(e);
       addError(e.message);
@@ -166,6 +171,8 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       if (BudgetsReturnArray.length === 0) {
         return undefined;
       }
+
+      BudgetsReturnArray.forEach(budget => getItemsExpended(budget.id));
       return BudgetsReturnArray;
     } catch (e: any) {
       console.error(e);
@@ -174,6 +181,8 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingBudget(false);
     }
   };
+
+  //TODO: implement
   const getAllReceipts = async (
     budgetUID: string,
   ): Promise<URL[] | undefined> => {
@@ -181,12 +190,52 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   //item handle
+
+  //TODO: implement
   const getRecept = async (receptRefId: string) => {};
 
   const getItemsExpended = async (
     budgetUID: string,
   ): Promise<ItemObject[] | undefined> => {
-    return undefined;
+    setLoadingBudget(true);
+    try {
+      if (!userRef) {
+        throw Error('No User Ref');
+      }
+      let ItemReturnArray: ItemObject[] = [];
+      const budgetItemCollectionRef = collection(
+        db,
+        'users',
+        userRef.uid,
+        'budgets',
+        budgetUID,
+        'expendedItems',
+      );
+      const docsSnap = await getDocs(budgetItemCollectionRef);
+      docsSnap.forEach(item => {
+        const currItem = item as unknown as ItemObject;
+        ItemReturnArray.push(currItem);
+      });
+
+      // attach to userBudgets
+      if (usersBudgets) {
+        let tempBudgets = usersBudgets;
+        const budgetSelectIndex = tempBudgets.findIndex(
+          budget => budget.id === budgetUID,
+        );
+        tempBudgets[budgetSelectIndex].itemsExpended.concat(ItemReturnArray);
+        setUsersBudgets(tempBudgets);
+      }
+
+      //return
+      if (ItemReturnArray.length === 0) return undefined;
+      return ItemReturnArray;
+    } catch (e: any) {
+      console.error(e);
+      addError(e.message);
+    } finally {
+      setLoadingBudget(false);
+    }
   };
 
   const addExpendedItems = async (
@@ -200,6 +249,14 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       }
       const currentBudget = usersBudgets?.find(
         budget => budget.id === budgetUID,
+      );
+      const budgetItemCollectionRef = collection(
+        db,
+        'users',
+        userRef.uid,
+        'budgets',
+        budgetUID,
+        'expendedItems',
       );
       const budgetDocRef = doc(db, 'users', userRef.uid, 'budgets', budgetUID);
       const currentSpend = () => {
@@ -216,14 +273,14 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
           quantity: item.quantity ? item.quantity : 1,
           unitCost: item.cost / (item.quantity ? item.quantity : 1),
           category: item.category ? item.category : {category: 'other'},
-          date: item.date ? item.date : new Date(),
+          date: item.date ? item.date : '-1',
           location: item.location ? item.location : '',
           paymentType: item.paymentType ? item.paymentType : 'cash',
           addMethod: item.addMethod,
-          receptRefId: item.receptRefId ? item.receptRefId : '',
+          receptRefId: item.receptRefId ? item.receptRefId : '-1',
           receptRefPhotoURL: item.receptRefPhotoURL
             ? item.receptRefPhotoURL
-            : '',
+            : '-1',
           Reoccurring: item.Reoccurring ? item.Reoccurring : false,
         };
         return tempObj;
@@ -231,10 +288,13 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
       const tempBudget = {
         spendCurrent: currentSpend(),
-        itemsExpended: addArrayBuilder,
       };
+      addArrayBuilder.forEach(
+        async el => await addDoc(budgetItemCollectionRef, el),
+      );
       await updateDoc(budgetDocRef, tempBudget);
-      setCurrentBudgets();
+
+      getCurrentBudgets();
     } catch (e: any) {
       console.log(e);
       addError(e.message);
@@ -245,12 +305,75 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const editExpendedItem = async (
     item: EditItemObject,
     budgetUID: string,
-  ): Promise<void> => {};
+  ): Promise<void> => {
+    setLoadingBudget(true);
+    try {
+      if (!userRef) {
+        throw Error('No User Ref');
+      }
+      const editItemBuilder = {
+        name: item.name,
+        date: item.date,
+        location: item.location,
+        cost: item.cost,
+        quantity: item.quantity,
+        unitCost: item.unitCost,
+        category: item.category,
+        paymentType: item.paymentType,
+        addMethod: item.addMethod,
+        Reoccurring: item.Reoccurring,
+      };
+      const ItemDocRef = doc(
+        db,
+        'users',
+        userRef.uid,
+        'budgets',
+        budgetUID,
+        'expendedItems',
+        item.id,
+      );
+      await updateDoc(ItemDocRef, editItemBuilder);
+      getItemsExpended(budgetUID);
+    } catch (e: any) {
+      console.log(e);
+      addError(e.message);
+    } finally {
+      setLoadingBudget(false);
+    }
+  };
   const deleteExpendedItems = async (
     itemIDs: string[],
     budgetUID: string,
-  ): Promise<void> => {};
+  ): Promise<void> => {
+    setLoadingBudget(true);
+    try {
+      if (!userRef) {
+        throw Error('No User Ref');
+      }
+
+      itemIDs.forEach(async itemID => {
+        const ItemsDocRef = doc(
+          db,
+          'users',
+          userRef.uid,
+          'budgets',
+          budgetUID,
+          'expendedItems',
+          itemID,
+        );
+        await deleteDoc(ItemsDocRef);
+      });
+      getItemsExpended(budgetUID);
+    } catch (e: any) {
+      console.log(e);
+      addError(e.message);
+    } finally {
+      setLoadingBudget(false);
+    }
+  };
   //util
+
+  //TODO: implement
   const searchItems = async (
     search?: string,
   ): Promise<ItemObject[] | undefined> => {
