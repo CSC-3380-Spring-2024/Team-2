@@ -218,7 +218,6 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       try {
         if (usersBudgets) {
           let tempBudgets = usersBudgets;
-          console.log(tempBudgets);
           const budgetSelectIndex = tempBudgets.findIndex(
             budget => budget.id === budgetUID,
           );
