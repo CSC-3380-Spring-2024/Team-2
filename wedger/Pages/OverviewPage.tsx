@@ -2,9 +2,12 @@ import {Text, View} from 'react-native';
 import React, {useState} from 'react';
 import StyledButton from '../Components/StyledButton';
 import PopupModal from '../Components/PopupModal';
+import {useBudget} from '../Context/userBudgetContext';
+import {createBudgetType} from '../Types/BudgetTypes';
 
 function OverviewPage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+
   return (
     <View style={{backgroundColor: '#f00', height: 100}}>
       <Text style={{color: 'black'}}>OverviewPage</Text>

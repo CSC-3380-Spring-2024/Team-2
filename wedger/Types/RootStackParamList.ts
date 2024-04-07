@@ -21,6 +21,9 @@ export type RootStackParamList = {
   //Analytics
   AnalyticsHome: undefined;
 
+  //Subscription
+  UpgradePage: undefined;
+
   //Auth
   Auth: undefined;
   Welcome: undefined;
