@@ -9,6 +9,7 @@ export type RootStackParamList = {
 
   //Overview
   OverviewHome: undefined;
+  CreateBudgetPage: undefined;
 
   //Scanner
   ScannerHome: undefined;
