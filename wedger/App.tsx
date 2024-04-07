@@ -24,6 +24,7 @@ import {BudgetProvider} from './Context/userBudgetContext';
 import {User} from 'firebase/auth';
 import UpgradePage from './Pages/UpgradePage';
 import {View} from 'react-native';
+import CreateBudgetPage from './Pages/CreateBudgetPage';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -35,6 +36,7 @@ function OverviewScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="OverviewHome" component={OverviewPage} />
+      <ContentStack.Screen name="CreateBudgetPage" component={CreateBudgetPage} />
     </ContentStack.Navigator>
   );
 }

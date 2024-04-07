@@ -4,8 +4,10 @@ import StyledButton from '../Components/StyledButton';
 import PopupModal from '../Components/PopupModal';
 import {useBudget} from '../Context/userBudgetContext';
 import {createBudgetType} from '../Types/BudgetTypes';
+import { useNavigation } from '@react-navigation/native';
 
 function OverviewPage() {
+  const navigator = useNavigation()
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
@@ -16,6 +18,12 @@ function OverviewPage() {
           setModalOpen(true);
         }}>
         Test test
+      </StyledButton>
+      <StyledButton
+        onPress={() => {
+          navigator.navigate('CreateBudgetPage')
+        }}>
+        create new budget
       </StyledButton>
       <PopupModal
         isVisible={modalOpen}
