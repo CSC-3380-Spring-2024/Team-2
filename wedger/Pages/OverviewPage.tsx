@@ -13,6 +13,9 @@ function OverviewPage() {
       <LinearGradient colors = {['#2F88bd', '#8eb2c0',]} style = {styles.linearGradient}>
         <View style = {styles.container}>
           <Text style = {styles.header1}> Overview <Text style = {styles.header2}>{GetDate()}</Text></Text> 
+          <View style = {styles.budgetBox}>
+
+          </View>
             <StyledButton
               onPress={() => {
                 setModalOpen(true);
@@ -27,7 +30,6 @@ function OverviewPage() {
             }}
               firstButtonText="Continue"
           />
-          <Text style = {styles.text}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non quisquam vero vitae eligendi, obcaecati deleniti voluptatum molestiae distinctio ab cum numquam nobis molestias! Voluptates fuga delectus eum nostrum quis assumenda!</Text>
           <Text style = {styles.text}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non quisquam vero vitae eligendi, obcaecati deleniti voluptatum molestiae distinctio ab cum numquam nobis molestias! Voluptates fuga delectus eum nostrum quis assumenda!</Text>
           <Text style = {styles.text}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non quisquam vero vitae eligendi, obcaecati deleniti voluptatum molestiae distinctio ab cum numquam nobis molestias! Voluptates fuga delectus eum nostrum quis assumenda!</Text>
         </View>
@@ -54,16 +56,16 @@ const styles = StyleSheet.create ({
     marginHorizontal: 0,
   },
   header1: {
-    marginTop: 0,
-    marginBottom: 20,
-    textAlign: 'left',
-    fontSize: 32,
+    marginTop: 15,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 42,
     fontWeight: 'bold',
   },
   header2: {
-    marginTop: 0,
+    marginTop: 15,
     marginBottom: 20,
-    textAlign: 'left',
+    textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -74,6 +76,19 @@ const styles = StyleSheet.create ({
     flex: 1,
     width: null,
     height: null,
+  },
+  budgetBox: {
+    marginTop: 10,
+    marginBottom: 10,
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderColor: '#2F88bd',// #1E303C black border hex code
+    borderRadius: 30,
+    color: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
+    width: '85%',
+    height: 200,
+
   },
 })
 
