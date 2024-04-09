@@ -21,6 +21,10 @@ import ImageScannerPage from './Pages/ImageScannerPage';
 import ShoppingListPage from './Pages/ShoppingListPage';
 import {AuthProvider, useAuth} from './Context/userAuthContext';
 import {BudgetProvider} from './Context/userBudgetContext';
+import {User} from 'firebase/auth';
+import UpgradePage from './Pages/UpgradePage';
+import {View} from 'react-native';
+import CreateBudgetPage from './Pages/CreateBudgetPage';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -32,6 +36,7 @@ function OverviewScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="OverviewHome" component={OverviewPage} />
+      <ContentStack.Screen name="CreateBudgetPage" component={CreateBudgetPage} />
     </ContentStack.Navigator>
   );
 }
@@ -75,7 +80,17 @@ function LoadingScreen() {
     </ContentStack.Navigator>
   );
 }
+
+function UpgradeSubscriptionScreen() {
+  return (
+    <ContentStack.Navigator screenOptions={defaultScreenOptions}>
+      <ContentStack.Screen name="UpgradePage" component={UpgradePage} />
+    </ContentStack.Navigator>
+  );
+}
+
 function TabsScreen() {
+  const {userData} = useAuth();
   const {theme} = useTheme();
   return (
     <Tabs.Navigator
@@ -150,16 +165,35 @@ function TabsScreen() {
       />
       <Tabs.Screen
         name="AnalyticsTab"
-        component={AnalyticsScreen}
+        component={
+          userData?.subscription === 'paid'
+            ? AnalyticsScreen
+            : UpgradeSubscriptionScreen
+        }
         options={{
           tabBarShowLabel: false,
           tabBarLabel: 'Analytics',
           tabBarIcon: ({focused}) => (
-            <Icon
-              name="analytics"
-              type="ionicon"
-              color={focused ? theme.colors.white : theme.colors.grey3}
-            />
+            <View style={{position: 'relative', overflow: 'visible'}}>
+              <Icon
+                name="analytics"
+                type="ionicon"
+                color={focused ? theme.colors.white : theme.colors.grey3}
+              />
+              {userData && userData.subscription === 'free' ? (
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    position: 'absolute',
+                    right: -8,
+                    top: -3,
+                    overflow: 'visible'
+                  }}>
+                  <Icon name="sparkles-sharp" type="ionicon" color="gold" size={15}/>
+                </View>
+              ) : null}
+            </View>
           ),
         }}
       />
@@ -196,17 +230,8 @@ function AuthScreen() {
   );
 }
 
-function OnboardingNavigator() {
-  return (
-    <ContentStack.Navigator
-      screenOptions={{...defaultScreenOptions, gestureEnabled: false}}>
-      <ContentStack.Screen name="NextSteps" component={NextStepsPage} />
-    </ContentStack.Navigator>
-  );
-}
-
 function Navigator() {
-  const {isLoggedIn, userRef, loadingAuth} = useAuth();
+  const {isLoggedIn, userRef, loadingAuth, userData} = useAuth();
   const getScreen = () => {
     if (loadingAuth && userRef === undefined) {
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;

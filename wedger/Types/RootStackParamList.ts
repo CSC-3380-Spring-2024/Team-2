@@ -9,6 +9,7 @@ export type RootStackParamList = {
 
   //Overview
   OverviewHome: undefined;
+  CreateBudgetPage: undefined;
 
   //Scanner
   ScannerHome: undefined;
@@ -20,6 +21,9 @@ export type RootStackParamList = {
 
   //Analytics
   AnalyticsHome: undefined;
+
+  //Subscription
+  UpgradePage: undefined;
 
   //Auth
   Auth: undefined;

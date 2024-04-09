@@ -10,7 +10,14 @@ import {
 
 import {auth, db} from '../environment/firebase';
 import React, {ReactNode, createContext, useContext, useState} from 'react';
-import {addDoc, collection, doc, setDoc} from 'firebase/firestore';
+import {
+  DocumentData,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+} from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -27,6 +34,15 @@ interface AuthContextType {
   forgotPassword: (email: string) => void;
   logout: () => void;
   userAuthError: string;
+  userData: UserData | undefined;
+}
+
+interface UserData {
+  authProvider: string;
+  email: string;
+  name: string;
+  uid: string;
+  subscription: 'free' | 'paid';
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,12 +52,14 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [userAuthError, setUserAuthError] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRef, setUserRef] = useState<User | undefined>();
+  const [userData, setUserData] = useState<UserData | undefined>();
 
-  const checkIfLoggedIn = onAuthStateChanged(auth, user => {
+  const checkIfLoggedIn = onAuthStateChanged(auth, async user => {
     if (user) {
       setIsLoggedIn(true);
       setLoadingAuth(false);
       setUserRef(user);
+      setUserData(await getUserData(user));
       return true;
     } else {
       setIsLoggedIn(false);
@@ -58,6 +76,18 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingAuth(false);
     } catch (e) {
       addError('There was a problem logging out of your account');
+    }
+  };
+
+  const getUserData = async (user: User) => {
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      const docData = await getDoc(userDocRef);
+      const returnData = docData.data() as unknown as UserData;
+      return returnData;
+    } catch (e: any) {
+      addError(e.message);
+      console.log(e);
     }
   };
 
@@ -106,6 +136,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
           const user = userCredential.user;
           await setDoc(doc(db, 'users', user.uid), {
             uid: user.uid,
+            subscription: 'free',
             name,
             authProvider: 'local',
             email,
@@ -131,7 +162,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const forgotPassword = async (email: string) => {
-    console.log('passwordReset', email);
     try {
       await sendPasswordResetEmail(auth, email);
     } catch (e: any) {
@@ -155,6 +185,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         checkIfLoggedIn,
         userRef,
         userAuthError,
+        userData,
       }}>
       {children}
     </AuthContext.Provider>
