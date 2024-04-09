@@ -7,13 +7,14 @@ import PieChart from 'react-native-pie-chart';
 
 //import { color } from '@rneui/base';
 
+// #2F88bd color for original blue
 
 function OverviewPage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   return (
     <SafeAreaView style = {styles.container}>
       <ScrollView style = {styles.ScrollView}>
-      <LinearGradient colors = {['#2F88bd', '#8eb2c0',]} style = {styles.linearGradient}>
+      <LinearGradient colors = {['#EBF8FE', '#8eb2c0',]} style = {styles.linearGradient}> 
         <View style = {styles.container}>
           < Text style = {styles.header1}> Overview <Text style = {styles.header2}>{GetDate()}</Text></Text> 
           <View style = {styles.budgetBox}>
