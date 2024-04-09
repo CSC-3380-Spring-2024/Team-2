@@ -3,6 +3,6 @@ module.exports = {
   extends: '@react-native',
   rules: {
     'prettier/prettier': ['error', {endOfLine: 'auto'}],
-    requireConfigFile: false,
+    requireConfigFile: 0,
   },
 };
