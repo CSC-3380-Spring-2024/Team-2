@@ -107,12 +107,11 @@ export function SignUpPage() {
 
   const handleSighup = async () => {
     setIsSubmitting(true);
-    console.log('handle sign up');
     if (checkInputs()) {
       try {
         await createEmailAccount(name, email, password, confirmPassword);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setIsSubmitting(false);
       }

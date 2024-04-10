@@ -10,7 +10,9 @@ import PieChart from 'react-native-pie-chart';
 // #2F88bd color for original blue
 
 function OverviewPage() {
+  const navigator = useNavigation()
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+
   return (
     <SafeAreaView style = {styles.container}>
       <ScrollView style = {styles.ScrollView}>

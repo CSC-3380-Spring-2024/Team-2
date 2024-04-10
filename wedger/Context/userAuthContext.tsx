@@ -10,13 +10,20 @@ import {
 
 import {auth, db} from '../environment/firebase';
 import React, {ReactNode, createContext, useContext, useState} from 'react';
-import { addDoc, collection } from 'firebase/firestore';
+import {
+  DocumentData,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+} from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
   loadingAuth: boolean;
   checkIfLoggedIn: Unsubscribe;
-  loggedInUser: User | undefined;
+  userRef: User | undefined;
   loginWithEmail: (username: string, password: string) => Promise<void>;
   createEmailAccount: (
     name: string,
@@ -27,6 +34,15 @@ interface AuthContextType {
   forgotPassword: (email: string) => void;
   logout: () => void;
   userAuthError: string;
+  userData: UserData | undefined;
+}
+
+interface UserData {
+  authProvider: string;
+  email: string;
+  name: string;
+  uid: string;
+  subscription: 'free' | 'paid';
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,18 +51,20 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loadingAuth, setLoadingAuth] = useState<boolean>(true);
   const [userAuthError, setUserAuthError] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<User | undefined>();
+  const [userRef, setUserRef] = useState<User | undefined>();
+  const [userData, setUserData] = useState<UserData | undefined>();
 
-  const checkIfLoggedIn = onAuthStateChanged(auth, user => {
+  const checkIfLoggedIn = onAuthStateChanged(auth, async user => {
     if (user) {
       setIsLoggedIn(true);
       setLoadingAuth(false);
-      setLoggedInUser(user);
+      setUserRef(user);
+      setUserData(await getUserData(user));
       return true;
     } else {
       setIsLoggedIn(false);
       setLoadingAuth(false);
-      setLoggedInUser(undefined);
+      setUserRef(undefined);
       return false;
     }
   });
@@ -61,6 +79,18 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
+  const getUserData = async (user: User) => {
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      const docData = await getDoc(userDocRef);
+      const returnData = docData.data() as unknown as UserData;
+      return returnData;
+    } catch (e: any) {
+      addError(e.message);
+      console.log(e);
+    }
+  };
+
   const loginWithEmail = async (email: string, password: string) => {
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -68,7 +98,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         email,
         password,
       );
-      setLoggedInUser(userCredential.user);
+      setUserRef(userCredential.user);
       checkIfLoggedIn();
     } catch (error: any) {
       if (
@@ -103,22 +133,23 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
             email,
             password,
           );
-          const user = userCredential.user
-          await addDoc(collection(db, "users"), {
+          const user = userCredential.user;
+          await setDoc(doc(db, 'users', user.uid), {
             uid: user.uid,
+            subscription: 'free',
             name,
-            authProvider: "local",
+            authProvider: 'local',
             email,
           });
-          setLoggedInUser(user);
+          setUserRef(user);
           checkIfLoggedIn();
         } catch (error: any) {
-          console.error(error.message)
+          console.error(error.message);
           if (error.code === 'auth/email-already-in-use') {
             addError('An account with this email already exists');
           }
-          if (error.code === 'auth/weak-password'){
-            addError('Password must be at least 6 Characters long')
+          if (error.code === 'auth/weak-password') {
+            addError('Password must be at least 6 Characters long');
           }
         }
         setLoadingAuth(false);
@@ -131,7 +162,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const forgotPassword = async (email: string) => {
-    console.log('passwordReset', email);
     try {
       await sendPasswordResetEmail(auth, email);
     } catch (e: any) {
@@ -153,8 +183,9 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         forgotPassword,
         logout,
         checkIfLoggedIn,
-        loggedInUser,
+        userRef,
         userAuthError,
+        userData,
       }}>
       {children}
     </AuthContext.Provider>
