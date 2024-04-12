@@ -36,7 +36,10 @@ function OverviewScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="OverviewHome" component={OverviewPage} />
-      <ContentStack.Screen name="CreateBudgetPage" component={CreateBudgetPage} />
+      <ContentStack.Screen
+        name="CreateBudgetPage"
+        component={CreateBudgetPage}
+      />
     </ContentStack.Navigator>
   );
 }
@@ -188,9 +191,14 @@ function TabsScreen() {
                     position: 'absolute',
                     right: -8,
                     top: -3,
-                    overflow: 'visible'
+                    overflow: 'visible',
                   }}>
-                  <Icon name="sparkles-sharp" type="ionicon" color="gold" size={15}/>
+                  <Icon
+                    name="sparkles-sharp"
+                    type="ionicon"
+                    color="gold"
+                    size={15}
+                  />
                 </View>
               ) : null}
             </View>

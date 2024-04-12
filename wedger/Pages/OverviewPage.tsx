@@ -1,16 +1,6 @@
-import {
-  StyleSheet,
-  StatusBar,
-  Text,
-  View,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, SafeAreaView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
-import PopupModal from '../Components/PopupModal';
-import {useBudget} from '../Context/userBudgetContext';
-import {createBudgetType} from '../Types/BudgetTypes';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
