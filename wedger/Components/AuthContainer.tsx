@@ -22,7 +22,7 @@ export default function AuthContainer({
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Header logo moreSpace marginTop/>
+      <Header logo moreSpace marginTop />
       <View style={{paddingHorizontal: 45}}>
         {children}
         <DividerWithLabel containerStyle={styles.dividerContainer}>
