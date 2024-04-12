@@ -1,14 +1,7 @@
-import {
-  StyleSheet,
-  StatusBar,
-  Text,
-  View,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, View, ScrollView, SafeAreaView} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
-import PopupModal from '../Components/PopupModal';
+import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
 import {useNavigation} from '@react-navigation/native';
@@ -19,7 +12,35 @@ import {useNavigation} from '@react-navigation/native';
 
 function OverviewPage() {
   const navigator = useNavigation();
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [currentDate, setCurrentDate] = useState<string | undefined>();
+
+  useEffect(() => {
+    setCurrentDate(GetDate());
+  }, []);
+
+  // Have functions inside page function and above return statement
+  // Also have valuables that dont have to change on every render, See UseState and UseEffect
+
+  function GetDate() {
+    const monthNames: string[] = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    let monthIndex = new Date().getMonth();
+    let thisYear = new Date().getFullYear();
+    let monthName = monthNames[monthIndex];
+    return monthName + ' ' + thisYear;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,8 +50,7 @@ function OverviewPage() {
           style={styles.linearGradient}>
           <View style={styles.container}>
             <Text style={styles.header1}>
-              {' '}
-              Overview <Text style={styles.header2}>{GetDate()}</Text>
+              Overview <Text style={styles.header2}>{currentDate}</Text>
             </Text>
             <View style={styles.budgetBox}>
               <View>
@@ -43,6 +63,12 @@ function OverviewPage() {
                 />
               </View>
             </View>
+            <StyledButton
+              onPress={() => {
+                navigator.navigate('CreateBudgetPage');
+              }}>
+              create new budget
+            </StyledButton>
             <View style={styles.amountBox}>
               <Text style={styles.header2}>Amount Left</Text>
             </View>
@@ -52,20 +78,6 @@ function OverviewPage() {
             <View style={styles.pastExpenses}>
               <Text style={styles.header2}>Past Expenses</Text>
             </View>
-            <StyledButton
-              onPress={() => {
-                setModalOpen(true);
-              }}>
-              Test test
-            </StyledButton>
-            <PopupModal
-              isVisible={modalOpen}
-              description="Test popup"
-              firstButtonPress={() => {
-                setModalOpen(!modalOpen);
-              }}
-              firstButtonText="Continue"
-            />
           </View>
         </LinearGradient>
       </ScrollView>
@@ -73,26 +85,6 @@ function OverviewPage() {
   );
 }
 
-function GetDate() {
-  const monthNames: string[] = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  let monthIndex = new Date().getMonth();
-  let thisYear = new Date().getFullYear();
-  let monthName = monthNames[monthIndex];
-  return monthName + ' ' + thisYear;
-}
 const widthAndHeight = 225;
 const series = [123, 534, 231];
 const sliceColor = ['#7FB5C1', '#C4D2DF', '#2C8FA2'];
