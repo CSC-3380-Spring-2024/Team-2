@@ -4,6 +4,7 @@ import StyledButton from '../Components/StyledButton';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
+import PopupModal from '../Components/PopupModal';
 
 //import { color } from '@rneui/base';
 
@@ -12,6 +13,7 @@ import PieChart from 'react-native-pie-chart';
 function OverviewPage() {
   const navigator = useNavigation();
   const [currentDate, setCurrentDate] = useState<string | undefined>();
+  const [expenseModalOpen, setExpenseModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setCurrentDate(GetDate());
@@ -68,6 +70,12 @@ function OverviewPage() {
               }}>
               create new budget
             </StyledButton>
+            <StyledButton
+              onPress={() => {
+                setExpenseModalOpen(true);
+              }}>
+              Add Expense
+            </StyledButton>
             <View style={styles.amountBox}>
               <Text style={styles.header2}>Amount Left</Text>
             </View>
@@ -79,6 +87,22 @@ function OverviewPage() {
             </View>
           </View>
         </LinearGradient>
+        <PopupModal
+          isVisible={expenseModalOpen}
+          description="Add an expense with"
+          firstButtonPress={() => {
+            setExpenseModalOpen(false);
+            navigator.navigate('ScannerHome');
+          }}
+          firstButtonText="Scanner"
+          secondButtonPress={() => {
+            setExpenseModalOpen(false);
+            navigator.navigate('AddExpensePage');
+          }}
+          secondButtonText="Manually"
+          cancelButtonPress={() => setExpenseModalOpen(false)}
+          cancelButtonText="Cancel"
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -103,7 +127,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   header2: {
-    marginTop: 15,
+    marginTop: 10,
     marginBottom: 20,
     textAlign: 'center',
     fontSize: 20,
