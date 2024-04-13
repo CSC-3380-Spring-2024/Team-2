@@ -90,11 +90,13 @@ const useStyles = makeStyles(theme => ({
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     marginTop: 20,
+    gap: 5,
   },
   button: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.primary,
     color: theme.colors.white,
   },
 }));
