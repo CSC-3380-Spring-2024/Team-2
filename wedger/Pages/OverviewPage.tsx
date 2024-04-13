@@ -4,7 +4,6 @@ import StyledButton from '../Components/StyledButton';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
-import {useNavigation} from '@react-navigation/native';
 
 //import { color } from '@rneui/base';
 
