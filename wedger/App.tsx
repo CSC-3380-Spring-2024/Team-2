@@ -183,7 +183,7 @@ function TabsScreen() {
                 type="ionicon"
                 color={focused ? theme.colors.white : theme.colors.grey3}
               />
-              {userData && userData.subscription === 'free' ? (
+              {userData && userData.subscription !== 'paid' ? (
                 <View
                   style={{
                     height: 20,
