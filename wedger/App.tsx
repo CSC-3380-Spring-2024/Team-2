@@ -25,6 +25,7 @@ import {User} from 'firebase/auth';
 import UpgradePage from './Pages/UpgradePage';
 import {View} from 'react-native';
 import CreateBudgetPage from './Pages/CreateBudgetPage';
+import AddExpensePage from './Pages/AddExpensePage';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -36,7 +37,10 @@ function OverviewScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="OverviewHome" component={OverviewPage} />
-      <ContentStack.Screen name="CreateBudgetPage" component={CreateBudgetPage} />
+      <ContentStack.Screen
+        name="CreateBudgetPage"
+        component={CreateBudgetPage}
+      />
     </ContentStack.Navigator>
   );
 }
@@ -54,6 +58,7 @@ function ScannerScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="ScannerHome" component={ImageScannerPage} />
+      <ContentStack.Screen name="AddExpensePage" component={AddExpensePage} />
     </ContentStack.Navigator>
   );
 }
@@ -188,9 +193,14 @@ function TabsScreen() {
                     position: 'absolute',
                     right: -8,
                     top: -3,
-                    overflow: 'visible'
+                    overflow: 'visible',
                   }}>
-                  <Icon name="sparkles-sharp" type="ionicon" color="gold" size={15}/>
+                  <Icon
+                    name="sparkles-sharp"
+                    type="ionicon"
+                    color="gold"
+                    size={15}
+                  />
                 </View>
               ) : null}
             </View>

@@ -33,7 +33,7 @@ export function ForgotPasswordPage() {
 
   return (
     <>
-      <Header moreSpace logo backButton paddingTop/>
+      <Header moreSpace logo backButton paddingTop />
       <ScrollView contentContainerStyle={styles.root}>
         <View style={styles.container}>
           <Text style={styles.forgotPasswordText}>
@@ -89,9 +89,9 @@ const useStyles = makeStyles(theme => ({
     fontSize: 20,
     fontWeight: '500',
     textAlign: 'center',
-    color: theme.colors.black
-  }, 
+    color: theme.colors.black,
+  },
   container: {
-    gap: 10
-  }
+    gap: 10,
+  },
 }));

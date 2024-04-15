@@ -14,6 +14,8 @@ interface DropDownOption {
   value: 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
 }
 
+type DropdownValues = 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
+
 const timeFrameBudgetOptions: DropDownOption[] = [
   {label: 'Monthly', value: 'monthly'},
   {label: 'Bi-Weekly', value: 'bi-weekly'},
@@ -28,7 +30,7 @@ const CreateBudgetPage = () => {
   const [spendGoal, setSpendGoal] = useState<number | undefined>();
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
   const [labelColor, setLabelColor] = useState('#561ecb');
-  const [timeFrame, setTimeFrame] = useState<DropDownOption | undefined>();
+  const [timeFrame, setTimeFrame] = useState<DropdownValues>('monthly');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const submitBudget = async () => {
@@ -38,7 +40,7 @@ const CreateBudgetPage = () => {
           labelColor: labelColor,
           budgetName: budgetName,
           spendTarget: spendGoal,
-          timeFrame: timeFrame.value,
+          timeFrame: timeFrame,
         };
         await createBudget(budgetObjBuild);
         setModalOpen(true);
@@ -50,7 +52,9 @@ const CreateBudgetPage = () => {
     //TODO: form validation
     if (budgetName && spendGoal && labelColor && timeFrame) {
       return true;
-    } else return false;
+    } else {
+      return false;
+    }
   };
   return (
     <View>
@@ -77,7 +81,8 @@ const CreateBudgetPage = () => {
         <Text>Select the time frame for your budget</Text>
         <Dropdown
           options={timeFrameBudgetOptions}
-          onChangeValue={value => setTimeFrame}
+          initialValue="monthly"
+          onChangeValue={value => setTimeFrame(value)}
         />
       </View>
       <StyledButton onPress={submitBudget} loading={loadingBudget}>

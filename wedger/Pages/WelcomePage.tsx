@@ -27,7 +27,9 @@ export default function WelcomePage() {
         </Text>
         <View style={styles.buttonContainer}>
           <StyledButton
-            onPress={() => navigation.navigate('SignUp')}
+            onPress={() => {
+              navigation.navigate('SignUp');
+            }}
             containerStyle={styles.buttonContainer}>
             Register Now
           </StyledButton>

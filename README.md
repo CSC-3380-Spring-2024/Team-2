@@ -1,5 +1,8 @@
 # Team Wicked Pissahs
 
+Dev Branch -> main
+Production Branch -> Prod
+
 ### To Run Dev
 
 + npm install

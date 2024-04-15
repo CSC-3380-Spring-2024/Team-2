@@ -9,15 +9,14 @@ import {
 } from 'firebase/auth';
 
 import {auth, db} from '../environment/firebase';
-import React, {ReactNode, createContext, useContext, useState} from 'react';
-import {
-  DocumentData,
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-} from 'firebase/firestore';
+import React, {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -54,17 +53,22 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [userRef, setUserRef] = useState<User | undefined>();
   const [userData, setUserData] = useState<UserData | undefined>();
 
+  useEffect(() => {
+    if (isLoggedIn && userRef) {
+      getUserData(userRef);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
+
   const checkIfLoggedIn = onAuthStateChanged(auth, async user => {
     if (user) {
       setIsLoggedIn(true);
-      setLoadingAuth(false);
       setUserRef(user);
-      setUserData(await getUserData(user));
+      setLoadingAuth(false);
       return true;
     } else {
       setIsLoggedIn(false);
       setLoadingAuth(false);
-      setUserRef(undefined);
       return false;
     }
   });
@@ -84,7 +88,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       const userDocRef = doc(db, 'users', user.uid);
       const docData = await getDoc(userDocRef);
       const returnData = docData.data() as unknown as UserData;
-      return returnData;
+      setUserData(returnData);
     } catch (e: any) {
       addError(e.message);
       console.log(e);

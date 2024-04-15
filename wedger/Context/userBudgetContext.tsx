@@ -1,12 +1,4 @@
-import {View, Text} from 'react-native';
-import React, {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {ReactNode, createContext, useContext, useState} from 'react';
 import {
   BudgetType,
   EditBudgetType,
@@ -15,7 +7,6 @@ import {
   addItemObject,
   createBudgetType,
 } from '../Types/BudgetTypes';
-import {User, UserCredential} from 'firebase/auth';
 import {
   DocumentData,
   DocumentReference,
@@ -58,17 +49,19 @@ interface BudgetContextType {
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
 
 export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
-  const [loadingBudget, setLoadingBudget] = useState<boolean>(true);
+  const [loadingBudget, setLoadingBudget] = useState<boolean>(false);
   const [usersBudgets, setUsersBudgets] = useState<BudgetType[] | undefined>();
   const [userBudgetError, setUserBudgetError] = useState<string>('');
   const {userRef} = useAuth();
 
-  useEffect(() => {
-    getCurrentBudgets();
-  }, [userRef]);
+  // useEffect(() => {
+  //   getCurrentBudgets();
+  // }, [userRef]);
 
   const getCurrentBudgets = async () => {
-    if (!userRef) return;
+    if (!userRef) {
+      return;
+    }
     const bugArr = await getUsersBudgets();
     setUsersBudgets(bugArr);
   };
@@ -182,13 +175,16 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const getAllReceipts = async (
     budgetUID: string,
   ): Promise<URL[] | undefined> => {
+    console.log(budgetUID, 'get recipes');
     return undefined;
   };
 
   //item handle
 
   //TODO: implement
-  const getRecept = async (receptRefId: string) => {};
+  const getRecept = async (receptRefId: string) => {
+    console.log(receptRefId, 'recept id');
+  };
 
   const getItemsExpended = async (
     budgetUID: string,
@@ -377,6 +373,8 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const searchItems = async (
     search?: string,
   ): Promise<ItemObject[] | undefined> => {
+    console.log(search, 'search');
+
     return undefined;
   };
 
