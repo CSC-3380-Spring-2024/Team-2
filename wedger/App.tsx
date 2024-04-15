@@ -265,9 +265,11 @@ function App(): React.JSX.Element {
     <ThemeProvider theme={customTheme}>
       <AuthProvider>
         <BudgetProvider>
-          <NavigationContainer>
-            <Navigator />
-          </NavigationContainer>
+          <ShoppingListPage>
+            <NavigationContainer>
+              <Navigator />
+            </NavigationContainer>
+          </ShoppingListPage>
         </BudgetProvider>
       </AuthProvider>
     </ThemeProvider>
