@@ -1,4 +1,4 @@
-import {View, Pressable, Animated} from 'react-native';
+import {View, Pressable} from 'react-native';
 import React from 'react';
 import {makeStyles, Text} from '@rneui/themed';
 import {BlurView} from '@react-native-community/blur';
@@ -15,21 +15,14 @@ const SubscriptionButton = () => {
             navigator.navigate('UpgradePage');
           }}>
           <View style={styles.dotContainer}>
-            <Animated.View style={styles.element00} />
-
-            <Animated.View style={styles.element01} />
-
-            <Animated.View style={styles.element02} />
-
-            <Animated.View style={styles.element03} />
-
-            <Animated.View style={styles.element04} />
-
-            <Animated.View style={styles.element05} />
-
-            <Animated.View style={styles.element06} />
-
-            <Animated.View style={styles.element07} />
+            <View style={styles.element00} />
+            <View style={styles.element01} />
+            <View style={styles.element02} />
+            <View style={styles.element03} />
+            <View style={styles.element04} />
+            <View style={styles.element05} />
+            <View style={styles.element06} />
+            <View style={styles.element07} />
           </View>
           <BlurView
             style={styles.absolute}
@@ -37,7 +30,6 @@ const SubscriptionButton = () => {
             blurAmount={15}
             reducedTransparencyFallbackColor="white"
           />
-
           <Text h1 style={styles.buttonText}>
             Upgrade to Wedger +
           </Text>
