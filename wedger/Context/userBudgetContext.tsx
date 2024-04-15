@@ -156,10 +156,15 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'budgets',
       );
       const docsSnap = await getDocs(budgetCollectionRef);
-      if (docsSnap.empty) return undefined;
-      docsSnap.forEach(doc => {
-        const curDoc = doc.data() as unknown as BudgetType;
-        getItemsExpended(doc.id);
+      if (docsSnap.empty) {
+        return undefined;
+      }
+      docsSnap.forEach(async el => {
+        let curDoc = el.data() as unknown as BudgetType;
+        const temp = await getItemsExpended(el.id);
+        if (temp) {
+          curDoc.itemsExpended.concat(temp);
+        }
         BudgetsReturnArray.push(curDoc);
       });
       return BudgetsReturnArray;
