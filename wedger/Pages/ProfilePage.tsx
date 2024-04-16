@@ -1,26 +1,27 @@
-import React from 'react';
-import {StyleSheet,Text,View,ScrollView} from 'react-native';
+import React, {useRef} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import {useAuth} from '../Context/userAuthContext';
 import StyledButton from '../Components/StyledButton';
 import {Button, Icon} from '@rneui/base';
-import ProfileIconButton from '../Components/StyledButton';
+import ProfileIconButton from '../Components/ProfileIconButton.tsx';
 
 const ProfilePage = () => {
-  const {logout} = useAuth();
-
+  const {logout, userData} = useAuth();
+  const userName = userData?.name || 'Guest'; // it needed a value to default to like 'Guest' - Derin
   // functionality code goes here, read all comments on this page
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.welcomeText}>Welcome, User</Text>
-          {/* User Name and other data is dynamic, Fetch using functions from useAuth => example; LogOut function */}
+          <Text style={styles.welcomeText}>Welcome, {userName} </Text>
           <Text style={styles.theFeatures}>Features</Text>
-          <ProfileIconButton 
+          <ProfileIconButton
             onPress={() => { /*add functionality*/}}
-            icon={<Icon name="notifications"/>}
-            text="Notifications"
+            iconName="notification"
+            text="Notifications" // adjust styling, I put in random shit to see it show up - Derin
+            iconSize={24}
+            iconColor="#000"
           />
           <Button title="Edit Info" />
           <Button title="App Settings" />

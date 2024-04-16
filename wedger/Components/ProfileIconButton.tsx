@@ -1,6 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import StyledButton from './StyledButton.tsx';
 
 interface IconButtonProps {
   onPress: () => void;
@@ -10,14 +11,20 @@ interface IconButtonProps {
   text: string;
 }
 
-const ProfileIconButton: React.FC<IconButtonProps> = ({ onPress, iconName, iconSize = 20, iconColor = '#000', text}) => {
+const ProfileIconButton: React.FC<IconButtonProps> = ({
+  onPress,
+  iconName,
+  iconSize = 20,
+  iconColor = '#000',
+  text,
+}) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <StyledButton style={styles.button} onPress={onPress}>
       <View style={styles.content}>
         <Icon name={iconName} size={iconSize} color={iconColor} />
-        {text && <Text style={styles.text}>{text}</Text>}
+        <Text style={styles.text}>{text}</Text>
       </View>
-    </TouchableOpacity>
+    </StyledButton> // changed this to styled button component
   );
 };
 
