@@ -13,6 +13,7 @@ export type RootStackParamList = {
 
   //Scanner
   ScannerHome: undefined;
+  AddExpensePage: undefined;
   //Profile
   ProfileHome: undefined;
 

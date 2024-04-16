@@ -35,7 +35,14 @@ export function Header({
         marginTop && styles.marginTop,
         paddingTop && styles.paddingTop,
       ]}>
-      {backButton && <BackButton onPress={() => navigator.goBack()} />}
+      {backButton && (
+        <BackButton
+          onPress={() => {
+            console.log('back');
+            navigator.goBack();
+          }}
+        />
+      )}
       {logo && <WedgerLogo />}
       {title && (
         <Text h2 style={[styles.title, moreSpace && styles.titlePadding]}>
@@ -71,7 +78,7 @@ const useStyles = makeStyles(() => ({
   },
   paddingTop: {
     marginTop: 50,
-  }
+  },
 }));
 
 export default Header;

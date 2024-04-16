@@ -1,9 +1,10 @@
 import {StyleSheet, Text, View, ScrollView, SafeAreaView, ViewStyle} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
-import {useNavigation} from '@react-navigation/native';
+import PopupModal from '../Components/PopupModal';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
+import {useNavigation} from '@react-navigation/native';
 
 //import { color } from '@rneui/base';
 
@@ -14,6 +15,7 @@ function OverviewPage() {
   const [currentDate, setCurrentDate] = useState<string | undefined>();
   const Seperator = () => <View style = {seperatorStyles} />;
   //const {usersBudgets} = usersBudgets();
+  const [expenseModalOpen, setExpenseModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setCurrentDate(GetDate());
@@ -52,6 +54,7 @@ function OverviewPage() {
           style={styles.linearGradient}>
           <View style={styles.container}>
             <Text style={styles.header1}>
+              {' '}
               Overview <Text style={styles.header2}>{currentDate}</Text>
             </Text>
             <View style={styles.budgetBox}>
@@ -92,6 +95,22 @@ function OverviewPage() {
             </View>
           </View>
         </LinearGradient>
+        <PopupModal
+          isVisible={expenseModalOpen}
+          description="Add an expense with"
+          firstButtonPress={() => {
+            setExpenseModalOpen(false);
+            navigator.navigate('ScannerHome');
+          }}
+          firstButtonText="Scanner"
+          secondButtonPress={() => {
+            setExpenseModalOpen(false);
+            navigator.navigate('AddExpensePage');
+          }}
+          secondButtonText="Manually"
+          cancelButtonPress={() => setExpenseModalOpen(false)}
+          cancelButtonText="Cancel"
+        />
       </ScrollView>
     </SafeAreaView>
   );

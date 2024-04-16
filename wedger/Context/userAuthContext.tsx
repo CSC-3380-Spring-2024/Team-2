@@ -16,14 +16,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {
-  DocumentData,
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-} from 'firebase/firestore';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
 
 interface AuthContextType {
   isLoggedIn: boolean;
