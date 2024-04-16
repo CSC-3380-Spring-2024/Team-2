@@ -1,7 +1,6 @@
 import {View} from 'react-native';
 import WedgerLogo from '../Assets/Static/Wedger_App_logo.svg';
 import React from 'react';
-import Svg, {Image} from 'react-native-svg';
 import {makeStyles, Text} from '@rneui/themed';
 import BackButton from './BackButton';
 import {useNavigation} from '@react-navigation/native';

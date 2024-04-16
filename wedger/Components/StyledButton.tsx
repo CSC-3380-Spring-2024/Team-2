@@ -9,6 +9,7 @@ const useStyles = makeStyles(theme => ({
     paddingHorizontal: 35,
     paddingVertical: 8,
     alignSelf: 'center',
+    elevation: 2,
   },
   title: {fontSize: 15, fontWeight: '600', color: theme.colors.white},
 }));
