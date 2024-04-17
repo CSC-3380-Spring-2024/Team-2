@@ -5,6 +5,7 @@ import PopupModal from '../Components/PopupModal';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
 import {useNavigation} from '@react-navigation/native';
+import { useBudget} from '../Context/userBudgetContext';
 
 //import { color } from '@rneui/base';
 
@@ -12,15 +13,28 @@ import {useNavigation} from '@react-navigation/native';
 
 function OverviewPage() {
   const navigator = useNavigation();
+  const {usersBudgets} = useBudget();
+  //const {usersBudgets} = seeBudgetData();
   const [currentDate, setCurrentDate] = useState<string | undefined>();
+  const [currentBudgetName,setCurrentBudgetName] = useState<string | void[]>();
   const Seperator = () => <View style = {seperatorStyles} />;
-  //const {usersBudgets} = usersBudgets();
   const [expenseModalOpen, setExpenseModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setCurrentDate(GetDate());
-    //usersBudgets(usersBudgets());
-  }, []);
+    setCurrentBudgetName(newbudgetName());
+    console.log(usersBudgets?usersBudgets.length:"no");
+    
+    
+  console.log(usersBudgets?usersBudgets.map((item) => {
+    item.labelColor
+  }):"empty");
+  console.log(usersBudgets?usersBudgets.map((item) =>{
+    item.spendTarget
+  }):"no budget value")
+
+
+  },[usersBudgets]);
 
   // Have functions inside page function and above return statement
   // Also have valuables that dont have to change on every render, See UseState and UseEffect
@@ -45,6 +59,20 @@ function OverviewPage() {
     let monthName = monthNames[monthIndex];
     return monthName + ' ' + thisYear;
   }
+  function newbudgetName() {
+    
+    let budgetName = usersBudgets?usersBudgets.map((item) =>{
+      item.budgetName
+    }):"no budget value"
+
+    if (budgetName  == "no budget value"){
+      return "Example Budget"
+    }
+    else {
+      return budgetName
+    }
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +87,7 @@ function OverviewPage() {
             </Text>
             <View style={styles.budgetBox}>
               <View>
-                <Text style={styles.header2}>Budget Name</Text>
+                <Text style={styles.header2}>Budget Name {usersBudgets?usersBudgets.length:''}</Text>
                 <Seperator />
                 <PieChart
                   widthAndHeight={widthAndHeight}
@@ -163,7 +191,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignSelf: 'center',
     borderWidth: 0,
-    borderColor: '#2F88bd', // #1E303C black border hex code
+    borderColor: '#8E8D95', // #1E303C black border hex code
     borderRadius: 15,
     backgroundColor: '#FFFFFF',
     width: '85%',

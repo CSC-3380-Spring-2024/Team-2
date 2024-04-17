@@ -1,4 +1,4 @@
-import React, {ReactNode, createContext, useContext, useState} from 'react';
+import React, {ReactNode, createContext, useContext, useEffect, useState} from 'react';
 import {
   BudgetType,
   EditBudgetType,
@@ -52,11 +52,11 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loadingBudget, setLoadingBudget] = useState<boolean>(false);
   const [usersBudgets, setUsersBudgets] = useState<BudgetType[] | undefined>();
   const [userBudgetError, setUserBudgetError] = useState<string>('');
-  const {userRef} = useAuth();
+  const {userData, userRef} = useAuth();
 
-  // useEffect(() => {
-  //   getCurrentBudgets();
-  // }, [userRef]);
+  //  useEffect(() => {
+  //    getCurrentBudgets();
+  //  }, [userData]);
 
   const getCurrentBudgets = async () => {
     if (!userRef) {
