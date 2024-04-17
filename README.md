@@ -1,4 +1,6 @@
 # Team Wicked Pissahs
+ 
+Contact Max Shroyer For .env file, JL you have it on element
 
 ### To Run Dev
 
