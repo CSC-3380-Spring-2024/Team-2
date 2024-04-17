@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     if (isLoggedIn && userRef) {
       getUserData(userRef);
     }
+    console.log(userData, 'userData');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 

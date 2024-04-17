@@ -20,12 +20,13 @@ import AnalyticsPage from './Pages/AnalyticsPage';
 import ImageScannerPage from './Pages/ImageScannerPage';
 import ShoppingListPage from './Pages/ShoppingListPage';
 import {AuthProvider, useAuth} from './Context/userAuthContext';
-import {BudgetProvider} from './Context/userBudgetContext';
+import {BudgetProvider, useBudget} from './Context/userBudgetContext';
 import {User} from 'firebase/auth';
 import UpgradePage from './Pages/UpgradePage';
 import {View} from 'react-native';
 import CreateBudgetPage from './Pages/CreateBudgetPage';
 import AddExpensePage from './Pages/AddExpensePage';
+import {ShoppingListProvider} from './Context/userShoppingListContext';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -242,8 +243,9 @@ function AuthScreen() {
 
 function Navigator() {
   const {isLoggedIn, userRef, loadingAuth, userData} = useAuth();
+  const {loadingBudget} = useBudget();
   const getScreen = () => {
-    if (loadingAuth && userRef === undefined) {
+    if (loadingBudget || (loadingAuth && userRef === undefined)) {
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
     }
 
@@ -267,9 +269,11 @@ function App(): React.JSX.Element {
     <ThemeProvider theme={customTheme}>
       <AuthProvider>
         <BudgetProvider>
-          <NavigationContainer>
-            <Navigator />
-          </NavigationContainer>
+          <ShoppingListProvider>
+            <NavigationContainer>
+              <Navigator />
+            </NavigationContainer>
+          </ShoppingListProvider>
         </BudgetProvider>
       </AuthProvider>
     </ThemeProvider>
