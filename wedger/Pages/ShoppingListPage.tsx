@@ -1,14 +1,13 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import {View, Text} from 'react-native';
+import React from 'react';
 
-export class ShoppingListPage extends Component {
-  render() {
-    return (
-      <View>
-        <Text>ShoppingListPage</Text>
-      </View>
-    )
-  }
-}
+const ShoppingListPage = () => {
+  return (
+    <View>
+      <Text>ShoppingListPage, budget 1 or null</Text>
+    </View>
+  );
+};
 
-export default ShoppingListPage
+export default ShoppingListPage;
