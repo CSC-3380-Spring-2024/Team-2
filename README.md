@@ -8,7 +8,7 @@
 + Follow environment setup for emulation react-native on an android-studio emulator
    - Please note this development is (currently) only supported on Android (F*CK Apple)
 + npm install
-+ `npm start` then in another window run `npm run android` or `npm run ios` 
++ `npm start` then in another window run `npm run android`  or (*EDIT DO NOT `npm run ios` ) 
 
 + to run the debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
 
