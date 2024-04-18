@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
         }
 })
 
-export default ShoppingListPage
+export default ShoppingListPage;
