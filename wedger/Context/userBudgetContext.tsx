@@ -163,6 +163,8 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       );
       const docsSnap = await getDocs(budgetCollectionRef);
       if (docsSnap.empty) {
+        console.log('budgets Empty');
+        addError('empty budgets array');
         return BudgetsReturnArray;
       }
       docsSnap.forEach(async el => {
@@ -210,9 +212,13 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'expendedItems',
       );
       const docsSnap = await getDocs(budgetItemCollectionRef);
-      if (docsSnap.empty) return [];
+      if (docsSnap.empty) {
+        console.log('Items Empty', budgetUID);
+        addError('empty expense item array');
+        return [];
+      }
       docsSnap.forEach(item => {
-        const currItem = item as unknown as ItemObject;
+        const currItem = item.data() as unknown as ItemObject;
         ItemReturnArray.push(currItem);
       });
 
@@ -229,7 +235,6 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       } catch (e) {
         console.log(e);
       }
-
       //return
       return ItemReturnArray;
     } catch (e: any) {
