@@ -54,11 +54,14 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [userData, setUserData] = useState<UserData | undefined>();
 
   useEffect(() => {
-    if (isLoggedIn && userRef) {
-      getUserData(userRef);
-    }
-    console.log(userData, 'userData');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    async () => {
+      if (isLoggedIn && userRef) {
+        await getUserData(userRef).then(() =>
+          console.log(userData, 'userData'),
+        );
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
   }, [isLoggedIn]);
 
   const checkIfLoggedIn = onAuthStateChanged(auth, async user => {
@@ -92,7 +95,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setUserData(returnData);
     } catch (e: any) {
       addError(e.message);
-      console.log(e);
+      console.error(e);
     }
   };
 
