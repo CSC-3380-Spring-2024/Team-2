@@ -175,7 +175,6 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       set_UsersBudgets(BudgetsReturnArray);
       return BudgetsReturnArray;
     } catch (e: any) {
-      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
