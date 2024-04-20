@@ -1,16 +1,22 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {View, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {BudgetType, ItemObject} from '../Types/BudgetTypes';
-import {Button, Card, ListItem} from '@rneui/themed';
+import {ItemObject, addItemObject} from '../Types/BudgetTypes';
+import {Button, ListItem} from '@rneui/themed';
 import PopupModal from './PopupModal';
-import {BudgetProvider, useBudget} from '../Context/userBudgetContext';
+import {useBudget} from '../Context/userBudgetContext';
+import ExpenseItemModal from './ExpenseItemModal';
+import theme from '../theme';
 
 interface Props {
-  itemData: ItemObject;
+  itemData: ItemObject | addItemObject;
   budgetID: string;
+  removeTempObj?: () => void;
 }
 const ExpenseItem = (props: Props) => {
-  const {itemData, budgetID} = props;
+  const {itemData, budgetID, removeTempObj} = props;
   const {deleteExpendedItems, loadingBudget, userBudgetError} = useBudget();
   const [moreInfo, setMoreInfo] = useState<boolean>(false);
   const [editInfo, setEditInfo] = useState<boolean>(false);
@@ -21,17 +27,55 @@ const ExpenseItem = (props: Props) => {
     setModal(getModal());
   }, [moreInfo, editInfo, deleteItem]);
 
+  const handleEdit = () => {
+    console.log('save');
+    setEditInfo(false);
+  };
+
+  const typeOfItemObject = (data: any) => {
+    return 'type' in data && data.type === 'ItemObject';
+  };
+
   const getModal = () => {
     if (moreInfo) {
-      return <></>;
+      return (
+        <ExpenseItemModal
+          itemData={itemData}
+          editMode={false}
+          isVisible={moreInfo}
+          cancelButtonPress={() => setMoreInfo(false)}
+          cancelButtonText={'Close'}
+          description={'More Details About This Item'}
+          buttonsLoading={loadingBudget}
+          errorMessage={userBudgetError}
+        />
+      );
     } else if (editInfo) {
-      return <></>;
+      return (
+        <ExpenseItemModal
+          itemData={itemData}
+          editMode={true}
+          isVisible={editInfo}
+          cancelButtonPress={() => setEditInfo(false)}
+          cancelButtonText={'Close'}
+          firstButtonPress={handleEdit}
+          firstButtonText="Save"
+          description={'Edit Details About This Item'}
+          buttonsLoading={loadingBudget}
+          errorMessage={userBudgetError}
+        />
+      );
     } else if (deleteItem) {
       return (
         <PopupModal
           description="Are you sure you want to delete this item? Once this item is deleted there is no way to recover it."
           firstButtonPress={() => {
-            deleteExpendedItems([itemData.id], budgetID);
+            if (typeOfItemObject(itemData)) {
+              const temp = itemData as ItemObject;
+              deleteExpendedItems([temp.id], budgetID);
+            } else {
+              removeTempObj;
+            }
           }}
           firstButtonText="Delete"
           cancelButtonPress={() => setDeleteItem(false)}
@@ -58,7 +102,6 @@ const ExpenseItem = (props: Props) => {
               alignItems: 'center',
             }}>
             <Button
-              title=""
               onPress={() => {
                 reset();
                 setMoreInfo(true);
@@ -70,7 +113,6 @@ const ExpenseItem = (props: Props) => {
               }}
             />
             <Button
-              title=""
               onPress={() => {
                 reset();
                 setEditInfo(true);
@@ -79,7 +121,6 @@ const ExpenseItem = (props: Props) => {
               buttonStyle={{minHeight: '80%'}}
             />
             <Button
-              title=""
               onPress={() => {
                 reset();
                 setDeleteItem(true);
@@ -93,7 +134,7 @@ const ExpenseItem = (props: Props) => {
           </View>
         )}
         style={{
-          borderBottomColor: '#D9D9D9',
+          borderBottomColor: theme.lightColors?.grey4,
           borderBottomWidth: 1,
         }}>
         <View
@@ -101,7 +142,7 @@ const ExpenseItem = (props: Props) => {
             height: '150%',
             padding: 0,
             margin: 0,
-            backgroundColor: '#ff0000',
+            backgroundColor: itemData.category.color,
             width: 5,
             alignSelf: 'center',
           }}>
@@ -112,7 +153,20 @@ const ExpenseItem = (props: Props) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <ListItem.Title>{itemData.name}</ListItem.Title>
+          <ListItem.Title>
+            <>
+              {itemData.name}
+              {'   '}
+              <Text
+                style={{
+                  fontSize: 12,
+                  paddingTop: 5,
+                  color: theme.lightColors?.grey3,
+                }}>
+                category: {itemData.category.categoryName}
+              </Text>
+            </>
+          </ListItem.Title>
           <ListItem.Subtitle>$ {itemData.cost}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron />

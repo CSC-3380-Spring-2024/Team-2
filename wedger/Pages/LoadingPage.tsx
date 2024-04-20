@@ -1,4 +1,5 @@
-import {Text, View} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {View} from 'react-native';
 import LottieView from 'lottie-react-native';
 import React, {useEffect, useRef} from 'react';
 

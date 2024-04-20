@@ -1,28 +1,12 @@
-import {StyleSheet, Text, View, ScrollView, SafeAreaView} from 'react-native';
-import React, {Component} from 'react';
-import StyledButton from '../Components/StyledButton';
-import {LinearGradient} from 'react-native-linear-gradient';
+import {Text, View} from 'react-native';
+import React from 'react';
 
-export class ShoppingListPage extends Component {
-  render() {
-    return (
-      <SafeAreaView style={styles.container}>
-        <LinearGradient
-          colors={['#EEEEEE', '#2F88bd']}
-          style={styles.linearGradient}>
-          <ScrollView style={styles.ScrollView}>
-            <Text style={styles.title}>Shopping Lists</Text>
-            <View style={styles.container}>
-              {/* <View style={styles.listBox}>
-                        <Text style={styles.text}>Shopping List 1</Text>
-              </View> */}
-              <StyledButton>Shopping List 1 </StyledButton>
-            </View>
-          </ScrollView>
-        </LinearGradient>
-      </SafeAreaView>
-    );
-  }
+function ShoppingListPage() {
+  return (
+    <View>
+      <Text>ShoppingListPage</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
