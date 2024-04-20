@@ -45,7 +45,7 @@ export interface addItemObject {
   cost: number;
   quantity?: number;
   unitCost?: number;
-  category?: SpendCatagories;
+  category: SpendCatagories;
   paymentType?: 'cash' | 'card' | CardWithDetails;
   addMethod: 'manual' | 'scanner';
   receptRefId?: string;
@@ -68,23 +68,9 @@ export interface EditItemObject {
 }
 
 export interface SpendCatagories {
-  category:
-    | 'housing'
-    | 'utilities'
-    | 'transportation'
-    | 'groceries'
-    | 'dinning'
-    | 'householdSupplies'
-    | 'insurance'
-    | 'medicalHealthcare'
-    | 'debtPayments'
-    | 'entertainment'
-    | 'savings'
-    | 'self-care'
-    | 'fun'
-    | 'other';
+  categoryName: string;
+  color: ColorValue;
 }
-
 export interface CardWithDetails {
   cardNickname: string;
   cardType: 'visa' | 'masterCard' | 'amex' | 'discover' | undefined;

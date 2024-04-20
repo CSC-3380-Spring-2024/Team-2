@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   ReactNode,
   createContext,
@@ -15,14 +16,10 @@ import {
   createBudgetType,
 } from '../Types/BudgetTypes';
 import {
-  DocumentData,
-  DocumentReference,
-  DocumentSnapshot,
   addDoc,
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   updateDoc,
 } from 'firebase/firestore';
@@ -279,7 +276,9 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
           cost: item.cost,
           quantity: item.quantity ? item.quantity : 1,
           unitCost: item.cost / (item.quantity ? item.quantity : 1),
-          category: item.category ? item.category : {category: 'other'},
+          category: item.category
+            ? item.category
+            : {category: 'other', color: '#8F8F8F'},
           date: item.date ? item.date : '-1',
           location: item.location ? item.location : '',
           paymentType: item.paymentType ? item.paymentType : 'cash',
