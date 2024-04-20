@@ -1,46 +1,51 @@
-import {StyleSheet, StatusBar, Text, View, ScrollView, SafeAreaView, Pressable, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard,
-  SwipeListView } from 'react-native';
+import {StyleSheet, StatusBar, Text, View, ScrollView, SafeAreaView, 
+  Pressable, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, 
+  Keyboard,SwipeListView } from 'react-native';
 import React, {Component, useState} from 'react';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { useShoppingList } from '../Context/userShoppingListContext'
-import Item from '../Components/Item.js';
+import GroupName from '../Components/GroupName.js';
 
 function shoppingListPage(){
 const {usersShoppingLists} = useShoppingList();
 
-const [item,setItem] = useState();
-const [itemItems, setItemItems] = useState([]);
+const [group,setGroup] = useState();
+const [groupItems, setGroupItems] = useState([]);
 
-const handleAddItem = () => {
+const handleAddGroup = () => {
   Keyboard.dismiss();
-  setItemItems([...itemItems, item])
-  setItem(null); 
+  setGroupItems([...groupItems, group])
+  setGroup(null); 
 }
 
-const completeItem = (index) => {
-  let itemsCopy = [...itemItems];
+const completeGroup = (index: number) => {
+  let itemsCopy = [...groupItems];
   itemsCopy.splice(index, 1);
-  setItemItems(itemsCopy); 
+  setGroupItems(itemsCopy); 
 }
-
-console.log(usersShoppingLists);
     return (
 
       <View style = {styles.container}>
       <LinearGradient
           colors={['#EBF8FE', '#8eb2c0']}
           style={styles.linearGradient}>
+      <ScrollView 
+        contentContainerStyle ={{
+          flexGrow: 1
+        }}
+        keyboardShouldPersistTaps ='handled'
+        >
       <View style = {styles.listsWrapper}>
-          <Text style = {styles.title}>Your Shopping List</Text>
+          <Text style = {styles.title}>Your Shopping Lists</Text>
           <View style = {styles.items}>
 
-             {/* This is where the items will go */}
+             {/* This is where the groups will go */}
              {
-              itemItems.map((item, index) => {
+              groupItems.map((item, index) => {
                 return(
                   <TouchableOpacity key = {index}  
-                      onPress= {() => completeItem(index)}>
-                 <Item text = {item} />
+                      onPress= {() => completeGroup(index)}>
+                 <GroupName text = {item} />
                   </TouchableOpacity>
                 )    
               })
@@ -48,23 +53,25 @@ console.log(usersShoppingLists);
           </View>
       </View>
 
+      </ScrollView>
 
-          {/* the "make an item" section */}
+
+          {/* the "make a group" section */}
           <KeyboardAvoidingView 
             behavior = {Platform.OS === "ios" ? "padding" : "height"}
-            style = {styles.writeItemWrapper}>
+            style = {styles.writeGroupWrapper}>
 
-              <TextInput style = {styles.input} placeholder = {"Write an Item"} 
-                    value = {item}
-                    onChangeText = {text => setItem(text)} /> 
-              <TouchableOpacity onPress = {() => handleAddItem()} >
+              <TextInput style = {styles.input} placeholder = {"Create a Group"} 
+                    value = {group}
+                    onChangeText = {text => setGroup(text)} /> 
+              <TouchableOpacity onPress = {() => handleAddGroup()} >
                 <View style = {styles.addWrapper}>
                   <Text style = {styles.addText}>+</Text>
                 </View>
               </TouchableOpacity>
 
           </KeyboardAvoidingView>
-          </LinearGradient>
+      </LinearGradient>
     </View>
     )
 }
@@ -101,7 +108,7 @@ const styles = StyleSheet.create({
         items: {
           marginTop: 30, 
         },
-        writeItemWrapper: {
+        writeGroupWrapper: {
           position: 'absolute',
           bottom: 50,
           width: '100%',
@@ -128,7 +135,10 @@ const styles = StyleSheet.create({
           borderColor: '#C0C0C0',
           borderWidth: 1,
         },
-        addText: {},
+        addText: {
+          fontSize: 40,
+          alignContent: 'center',
+        },
 });
 
 export default shoppingListPage;
