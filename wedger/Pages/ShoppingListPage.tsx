@@ -1,30 +1,72 @@
-import {StyleSheet, StatusBar, Text, View, ScrollView, SafeAreaView} from 'react-native';
+import {StyleSheet, StatusBar, Text, View, ScrollView, SafeAreaView, Pressable, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard,
+  SwipeListView } from 'react-native';
 import React, {Component, useState} from 'react';
-import StyledButton from '../Components/StyledButton';
-import PopupModal from '../Components/PopupModal';
-import { color } from '@rneui/base';
 import { LinearGradient } from 'react-native-linear-gradient';
+import { useShoppingList } from '../Context/userShoppingListContext'
+import Item from '../Components/Item.js';
 
+function shoppingListPage(){
+const {usersShoppingLists} = useShoppingList();
 
-export class ShoppingListPage extends Component {
-  render() {
+const [item,setItem] = useState();
+const [itemItems, setItemItems] = useState([]);
+
+const handleAddItem = () => {
+  Keyboard.dismiss();
+  setItemItems([...itemItems, item])
+  setItem(null); 
+}
+
+const completeItem = (index) => {
+  let itemsCopy = [...itemItems];
+  itemsCopy.splice(index, 1);
+  setItemItems(itemsCopy); 
+}
+
+console.log(usersShoppingLists);
     return (
-      <SafeAreaView style = {styles.container}>
-        <LinearGradient colors = {['#EEEEEE', '#2F88bd',]} style = {styles.linearGradient}>
-          
-          <ScrollView style = {styles.ScrollView}>
-            <Text style = {styles.title}>Shopping Lists</Text>
-            <View style = {styles.container}>
-              {/* <View style={styles.listBox}>
-                        <Text style={styles.text}>Shopping List 1</Text>
-              </View> */}
-              <StyledButton>Shopping List 1 </StyledButton>
-            </View>
-          </ScrollView>
-        </LinearGradient>
-      </SafeAreaView>
+
+      <View style = {styles.container}>
+      <LinearGradient
+          colors={['#EBF8FE', '#8eb2c0']}
+          style={styles.linearGradient}>
+      <View style = {styles.listsWrapper}>
+          <Text style = {styles.title}>Your Shopping List</Text>
+          <View style = {styles.items}>
+
+             {/* This is where the items will go */}
+             {
+              itemItems.map((item, index) => {
+                return(
+                  <TouchableOpacity key = {index}  
+                      onPress= {() => completeItem(index)}>
+                 <Item text = {item} />
+                  </TouchableOpacity>
+                )    
+              })
+             }
+          </View>
+      </View>
+
+
+          {/* the "make an item" section */}
+          <KeyboardAvoidingView 
+            behavior = {Platform.OS === "ios" ? "padding" : "height"}
+            style = {styles.writeItemWrapper}>
+
+              <TextInput style = {styles.input} placeholder = {"Write an Item"} 
+                    value = {item}
+                    onChangeText = {text => setItem(text)} /> 
+              <TouchableOpacity onPress = {() => handleAddItem()} >
+                <View style = {styles.addWrapper}>
+                  <Text style = {styles.addText}>+</Text>
+                </View>
+              </TouchableOpacity>
+
+          </KeyboardAvoidingView>
+          </LinearGradient>
+    </View>
     )
-  }
 }
 
 const styles = StyleSheet.create({
@@ -35,21 +77,11 @@ const styles = StyleSheet.create({
         ScrollView: {
           marginHorizontal:0,
         },
-        listBox: { 
-          alignSelf: 'center',
-          width: 360,
-          height: 50,
-          backgroundColor: '#EEEEEE',
-          borderRadius: 10,
-        },
         title: {
-          marginTop: 20,
-          marginBottom: 20,
-          paddingVertical: 0,
           borderColor: '#20232a',
           color: '#2c3135',
           textAlign: 'center',
-          fontSize: 39,
+          fontSize: 30,
           fontWeight: 'bold',
         },
         text: {
@@ -60,7 +92,43 @@ const styles = StyleSheet.create({
           flex: 1, 
           width: null,
           height: null, 
-        }
-})
+        },
+        listsWrapper: {
+          paddingTop: 30,
+          paddingHorizontal: 20,
+        },
+        sectionTitle:{},
+        items: {
+          marginTop: 30, 
+        },
+        writeItemWrapper: {
+          position: 'absolute',
+          bottom: 50,
+          width: '100%',
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          alignItems: 'center'
+        },
+        input: {
+          paddingVertical: 15,
+          paddingHorizontal: 15,
+          backgroundColor: '#EEEEEE',
+          borderRadius: 60,
+          borderColor: '#C0C0C0',
+          borderWidth: 1,
+          width: 250,
+        },
+        addWrapper: {
+          width: 60,
+          height: 60,
+          backgroundColor: 'white',
+          borderRadius: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderColor: '#C0C0C0',
+          borderWidth: 1,
+        },
+        addText: {},
+});
 
-export default ShoppingListPage;
+export default shoppingListPage;
