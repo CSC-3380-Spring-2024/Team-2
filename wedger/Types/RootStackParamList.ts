@@ -13,7 +13,7 @@ export type RootStackParamList = {
 
   //Scanner
   ScannerHome: undefined;
-  AddExpensePage: undefined;
+  AddExpensePage: {budgetID: string};
   //Profile
   ProfileHome: undefined;
 
