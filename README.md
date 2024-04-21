@@ -1,16 +1,19 @@
 # Team Wicked Pissahs
  
-Contact Max Shroyer For .env file, JL you have it on element
+
 
 Dev Branch -> main
 Production Branch -> Prod
 
 ### To Run Dev
++ Contact Max Shroyer For .env file and the google-services.json, JL you have it on element
 
++ Follow environment setup for emulation react-native on an android-studio emulator
+   - Please note this development is (currently) only supported on Android (F*CK Apple)
 + npm install
-+ `npm start` then in another window run `npm run android` or `npm run ios` 
++ `npm start` then in another window run `npm run android`  or (*EDIT DO NOT `npm run ios` ) 
 
-+ to debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
++ to run the debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
 
 
 ### Core Features
@@ -28,7 +31,7 @@ Production Branch -> Prod
 + diet-> food sugestions
 + related/often bought together
 + light mod/dark mode
-+ are you low on this/ expired 
++ Are you low on this/ expired 
 + monetization - Paid Version/Free user 
 + AD placement 
 
