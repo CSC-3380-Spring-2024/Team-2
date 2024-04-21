@@ -1,14 +1,24 @@
 import {Card} from '@rneui/base';
 import {makeStyles, Text} from '@rneui/themed';
-import React, {useState} from 'react';
-import {TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Button,
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import Modal from 'react-native-modal';
-import {addItemObject, ItemObject} from '../Types/BudgetTypes';
+import {
+  addItemObject,
+  ItemObject,
+  SpendCatagoriesObjectArray,
+} from '../Types/BudgetTypes';
 import StyledButton from './StyledButton';
 import Error from './Error';
 import TextInputField from './TextInputField';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Dropdown from './Dropdown/Dropdown';
+import DatePicker from 'react-native-date-picker';
 
 interface Props {
   itemData: ItemObject | addItemObject | undefined;
@@ -16,7 +26,7 @@ interface Props {
   isVisible: boolean;
   cancelButtonPress: () => void;
   cancelButtonText: string;
-  firstButtonPress?: () => void;
+  firstButtonPress?: (item: addItemObject) => void;
   firstButtonText?: string;
   description: string;
   buttonsLoading: boolean;
@@ -41,14 +51,16 @@ export default function ExpenseItemModal(props: Props) {
   const [tempName, setTempName] = useState(itemData?.name ? itemData.name : '');
   const [tempCost, setTempCost] = useState(itemData?.cost ? itemData.cost : 0);
   const [tempQuantity, setTempQuantity] = useState(
-    itemData?.quantity ? itemData.quantity : 0,
+    itemData?.quantity ? itemData.quantity : 1,
   );
   const [tempUnitCost, setTempUnitCost] = useState(
-    itemData?.unitCost ? itemData.unitCost : 0,
+    itemData?.unitCost ? itemData.unitCost : 1,
   );
-  const [tempDate, setTempDate] = useState(itemData?.date ? itemData.date : '');
+  const [tempDate, setTempDate] = useState(new Date());
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+
   const [tempCategory, setTempCategory] = useState(
-    itemData?.category ? itemData.category : '',
+    itemData?.category ? itemData.category : SpendCatagoriesObjectArray[0],
   );
   const [tempPaymentType, setTempPaymentType] = useState(
     itemData?.paymentType ? itemData.paymentType : 'cash',
@@ -57,16 +69,34 @@ export default function ExpenseItemModal(props: Props) {
     itemData?.addMethod ? itemData.addMethod : 'manual',
   );
   const [tempReoccurring, setTempReoccurring] = useState(
-    itemData?.Reoccurring ? itemData.Reoccurring : false,
+    itemData?.Reoccurring ? itemData.Reoccurring : 'never',
   );
   const [tempReceptRef, setTempReceptRef] = useState(
     itemData?.receptRefId ? itemData.receptRefId : '',
   );
+  useEffect(() => {
+    setTempUnitCost(tempCost / tempQuantity);
+  }, [tempQuantity, tempCost]);
+
+  const ObjectBuilder = (): addItemObject => {
+    const temp: addItemObject = {
+      name: tempName,
+      cost: tempCost,
+      quantity: tempQuantity,
+      unitCost: tempUnitCost,
+      date: tempDate,
+      category: tempCategory,
+      addMethod: tempAddMethod,
+      Reoccurring: tempReoccurring,
+      receptRefId: tempReceptRef,
+    };
+    return temp;
+  };
 
   return (
     <Modal isVisible={isVisible} style={styles.modal}>
       <TouchableOpacity onPress={cancelButtonPress}>
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
           <TouchableWithoutFeedback>
             <Card containerStyle={styles.card}>
               <Text style={styles.description}>{description}</Text>
@@ -78,6 +108,7 @@ export default function ExpenseItemModal(props: Props) {
                         Item Name
                       </Text>
                       <TextInputField
+                        inputStyle={styles.inputStyle}
                         style={styles.content}
                         inputMode="text"
                         defaultValue={tempName}
@@ -104,68 +135,98 @@ export default function ExpenseItemModal(props: Props) {
                       <Text h4 style={styles.label}>
                         Unit Cost
                       </Text>
-                      <Text style={styles.content}>
-                        $ {tempCost / (tempQuantity ? tempQuantity : 1)}
-                      </Text>
+                      <Text style={styles.content}>$ {tempUnitCost}</Text>
                       <Text h4 style={styles.label}>
                         Purchase Date
                       </Text>
-                      {/* TODO: Date Picker */}
+                      <Button
+                        title={dateFormatText(tempDate)}
+                        onPress={() => setOpenDatePicker(true)}
+                      />
+                      <DatePicker
+                        modal
+                        open={openDatePicker}
+                        date={tempDate}
+                        onConfirm={date => {
+                          setOpenDatePicker(false);
+                          setTempDate(date);
+                        }}
+                        onCancel={() => {
+                          setOpenDatePicker(false);
+                        }}
+                      />
 
-                      {/* <Text h4 style={styles.label}>
+                      <Text h4 style={styles.label}>
                         Category
                       </Text>
                       <Dropdown
+                        zIndex={5004}
                         style={styles.content}
-                        initialValue={tempCategory}
-                        onChangeValue={e => setTempCategory(e)}
-                        options={[]}
+                        initialValue={tempCategory.categoryName}
+                        onChangeValue={e => {
+                          const temp = SpendCatagoriesObjectArray.find(
+                            el => e === el.categoryName,
+                          );
+                          setTempCategory(
+                            temp ? temp : SpendCatagoriesObjectArray[0],
+                          );
+                        }}
+                        options={categoryObject}
                       />
                       <Text h4 style={styles.label}>
                         Paid With
                       </Text>
                       <Dropdown
+                        zIndex={5003}
                         style={styles.content}
-                        initialValue={
-                          itemData.paymentType
-                            ? itemData.paymentType.toString()
-                            : 'unknown'
-                        }
-                        onChangeValue={setTempPaymentType}
-                        options={[]}
+                        initialValue={tempPaymentType.toString()}
+                        onChangeValue={e => setTempPaymentType(e)}
+                        options={[
+                          {value: 'cash', label: 'cash'},
+                          {value: 'card', label: 'card'},
+                        ]}
                       />
 
                       <Text h4 style={styles.label}>
                         Item Was Added
                       </Text>
                       <Dropdown
+                        zIndex={5002}
                         style={styles.content}
-                        initialValue={itemData.addMethod}
+                        initialValue={tempAddMethod.toString()}
                         onChangeValue={setTempAddMethod}
-                        options={[]}
+                        options={[
+                          {value: 'scanner', label: 'scanner'},
+                          {value: 'manual', label: 'manual'},
+                        ]}
                       />
-                      {itemData.Reoccurring && (
-                        <>
-                          <Text h4 style={styles.label}>
-                            This item is a reoccurring cost that repeats:
-                          </Text>
-                          <Dropdown
-                            style={styles.content}
-                            initialValue={itemData.Reoccurring}
-                            onChangeValue={setTempReoccurring}
-                            options={[]}
-                          />
-                        </>
-                      )}
+
                       <Text h4 style={styles.label}>
-                        Recept Attachment
+                        This item is a reoccurring cost that repeats:
+                      </Text>
+                      <Dropdown
+                        zIndex={5001}
+                        style={styles.content}
+                        initialValue={tempReoccurring}
+                        onChangeValue={e => setTempReoccurring(e)}
+                        options={[
+                          {value: 'never', label: 'never'},
+                          {value: 'monthly', label: 'monthly'},
+                          {value: 'bi-weekly', label: 'bi-weekly'},
+                          {value: 'weekly', label: 'weekly'},
+                          {value: 'daily', label: 'daily'},
+                        ]}
+                      />
+
+                      <Text h4 style={styles.label}>
+                        Recept Attachment * not implemented
                       </Text>
                       <TextInputField
                         style={styles.content}
                         inputMode="text"
-                        defaultValue={itemData.receptRefId}
+                        defaultValue={tempReceptRef}
                         onChangeText={setTempReceptRef}
-                      /> */}
+                      />
                     </View>
                   </View>
                 ) : (
@@ -173,64 +234,61 @@ export default function ExpenseItemModal(props: Props) {
                     <Text h4 style={styles.label}>
                       Item Name
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.name}
+                    <Text style={styles.content}>{itemData?.name}</Text>
                     <Text h4 style={styles.label}>
                       Item Cost
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.cost}
+                    <Text style={styles.content}>{itemData?.cost}</Text>
                     <Text h4 style={styles.label}>
                       Quantity
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.quantity}
+                    <Text style={styles.content}>{itemData?.quantity}</Text>
                     <Text h4 style={styles.label}>
                       Unit Cost
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.unitCost}
+                    <Text style={styles.content}>{itemData?.unitCost}</Text>
                     <Text h4 style={styles.label}>
                       Purchase Date
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.date ? itemData.date.toISOString() : 'unknown'}
-
+                    <Text style={styles.content}>
+                      {itemData?.date
+                        ? itemData?.date.toUTCString()
+                        : 'unknown'}
+                    </Text>
                     <Text h4 style={styles.label}>
                       Category
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.category
-                      ? itemData.category.categoryName
-                      : 'other'}
-
+                    <Text style={styles.content}>
+                      {itemData?.category
+                        ? itemData?.category.categoryName
+                        : 'other'}
+                    </Text>
                     <Text h4 style={styles.label}>
                       Paid With
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.paymentType
-                      ? itemData.paymentType.toString()
-                      : 'unknown'}
-
+                    <Text style={styles.content}>
+                      {itemData?.paymentType
+                        ? itemData?.paymentType.toString()
+                        : 'unknown'}
+                    </Text>
                     <Text h4 style={styles.label}>
                       Item Was Added
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.addMethod}
-                    {itemData.Reoccurring && (
+                    <Text style={styles.content}>{itemData?.addMethod}</Text>
+                    {itemData?.Reoccurring && (
                       <>
                         <Text h4 style={styles.label}>
                           This item is a reoccurring cost that repeats:
                         </Text>
-                        <TextInputField style={styles.content} />
-                        {itemData.Reoccurring}
+                        <Text style={styles.content}>
+                          {itemData?.Reoccurring}
+                        </Text>
                       </>
                     )}
                     <Text h4 style={styles.label}>
                       Recept Attachment
                     </Text>
-                    <TextInputField style={styles.content} />
-                    {itemData.receptRefId}
+                    <Text style={styles.content}>{itemData?.receptRefId}</Text>
                   </View>
                 )}
               </View>
@@ -251,7 +309,10 @@ export default function ExpenseItemModal(props: Props) {
                     buttonStyle={styles.button}
                     titleStyle={styles.button}
                     loadingProps={{color: 'white'}}
-                    onPress={firstButtonPress}>
+                    onPress={() => {
+                      const temp = ObjectBuilder();
+                      firstButtonPress(temp);
+                    }}>
                     {firstButtonText}
                   </StyledButton>
                 )}
@@ -261,15 +322,34 @@ export default function ExpenseItemModal(props: Props) {
               )}
             </Card>
           </TouchableWithoutFeedback>
-        </View>
+        </ScrollView>
       </TouchableOpacity>
     </Modal>
   );
 }
+const categoryObject = SpendCatagoriesObjectArray.map(e => {
+  const tempObj = {label: e.categoryName, value: e.categoryName};
+  return tempObj;
+});
+
+export const dateFormatText = (date: Date) => {
+  let dateString = date.toLocaleDateString();
+  let dateArray = dateString.split('/');
+  // YYYY-MM-DD, not MM-DD-YYYY
+  // let day = dateArray[1].padStart(2, '0');
+  // let month = dateArray[0].padStart(2, '0');
+  // dateArray[0] = dateArray[2];
+  // dateArray[1] = month;
+  // dateArray[2] = day;
+
+  let newDateString = dateArray.join('-');
+
+  return newDateString;
+};
 
 const useStyles = makeStyles(theme => ({
   modal: {},
-  container: {width: '100%', height: '100%', marginTop: '40%'},
+  container: {width: '100%', height: '80%', marginVertical: '10%'},
   dataContainer: {},
   label: {color: theme.colors.black, fontWeight: 'bold', padding: 3},
   content: {
@@ -278,6 +358,11 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 5,
     fontSize: 14,
   },
+  inputStyle: {
+    color: theme.colors.black,
+    backgroundColor: theme.colors.background,
+  },
+  background: {backgroundColor: theme.colors.background},
   card: {borderRadius: 20},
   header: {
     textAlign: 'center',
@@ -290,6 +375,7 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     justifyContent: 'center',
     marginTop: 20,
+    paddingBottom: 50,
     gap: 5,
   },
   button: {

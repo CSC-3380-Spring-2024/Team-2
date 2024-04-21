@@ -243,9 +243,12 @@ function AuthScreen() {
 
 function Navigator() {
   const {isLoggedIn, userRef, loadingAuth, userData} = useAuth();
-  const {loadingBudget} = useBudget();
+  const {loadingBudget, usersBudgets} = useBudget();
   const getScreen = () => {
-    if (loadingBudget || (loadingAuth && userRef === undefined)) {
+    if (
+      (loadingBudget && usersBudgets.length === 0) ||
+      (loadingAuth && userRef === undefined)
+    ) {
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
     }
 

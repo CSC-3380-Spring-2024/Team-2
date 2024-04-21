@@ -161,7 +161,6 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       const docsSnap = await getDocs(budgetCollectionRef);
       if (docsSnap.empty) {
         console.log('budgets Empty');
-        addError('empty budgets array');
         return BudgetsReturnArray;
       }
       docsSnap.forEach(async el => {
@@ -209,27 +208,31 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       );
       const docsSnap = await getDocs(budgetItemCollectionRef);
       if (docsSnap.empty) {
-        console.log('Items Empty', budgetUID);
-        addError('empty expense item array');
+        console.log('Items Empty in', budgetUID);
         return [];
       }
       docsSnap.forEach(item => {
         const currItem = item.data() as unknown as ItemObject;
+        console.log(currItem);
         ItemReturnArray.push(currItem);
       });
 
       // attach to userBudgets
       try {
         if (_usersBudgets) {
-          let tempBudgets = _usersBudgets;
+          let tempBudgets = [..._usersBudgets];
           const budgetSelectIndex = tempBudgets.findIndex(
             budget => budget.id === budgetUID,
           );
-          tempBudgets[budgetSelectIndex].itemsExpended.concat(ItemReturnArray);
-          set_UsersBudgets(tempBudgets);
+          if (budgetSelectIndex !== -1) {
+            tempBudgets[budgetSelectIndex].itemsExpended.concat(
+              ItemReturnArray,
+            );
+            set_UsersBudgets(tempBudgets);
+          }
         }
       } catch (e) {
-        console.log(e);
+        console.log(e, 'attach');
       }
       //return
       return ItemReturnArray;
@@ -251,9 +254,13 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       if (!userRef) {
         throw Error('No User Ref');
       }
-      const currentBudget = _usersBudgets?.find(
+      const currentBudget = [..._usersBudgets].find(
         budget => budget.id === budgetUID,
       );
+
+      if (!currentBudget) {
+        console.log('ooof');
+      }
       const budgetItemCollectionRef = collection(
         db,
         'users',
@@ -270,27 +277,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         });
         return tempTotal;
       };
-      const addArrayBuilder = itemsToAdd.map(item => {
-        const tempObj = {
-          name: item.name,
-          cost: item.cost,
-          quantity: item.quantity ? item.quantity : 1,
-          unitCost: item.cost / (item.quantity ? item.quantity : 1),
-          category: item.category
-            ? item.category
-            : {category: 'other', color: '#8F8F8F'},
-          date: item.date ? item.date : '-1',
-          location: item.location ? item.location : '',
-          paymentType: item.paymentType ? item.paymentType : 'cash',
-          addMethod: item.addMethod,
-          receptRefId: item.receptRefId ? item.receptRefId : '-1',
-          receptRefPhotoURL: item.receptRefPhotoURL
-            ? item.receptRefPhotoURL
-            : '-1',
-          Reoccurring: item.Reoccurring ? item.Reoccurring : false,
-        };
-        return tempObj;
-      });
+      const addArrayBuilder = itemsToAdd;
 
       const tempBudget = {
         spendCurrent: currentSpend(),
