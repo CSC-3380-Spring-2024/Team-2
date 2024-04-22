@@ -2,6 +2,9 @@
  
 
 
+Dev Branch -> main
+Production Branch -> Prod
+
 ### To Run Dev
 + Contact Max Shroyer For .env file and the google-services.json, JL you have it on element
 
