@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {ColorValue, View} from 'react-native';
 import WedgerLogo from '../Assets/Static/Wedger_App_logo.svg';
 import React from 'react';
 import {makeStyles, Text} from '@rneui/themed';
@@ -13,6 +13,7 @@ export interface HeaderProps {
   moreSpace?: boolean;
   marginTop?: boolean;
   paddingTop?: boolean;
+  logoColor?: ColorValue;
 }
 
 export function Header({
@@ -23,6 +24,7 @@ export function Header({
   marginTop,
   backButton,
   paddingTop,
+  logoColor,
 }: HeaderProps) {
   const styles = useStyles();
   const navigator = useNavigation();
@@ -43,7 +45,7 @@ export function Header({
           }}
         />
       )}
-      {logo && <WedgerLogo />}
+      {logo && <WedgerLogo color={logoColor ? logoColor : undefined} />}
       {title && (
         <Text h2 style={[styles.title, moreSpace && styles.titlePadding]}>
           {title}

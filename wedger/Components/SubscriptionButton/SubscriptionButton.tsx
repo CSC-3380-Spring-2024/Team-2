@@ -31,7 +31,10 @@ const SubscriptionButton = () => {
             reducedTransparencyFallbackColor="white"
           />
           <Text h1 style={styles.buttonText}>
-            Upgrade to Wedger +
+            Upgrade to Wedger{' '}
+            <Text h1 style={styles.plus}>
+              +
+            </Text>
           </Text>
         </Pressable>
       </View>
@@ -45,11 +48,11 @@ const useStyles = makeStyles(theme => ({
   container: {
     justifyContent: 'center',
     alignSelf: 'center',
-    width: '80%',
+    width: '100%',
     height: 50,
-    borderColor: '#ffdf00',
+    borderColor: '#ffdf00', //ffdf00 , FFF6D3
     elevation: 2,
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 15,
     backgroundColor: '#50ADF4',
     overflow: 'hidden',
@@ -66,6 +69,13 @@ const useStyles = makeStyles(theme => ({
   },
   title: {fontSize: 15, fontWeight: '600', color: theme.colors.white},
   buttonText: {
+    position: 'absolute',
+    top: 21,
+    alignSelf: 'center',
+    color: theme.colors.black,
+    fontWeight: 'bold',
+  },
+  plus: {
     position: 'absolute',
     top: 21,
     alignSelf: 'center',
