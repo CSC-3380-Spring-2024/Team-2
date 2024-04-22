@@ -59,7 +59,8 @@ function ScannerScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="ScannerHome" component={ImageScannerPage} />
-      <ContentStack.Screen name="NextSteps" component={NextStepsPage} />
+      <ContentStack.Screen name="AddExpensePage" component={AddExpensePage} />
+      <ContentStack.Screen name="NextStepsPage" component={NextStepsPage} />
     </ContentStack.Navigator>
   );
 }

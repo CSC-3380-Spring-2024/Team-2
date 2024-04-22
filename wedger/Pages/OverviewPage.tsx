@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
-import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
 import {useNavigation} from '@react-navigation/native';
@@ -24,6 +23,7 @@ import CarouselCards from '../Components/Carousel/CarouselCards';
 import {BudgetType, ItemObject} from '../Types/BudgetTypes';
 import ExpenseItem from '../Components/ExpenseItem';
 import CreateFirstBudget from '../Components/CreateFirstBudget';
+import PopupModal from "../Components/PopupModal.tsx";
 
 interface Slice {
   value: number;
