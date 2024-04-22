@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import TextInputField from '../Components/TextInputField';
 import Dropdown from '../Components/Dropdown/Dropdown';
@@ -8,6 +8,8 @@ import {useBudget} from '../Context/userBudgetContext';
 import {createBudgetType} from '../Types/BudgetTypes';
 import {useNavigation} from '@react-navigation/native';
 import PopupModal from '../Components/PopupModal';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 interface DropDownOption {
   label: string;
@@ -57,14 +59,18 @@ const CreateBudgetPage = () => {
     }
   };
   return (
+    <LinearGradient
+          colors={['#EBF8FE', '#8eb2c0']}
+          style={styles.linearGradient}>
     <View>
+      <Text style = {styles.header1}>Create New Budget</Text>
       <TextInputField placeholder="Budget Name" onChangeText={setBudgetName} />
       <TextInputField
-        placeholder="Spend Goal"
+        placeholder="Budget Amount"
         inputMode="numeric"
         onChangeText={e => setSpendGoal(e as unknown as number)}
       />
-      <View>
+      <View style = {styles.selectBox}>
         <StyledButton
           onPress={() => setShowColorPicker(true)}
           buttonStyle={{backgroundColor: labelColor}}>
@@ -78,13 +84,14 @@ const CreateBudgetPage = () => {
         onSelectColor={setLabelColor}
       />
       <View>
-        <Text>Select the time frame for your budget</Text>
+        <Text style = {styles.header2}>Select the time frame for your budget</Text>
         <Dropdown
           options={timeFrameBudgetOptions}
           initialValue="monthly"
           onChangeValue={value => setTimeFrame(value)}
         />
       </View>
+      <View style = {styles.selectBox}>
       <StyledButton onPress={submitBudget} loading={loadingBudget}>
         Start Saving!
       </StyledButton>
@@ -98,8 +105,37 @@ const CreateBudgetPage = () => {
         }}
         firstButtonText="Continue"
       />
+      </View>
     </View>
+    </LinearGradient>
   );
 };
+
+const styles = StyleSheet.create({
+  linearGradient: {
+    flex: 1,
+    width: null,
+    height: null,
+  },
+  header1: {
+    marginTop: 15,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 42,
+    fontWeight: 'bold',
+  },
+  header2: {
+    marginTop: 8,
+    marginBottom: 0,
+    textAlign: 'left',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  selectBox: {
+    marginTop: 8,
+    marginBottom: 8,
+    alignSelf: 'center',
+  },
+})
 
 export default CreateBudgetPage;

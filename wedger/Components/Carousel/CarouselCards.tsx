@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import { ITEM_WIDTH, SLIDER_WIDTH } from '../../Pages/OverviewPage';
+import {ITEM_WIDTH, SLIDER_WIDTH} from '../../Pages/OverviewPage';
 
 interface Props {
   data: any;
@@ -12,10 +12,10 @@ const CarouselCards = (props: Props) => {
   const isCarousel = React.useRef(null);
 
   return (
-    <View>
+    <View style={{}}>
       <Carousel
-        layout="tinder"
-        layoutCardOffset={9}
+        layout='stack'
+        layoutCardOffset={0}
         ref={isCarousel}
         data={props.data}
         renderItem={props.renderItem}
@@ -25,6 +25,12 @@ const CarouselCards = (props: Props) => {
         useScrollView={true}
       />
       <Pagination
+        containerStyle={{
+          height: '7%',
+          position: 'absolute',
+          marginLeft: '50%',
+          marginTop: '173%',
+        }}
         dotsLength={props.data.length}
         activeDotIndex={index}
         dotStyle={{
@@ -32,7 +38,7 @@ const CarouselCards = (props: Props) => {
           height: 10,
           borderRadius: 5,
           marginHorizontal: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.92)',
+          backgroundColor: 'rgba(0, 0, 0, 0.52)',
         }}
         inactiveDotOpacity={0.4}
         inactiveDotScale={0.6}

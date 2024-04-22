@@ -52,7 +52,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loadingBudget, setLoadingBudget] = useState<boolean>(false);
   const [_usersBudgets, set_UsersBudgets] = useState<BudgetType[]>([]);
   const [userBudgetError, setUserBudgetError] = useState<string>('');
-  const {userRef} = useAuth();
+  const {userData, userRef} = useAuth();
 
   const usersBudgets = useMemo(() => {
     return _usersBudgets;
