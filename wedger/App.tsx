@@ -25,6 +25,7 @@ import {User} from 'firebase/auth';
 import UpgradePage from './Pages/UpgradePage';
 import {View} from 'react-native';
 import CreateBudgetPage from './Pages/CreateBudgetPage';
+import AddExpensePage from './Pages/AddExpensePage';
 import {ShoppingListProvider} from './Context/userShoppingListContext';
 import AddExpensePage from './Pages/AddExpensePage';
 
