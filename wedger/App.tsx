@@ -249,13 +249,17 @@ function Navigator() {
       (loadingBudget && usersBudgets.length === 0) ||
       (loadingAuth && userRef === undefined)
     ) {
+      console.log('loading ');
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
     }
 
     if (!isLoggedIn) {
+      console.log('not logged in ');
+
       return <ContentStack.Screen name="Auth" component={AuthScreen} />;
     }
 
+    console.log('tabs ');
     return <ContentStack.Screen name="Tabs" component={TabsScreen} />;
   };
 
