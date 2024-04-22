@@ -28,8 +28,8 @@ const CarouselCards = (props: Props) => {
         containerStyle={{
           height: '7%',
           position: 'absolute',
-          marginLeft: '50%',
-          marginTop: '173%',
+          marginLeft: '54%',
+          marginTop: '165%',
         }}
         dotsLength={props.data.length}
         activeDotIndex={index}

@@ -3,6 +3,7 @@ import React from "react";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { Canvas, Path, SkFont, Skia, Text,} from "@shopify/react-native-skia";
 import DonutPath from "./DonutPath";
+import { color } from "@rneui/base";
 
 type Props = {
     radius: number;
@@ -58,7 +59,7 @@ const DonutChart = ({
             <Canvas style={styles.container}>
                 <Path 
                 path={path} 
-                color='#EBF8FE'  //#EBF8FE or #f4f7fc
+                color='#f4f7fc'  //#EBF8FE or #f4f7fc or #7FB5C1 or #FBFBF9
                 style="stroke" 
                 strokeWidth={outerStrokeWidth}
                 strokeJoin='round'
@@ -89,7 +90,7 @@ const DonutChart = ({
                 />
                 <Text
                     x ={textX}
-                    y={radius + fontSize.height / 2}
+                    y={radius + fontSize.height / 1}
                     text={targetText} 
                     font={font} 
                     color='black'
