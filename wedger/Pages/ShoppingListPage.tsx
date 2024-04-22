@@ -5,7 +5,7 @@ import { LinearGradient } from 'react-native-linear-gradient';
 import { useShoppingList } from '../Context/userShoppingListContext'
 import Item from '../Components/Item.js';
 
-function shoppingListPage(){
+function ShoppingListPage(){
 const {usersShoppingLists} = useShoppingList();
 
 const [item,setItem] = useState();
@@ -23,7 +23,7 @@ const completeItem = (index) => {
   setItemItems(itemsCopy); 
 }
 
-console.log(usersShoppingLists);
+//console.log(usersShoppingLists);
     return (
 
       <View style = {styles.container}>
@@ -131,4 +131,4 @@ const styles = StyleSheet.create({
         addText: {},
 });
 
-export default shoppingListPage;
+export default ShoppingListPage;

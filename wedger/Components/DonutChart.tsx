@@ -8,9 +8,10 @@ type Props = {
     radius: number;
     strokeWidth: number;
     outerStrokeWidth: number;
-    font: SkFont;
-    smallFont: SkFont;
+    font: SkFont | any;
+    smallFont: SkFont | any;
     totalValue: SharedValue<number>;
+    totalSpent: SharedValue<number>;
     n: number;
     gap: number;
     decimals: SharedValue<number[]>;
@@ -26,6 +27,7 @@ const DonutChart = ({
     font,
     smallFont,
     totalValue,
+    totalSpent,
     n,
     gap,
     decimals,
@@ -38,7 +40,8 @@ const DonutChart = ({
     path.addCircle(radius, radius, innerRadius)
     
     const targetText = useDerivedValue(
-        () => `$${Math.round(totalValue.value)}`,
+        () => 
+            `$${Math.round(totalSpent.value)}`,
         [],
     );
 
