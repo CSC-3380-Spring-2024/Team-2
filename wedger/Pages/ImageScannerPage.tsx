@@ -51,7 +51,7 @@ export function ImageScannerPage() {
   };
 
   const sailTo = () => {
-    navigation.navigate('AddExpensePage');
+    navigation.navigate('AddExpensePage'); // normally this needs to go to NextSteps for user selection/filtering (not currently implemented)
   };
 
   return (
