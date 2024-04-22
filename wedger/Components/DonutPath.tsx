@@ -51,10 +51,10 @@ const DonutPath = ({radius, gap, strokeWidth, outerStrokeWidth, color, decimals,
         color={color} 
         style="stroke" 
         strokeWidth={strokeWidth}
-        strokeJoin='round' 
+        strokeJoin = 'round' 
         strokeCap='round'
         start={start}
-        //end={end}
+        end={end}
     />
     );
 };

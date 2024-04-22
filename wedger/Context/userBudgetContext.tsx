@@ -165,8 +165,9 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       }
       docsSnap.forEach(async el => {
         let curDoc = el.data() as unknown as BudgetType;
+        curDoc.id = el.id
         BudgetsReturnArray.push(curDoc);
-        getItemsExpended(el.id);
+        // getItemsExpended(el.id);
       });
       set_UsersBudgets(BudgetsReturnArray);
       return BudgetsReturnArray;
@@ -208,12 +209,12 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       );
       const docsSnap = await getDocs(budgetItemCollectionRef);
       if (docsSnap.empty) {
-        console.log('Items Empty in', budgetUID);
+        //console.log('Items Empty in', budgetUID);
         return [];
       }
       docsSnap.forEach(item => {
         const currItem = item.data() as unknown as ItemObject;
-        console.log(currItem);
+        //console.log(currItem);
         ItemReturnArray.push(currItem);
       });
 
@@ -228,6 +229,8 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
             tempBudgets[budgetSelectIndex].itemsExpended.concat(
               ItemReturnArray,
             );
+            //console.log(tempBudgets[budgetSelectIndex].itemsExpended);
+            
             set_UsersBudgets(tempBudgets);
           }
         }

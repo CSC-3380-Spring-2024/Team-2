@@ -13,10 +13,11 @@ import theme from '../theme';
 interface Props {
   itemData: ItemObject | addItemObject;
   budgetID: string;
+  disableSwipe?: boolean;
   removeTempObj?: () => void;
 }
 const ExpenseItem = (props: Props) => {
-  const {itemData, budgetID, removeTempObj} = props;
+  const {itemData, budgetID, removeTempObj, disableSwipe} = props;
   const {deleteExpendedItems, loadingBudget, userBudgetError} = useBudget();
   const [moreInfo, setMoreInfo] = useState<boolean>(false);
   const [editInfo, setEditInfo] = useState<boolean>(false);
@@ -94,44 +95,50 @@ const ExpenseItem = (props: Props) => {
     <>
       <ListItem.Swipeable
         rightContent={reset => (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              height: '100%',
-              alignItems: 'center',
-            }}>
-            <Button
-              onPress={() => {
-                reset();
-                setMoreInfo(true);
-              }}
-              icon={{name: 'info', color: 'white'}}
-              buttonStyle={{
-                backgroundColor: 'grey',
-                minHeight: '80%',
-              }}
-            />
-            <Button
-              onPress={() => {
-                reset();
-                setEditInfo(true);
-              }}
-              icon={{name: 'edit', type: 'font-awesome', color: 'white'}}
-              buttonStyle={{minHeight: '80%'}}
-            />
-            <Button
-              onPress={() => {
-                reset();
-                setDeleteItem(true);
-              }}
-              icon={{name: 'delete', color: 'white'}}
-              buttonStyle={{
-                backgroundColor: 'red',
-                minHeight: '80%',
-              }}
-            />
-          </View>
+          <>
+            {disableSwipe ? (
+              <></>
+            ) : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                  height: '100%',
+                  alignItems: 'center',
+                }}>
+                <Button
+                  onPress={() => {
+                    reset();
+                    setMoreInfo(true);
+                  }}
+                  icon={{name: 'info', color: 'white'}}
+                  buttonStyle={{
+                    backgroundColor: 'grey',
+                    minHeight: '80%',
+                  }}
+                />
+                <Button
+                  onPress={() => {
+                    reset();
+                    setEditInfo(true);
+                  }}
+                  icon={{name: 'edit', type: 'font-awesome', color: 'white'}}
+                  buttonStyle={{minHeight: '80%'}}
+                />
+                <Button
+                  onPress={() => {
+                    reset();
+                    setDeleteItem(true);
+                  }}
+                  icon={{name: 'delete', color: 'white'}}
+                  buttonStyle={{
+                    backgroundColor: 'red',
+                    minHeight: '80%',
+                  }}
+                />
+              </View>
+            )}
+          </>
         )}
         style={{
           borderBottomColor: theme.lightColors?.grey4,
@@ -169,7 +176,7 @@ const ExpenseItem = (props: Props) => {
           </ListItem.Title>
           <ListItem.Subtitle>$ {itemData.cost}</ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        {disableSwipe ? null : <ListItem.Chevron />}
       </ListItem.Swipeable>
       {modal}
     </>
