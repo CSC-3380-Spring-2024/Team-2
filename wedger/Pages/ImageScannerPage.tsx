@@ -1,12 +1,14 @@
-import {Text, View, Image, SafeAreaView, StyleSheet} from 'react-native';
+import {Text, View, Image, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
 import ImageView from '../Components/ImageView.tsx';
+import {useNavigation} from '@react-navigation/native';
 
 export function ImageScannerPage() {
   const [image, setImage] = useState<any>(null);
+  const navigation = useNavigation();
   const openGallery = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
@@ -41,6 +43,10 @@ export function ImageScannerPage() {
       });
   };
 
+  const sailTo = () => {
+    navigation.navigate('ScanBreakdownPage');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -52,6 +58,11 @@ export function ImageScannerPage() {
         <View style={styles.content}>
           <ImageView image={image} />
         </View>
+        {image && (
+          <TouchableOpacity style={styles.button} onPress={sailTo}>
+            <Text style={styles.buttonText}>Confirm</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.buttonContainer}>
           <StyledButton
             style={styles.cameraButton}
@@ -76,7 +87,6 @@ export function ImageScannerPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 0,
   },
   headerContainer: {
     marginTop: 15,
@@ -89,33 +99,12 @@ const styles = StyleSheet.create({
   },
   linearGradient: {
     flex: 1,
-    width: null,
-    height: null,
+    width: '100%',
     justifyContent: 'space-between',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-  },
-  imageContainer: {
-    marginTop: 8,
-    marginBottom: 8,
-    alignSelf: 'center',
-    width: 300,
-    height: 380,
-    alignItems: 'center',
-    alignContent: 'center',
-  },
-  imageBox: {
-    marginTop: 32,
-    marginBottom: 8,
-    borderWidth: 8,
-    borderColor: '#FFFFFF',
-    borderRadius: 30,
-    backgroundColor: '#FFFFFF',
-    width: 240,
-    height: 320,
-    resizeMode: 'contain',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -129,6 +118,18 @@ const styles = StyleSheet.create({
   cameraButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
+  },
+  button: {
+    alignSelf: 'center',
+    backgroundColor: 'blue',
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
