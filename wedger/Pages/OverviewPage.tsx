@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
-import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
 import {useNavigation} from '@react-navigation/native';
@@ -24,6 +23,7 @@ import CarouselCards from '../Components/Carousel/CarouselCards';
 import {BudgetType, ItemObject} from '../Types/BudgetTypes';
 import ExpenseItem from '../Components/ExpenseItem';
 import CreateFirstBudget from '../Components/CreateFirstBudget';
+import PopupModal from '../Components/PopupModal';
 
 interface Slice {
   value: number;
@@ -287,7 +287,7 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
             <Text style={styles.header2}>Add New Expense</Text>
             <StyledButton
               onPress={() => {
-                navigator.navigate('AddExpensePage', {budgetID: budget.id});
+                setExpenseModalOpen(true);
               }}>
               Add Expense
             </StyledButton>
@@ -311,7 +311,7 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
 
           <PopupModal
             isVisible={expenseModalOpen}
-            description="Add an expense with"
+            description={`Add an expense with budget id ${budget.id}` }
             firstButtonPress={() => {
               setExpenseModalOpen(false);
               navigator.navigate('ScannerHome');

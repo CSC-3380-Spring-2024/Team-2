@@ -165,7 +165,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       }
       docsSnap.forEach(async el => {
         let curDoc = el.data() as unknown as BudgetType;
-        curDoc.id = el.id
+        curDoc.id = el.id;
         BudgetsReturnArray.push(curDoc);
         // getItemsExpended(el.id);
       });
