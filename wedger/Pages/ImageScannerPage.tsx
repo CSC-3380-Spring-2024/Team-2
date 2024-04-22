@@ -1,7 +1,6 @@
 import {
   Text,
   View,
-  Image,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
 import ImageView from '../Components/ImageView.tsx';
 import {useNavigation} from '@react-navigation/native';
+import {imageUpload} from '../Components/imageUpload.tsx';
 
 export function ImageScannerPage() {
   const [image, setImage] = useState<any>(null);
@@ -51,7 +51,7 @@ export function ImageScannerPage() {
   };
 
   const sailTo = () => {
-    navigation.navigate('AddExpensePage'); // normally this needs to go to NextSteps for user selection/filtering (not currently implemented)
+    navigation.navigate('NextSteps'); // normally this needs to go to NextSteps for user selection/filtering (not currently implemented)
   };
 
   return (
