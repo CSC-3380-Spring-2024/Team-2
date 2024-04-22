@@ -1,7 +1,8 @@
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
-import StyledButton from './StyledButton.tsx';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
 
 interface IconButtonProps {
   onPress: () => void;
@@ -11,34 +12,69 @@ interface IconButtonProps {
   text: string;
 }
 
-const ProfileIconButton: React.FC<IconButtonProps> = ({
+export const AntIcon: React.FC<IconButtonProps> = ({
   onPress,
   iconName,
-  iconSize = 20,
+  iconSize = 40,
   iconColor = '#000',
   text,
 }) => {
   return (
-    <StyledButton style={styles.button} onPress={onPress}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <View style={styles.content}>
-        <Icon name={iconName} size={iconSize} color={iconColor} />
+        <AntDesign name={iconName} size={iconSize} color={iconColor} />
         <Text style={styles.text}>{text}</Text>
       </View>
-    </StyledButton> // changed this to styled button component
+    </TouchableOpacity> // changed this to styled button component
+  );
+};
+
+export const EntypoIcon: React.FC<IconButtonProps> = ({
+  onPress,
+  iconName,
+  iconSize = 40,
+  iconColor = '#000',
+  text,
+}) => {
+  return (
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <View style={styles.content}>
+        <Entypo name={iconName} size={iconSize} color={iconColor} />
+        <Text style={styles.text}>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+export const FeatherIcon: React.FC<IconButtonProps> = ({
+  onPress,
+  iconName,
+  iconSize = 40,
+  iconColor = '#000',
+  text,
+}) => {
+  return (
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <View style={styles.content}>
+        <Feather name={iconName} size={iconSize} color={iconColor} />
+        <Text style={styles.text}>{text}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#F4DCD0',
+    borderRadius: 10,
+    paddingHorizontal: 120,
+    paddingVertical: 10,
   },
   content: {
     flexDirection: 'row',
   },
   text: {
-    marginLeft: 10,
+    marginLeft: 30,
+    fontSize: 20,
   },
 });
-
-export default ProfileIconButton;
