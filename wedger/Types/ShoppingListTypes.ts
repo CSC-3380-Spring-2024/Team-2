@@ -2,14 +2,12 @@ import {ColorValue} from 'react-native';
 
 export interface ShoppingListType {
   id: string;
-  name: string;
-  color: ColorValue;
+  listName: string;
   itemsArray: ListItemObject[];
 }
 export interface EditShoppingListType {
   id: string;
-  name?: string;
-  color?: ColorValue;
+  listName?: string;
 }
 export interface EditListItemObject {
   id: string;
@@ -18,13 +16,14 @@ export interface EditListItemObject {
 }
 export interface ListItemObject {
   id: string;
-  name: string;
+  itemName: string;
   checkedOff: boolean;
 }
 export interface addListItemObject {
-  name: string;
+  itemName: string;
+  checked?: boolean;
 }
 export interface createShoppingListType {
-  name: string;
-  color: ColorValue;
+  listName: string;
+  itemsArray: addListItemObject[];
 }

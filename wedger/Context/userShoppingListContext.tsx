@@ -29,9 +29,9 @@ interface ShoppingListContextType {
   ) => Promise<DocumentReference<DocumentData, DocumentData> | undefined>;
   editShoppingList: (
     obj: EditShoppingListType,
-  ) => Promise<DocumentSnapshot<DocumentData, DocumentData> | undefined>;
+  ) => void;
   deleteShoppingList: (ShoppingListToDelete: string) => void;
-  getUsersShoppingLists: () => Promise<ShoppingListType[] | undefined>;
+  getUsersShoppingLists: () => Promise<ShoppingListType[] | []>;
   //item handle
   addListItems: (
     itemsToAdd: addListItemObject[],
@@ -42,7 +42,7 @@ interface ShoppingListContextType {
   //util
   loadingShoppingList: boolean;
   userShoppingListError: string;
-  usersShoppingLists: ShoppingListType[] | undefined;
+  usersShoppingLists: ShoppingListType[] | [];
 }
 
 const ShoppingListContext = createContext<ShoppingListContextType | undefined>(
@@ -55,8 +55,8 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
   const [loadingShoppingList, setLoadingShoppingList] =
     useState<boolean>(false);
   const [usersShoppingLists, setUsersShoppingLists] = useState<
-    ShoppingListType[] | undefined
-  >();
+    ShoppingListType[] | []
+  >([]);
   const [userShoppingListError, setUserShoppingListError] =
     useState<string>('');
   const {userRef} = useAuth();
@@ -80,8 +80,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
         throw Error('No User Ref');
       }
       const newShoppingList = {
-        ShoppingListName: obj.name,
-        labelColor: obj.color,
+        ShoppingListName: obj.listName,
       };
       const ShoppingListCollectionRef = collection(
         db,
@@ -109,8 +108,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
         throw Error('No User Ref');
       }
       const editDocData = {
-        ShoppingListName: obj.name,
-        labelColor: obj.name,
+        ShoppingListName: obj.listName,
       };
       const ShoppingListDocRef = doc(
         db,
@@ -120,9 +118,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
         obj.id,
       );
       await updateDoc(ShoppingListDocRef, editDocData);
-      const updatedShoppingList = await getDoc(ShoppingListDocRef);
       getCurrentShoppingLists();
-      return updatedShoppingList;
     } catch (e: any) {
       console.error(e);
       addError(e.message);
@@ -154,9 +150,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
       setLoadingShoppingList(false);
     }
   };
-  const getUsersShoppingLists = async (): Promise<
-    ShoppingListType[] | undefined
-  > => {
+  const getUsersShoppingLists = async (): Promise<ShoppingListType[] | []> => {
     setLoadingShoppingList(true);
     try {
       if (!userRef) {
@@ -171,12 +165,13 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
       );
       const docsSnap = await getDocs(ShoppingListCollectionRef);
       if (docsSnap.empty) {
-        return undefined;
+        return [];
       }
       docsSnap.forEach(async el => {
         let curDoc = el.data() as unknown as ShoppingListType;
+        curDoc.id = el.id;
         const tempArr = await getListItems(el.id);
-        if (tempArr) {
+        if (tempArr.length !== 0) {
           curDoc.itemsArray.concat(tempArr);
         }
         ShoppingListsReturnArray.push(curDoc);
@@ -188,13 +183,14 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
     } finally {
       setLoadingShoppingList(false);
     }
+    return [];
   };
 
   //item handle
 
   const getListItems = async (
     ShoppingListUID: string,
-  ): Promise<ListItemObject[] | undefined> => {
+  ): Promise<ListItemObject[] | []> => {
     setLoadingShoppingList(true);
     try {
       if (!userRef) {
@@ -211,10 +207,11 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
       );
       const docsSnap = await getDocs(ShoppingListItemCollectionRef);
       if (docsSnap.empty) {
-        return undefined;
+        return [];
       }
       docsSnap.forEach(item => {
-        const currItem = item as unknown as ListItemObject;
+        let currItem = item as unknown as ListItemObject;
+        currItem.id = item.id;
         ItemReturnArray.push(currItem);
       });
 
@@ -242,6 +239,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
     } finally {
       setLoadingShoppingList(false);
     }
+    return [];
   };
 
   const addListItems = async (
@@ -263,7 +261,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
       );
       const addArrayBuilder = itemsToAdd.map(item => {
         const tempObj = {
-          name: item.name,
+          name: item.itemName,
           checked: false,
         };
         return tempObj;
