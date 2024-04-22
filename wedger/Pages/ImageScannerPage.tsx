@@ -44,7 +44,7 @@ export function ImageScannerPage() {
   };
 
   const sailTo = () => {
-    navigation.navigate('ScanBreakdownPage');
+    navigation.navigate('AddExspenseItems');
   };
 
   return (
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#0080ff',
     padding: 12,
     borderRadius: 8,
     marginVertical: 20,
