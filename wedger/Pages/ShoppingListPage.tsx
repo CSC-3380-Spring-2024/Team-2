@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,23 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TextInput,
+  Button,
+  ViewStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useShoppingList } from '../Context/userShoppingListContext';
+import {useShoppingList} from '../Context/userShoppingListContext';
 import GroupName from '../Components/GroupName';
 import GroupItem from '../Components/GroupItems';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import {PanGestureHandler} from 'react-native-gesture-handler';
+import {ListItem} from '@rneui/themed';
+// import Close_Delete from '..wedger/Assets/Static'
+import{
+  useFonts,
+  Roboto_400Regular,
+  Bangers_400Regular,
+  OpenSans_400Regular,
+} from '@expo-google-fonts/dev';
+import { ShoppingListType, addListItemObject, createShoppingListType } from '../Types/ShoppingListTypes';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -26,57 +37,74 @@ if (Platform.OS === 'android') {
 }
 
 function ShoppingListPage() {
-  const { usersShoppingLists } = useShoppingList();
 
-  const [group, setGroup] = useState('');
-  const [groupItems, setGroupItems] = useState([]);
-  const [groupItemMap, setGroupItemMap] = useState({});
-  const [item, setItem] = useState('');
-  const [openIndex, setOpenIndex] = useState(null);
+
+  const Seperator = () => <View style={seperatorStyles} />;
+
+  const {usersShoppingLists} = useShoppingList();
+  const [groupName, setGroupName] = useState('');
+  const [groupItems, setGroupItems] = useState<string[]>([]);
+  // const [groupItemMap, setGroupItemMap] = useState<string>({});
+  const [text, setText] = useState<string>('');
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const [shoppingListArray, setShoopingListArray] = useState<createShoppingListType[]>([])
 
   // Adds a group
-  const handleAddGroup = () => {
+  const handleAddGroup = (item: string) => {
     Keyboard.dismiss();
-    if (group.trim() !== '') {
-      setGroupItems([...groupItems, group]);
-      setGroupItemMap({ ...groupItemMap, [group]: [] });
-      setGroup('');
+    let temp = [...shoppingListArray];
+    const val: createShoppingListType = {
+      listName: item,
+      itemsArray: []
     }
-  };
+    temp.push(val);
+    setShoopingListArray(temp);
+    };
 
   // Adds an item to the currently open group
-  const handleAddItem = () => {
+  const handleAddItem = (item: string, list:createShoppingListType) => {
     Keyboard.dismiss();
-    if (openIndex !== null && item.trim() !== '') {
-      const updatedGroupItemMap = { ...groupItemMap };
-      updatedGroupItemMap[groupItems[openIndex]].push(item);
-      setGroupItemMap(updatedGroupItemMap);
-      setItem('');
-    }
-  };
-
-  // Deletes a group
-  const completeGroup = (index: number) => {
-    let itemsCopy = [...groupItems];
-    itemsCopy.splice(index, 1);
-    setGroupItems(itemsCopy);
-    const updatedGroupItemMap = { ...groupItemMap };
-    delete updatedGroupItemMap[groupItems[index]];
-    setGroupItemMap(updatedGroupItemMap);
-    if (openIndex === index) {
-      setOpenIndex(null); 
-    }
+    let temp = [...shoppingListArray];
+    const val: addListItemObject = {
+      itemName: item,
+      checked: false,
+    };
+    const index = temp.indexOf(list);
+    temp[index].itemsArray.push(val);
+    setShoopingListArray(temp);
   };
 
   const toggleGroup = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex(index);
   };
 
-  
+  const setDeleteGroup = (index: number) => {
+    let temp = [...shoppingListArray];
+    temp.splice(index,1)
+    setShoopingListArray(temp);
+  }
+
+  const setDeleteItem = (item: addListItemObject, listIndex:number) => {
+    // let itemsCopy = shoppingListArray[listIndex].itemsArray;
+    // itemsCopy.findIndex(item)
+    // setGroupItems(itemsCopy);
+    // const updatedGroupItemMap = {...groupItemMap};
+    // delete updatedGroupItemMap[groupItems[index]];
+    // setGroupItemMap(updatedGroupItemMap);
+    // if (openIndex === index) {
+    //   setOpenIndex(null);
+    // }
+  };
+
+  const loseTheIntro = () => {
+
+  }
+
   return (
     <LinearGradient
-      colors={['#EBF8FE', '#8eb2c0']}
+      colors={['#F6FBFD', '#5C8498']}
       style={styles.linearGradient}>
       <ScrollView
         contentContainerStyle={{
@@ -85,19 +113,23 @@ function ShoppingListPage() {
         keyboardShouldPersistTaps="never">
         <View style={styles.container}>
           <Text style={styles.title}>Your Shopping Lists</Text>
-          {groupItems.map((group, index) => {
+
+          {[...shoppingListArray].map((list, index: number) => {
             return (
               <TouchableOpacity
                 key={index}
-                style={[styles.group, openIndex === index && { height: 'auto' }]}
+                style={[
+                  styles.group,
+                  openIndex === index ? {height: 'auto'} : {height: 55},
+                ]}
                 onPress={() => toggleGroup(index)}
                 activeOpacity={1}>
-                <GroupName text={group} />
-                {openIndex === index && groupItemMap[group] && (
+                <GroupName text={list.listName} />
+                {openIndex === index && list.itemsArray && (
                   <>
                     <View style={styles.itemContainer}>
-                      {groupItemMap[group].map((item, itemIndex) => {
-                        return <GroupItem key={itemIndex} text={item} />;
+                      {list.itemsArray.map((item, itemIndex: number) => {
+                        return <GroupItem key={itemIndex} text={item.itemName} />;
                       })}
                     </View>
                     <View style={styles.container}>
@@ -105,12 +137,13 @@ function ShoppingListPage() {
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                         style={styles.writeItemWrapper}>
                         <TextInput
+                          maxLength={20}
                           style={styles.inputItem}
                           placeholder={'Add an Item!'}
-                          value={item}
-                          onChangeText={text => setItem(text)}
+                          value={text}
+                          onChangeText={text => setText(text)}
                         />
-                        <TouchableOpacity onPress={() => handleAddItem()}>
+                        <TouchableOpacity onPress={() => handleAddItem(text, list)}>
                           <View style={styles.addWrapper}>
                             <Text style={styles.addText}>+</Text>
                           </View>
@@ -129,14 +162,15 @@ function ShoppingListPage() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.writeGroupWrapper}>
             <TextInput
+              maxLength={20}
               style={styles.input}
-              placeholder={'Create a Group'}
-              value={group}
-              onChangeText={text => setGroup(text)}
+              placeholder={'Create a Group!'}
+              value={groupName}
+              onChangeText={e => setGroupName(e)}
             />
-            <TouchableOpacity onPress={() => handleAddGroup()}>
-              <View style={styles.addWrapper}>
-                <Text style={styles.addText}>+</Text>
+            <TouchableOpacity onPress={() => handleAddGroup(groupName)}>
+              <View style= {styles.addWrapper}>
+                <Text style= {styles.addText}>+</Text>
               </View>
             </TouchableOpacity>
           </KeyboardAvoidingView>
@@ -144,30 +178,48 @@ function ShoppingListPage() {
       </ScrollView>
     </LinearGradient>
   );
+
+
+
+//This stuff is going to be the intro box but it doesn't work yet so don't think about it 
+<View style={styles.introBox}>
+          <TouchableOpacity onPress = {() => loseTheIntro()}>
+            <View style={styles.closeTheIntroBoxButtonContainer}>
+                {/* <Close_Delete/> */}
+            </View>
+            </TouchableOpacity>
+            <Seperator />
+            <View style={styles.container}>
+              <Text style={styles.varelaRound}>
+                Create a group for your first shopping list!
+              </Text>
+
+            </View>
+          </View>
+
+
+
+
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingLeft: 20,
-    paddingBottom: 20,
-    paddingRight: 20,
-    paddingTop: 23,
+    padding: 20,
+    paddingBottom: 30,
   },
   group: {
     width: '100%',
     overflow: 'hidden',
     marginBottom: 20,
-    backgroundColor: '#EEEEEE',
+    backgroundColor: '#CCE1EC',
     borderRadius: 10,
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
   },
   title: {
     borderColor: '#20232a',
-    color: '#2c3135',
+    color: '#2D373C',
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 35,
@@ -182,7 +234,7 @@ const styles = StyleSheet.create({
   },
   writeGroupWrapper: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 35,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -193,9 +245,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#FFFFFF',
     borderRadius: 60,
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
     width: 250,
+    marginLeft: 30,
   },
   addWrapper: {
     width: 60,
@@ -204,8 +255,6 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
   },
   addText: {
     fontSize: 40,
@@ -224,10 +273,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#FFFFFF',
     borderRadius: 60,
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
     width: 250,
+    marginLeft: 30,
+  },
+  varelaRound: {
+    fontFamily: 'varelaRound-Regular',
+    fontSize: 18,
+  },
+  closeTheIntroBoxButtonContainer: {
+    alignSelf: 'flex-end',
+    height: 25,
+    width: 25,
+    marginRight: 5,
+    paddingVertical: 5,
+  },
+  introBox: {
+    alignContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
   },
 });
+const seperatorStyles: ViewStyle = {
+  height: 2,
+  width: '100%',
+  backgroundColor: '#C0C0C0',
+};
 
 export default ShoppingListPage;

@@ -1,15 +1,15 @@
+import { SwipeRatingProps } from '@rneui/base';
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
 
-const GroupName = (props) => {
+const GroupName = (props: string) => {
     return (
         <><View style={styles.group}>
             <View style={styles.groupLeft}>
                 <View style={styles.square}></View>
                 <Text style={styles.groupNameText}> {props.text} </Text>
             </View>
-            <View style={styles.circular}></View>
 
         </View></>
     )
@@ -19,7 +19,7 @@ const GroupName = (props) => {
 
 const styles = StyleSheet.create({
     group: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFFDF7',
         borderColor: '#C0C0C0',
         padding: 15,
         borderRadius: 10,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         height: 24, 
         backgroundColor: '#55BCF6',
         opacity: 0.4,
-        borderRadius: 5,
+        borderRadius: 20,
         marginRight: 15,
     },
     groupNameText: {

@@ -11,7 +11,6 @@ const GroupItem = (props) => {
                 <View style={styles.square}></View>
                 <Text style={styles.itemNameText}> {props.text} </Text>
             </View>
-            <View style={styles.circular}></View>
             </View>
         </View></>
     )
@@ -42,9 +41,9 @@ const styles = StyleSheet.create({
     square: {
         width: 24,
         height: 24, 
-        backgroundColor: '#55BCF6',
+        backgroundColor: '#F69286',
         opacity: 0.4,
-        borderRadius: 5,
+        borderRadius: 20,
         marginRight: 15,
     },
     itemNameText: {
@@ -59,6 +58,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginRight: 5,
     },
+    
 });
 
 export default GroupItem;
