@@ -1,21 +1,24 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableWithoutFeedback, Animated} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
-const groupName = (props) => {
+
+const GroupName = (props) => {
     return (
-        <View style = {styles.item}>
-            <View style = {styles.itemLeft}>
-                <View style = {styles.square}></View>
-                <Text style = {styles.groupNameText}> {props.text} </Text>
+        <><View style={styles.group}>
+            <View style={styles.groupLeft}>
+                <View style={styles.square}></View>
+                <Text style={styles.groupNameText}> {props.text} </Text>
             </View>
-            <View style = {styles.circular}></View>
-        </View>
+            <View style={styles.circular}></View>
+
+        </View></>
     )
 }
 
 
+
 const styles = StyleSheet.create({
-    item: {
+    group: {
         backgroundColor: '#FFFFFF',
         borderColor: '#C0C0C0',
         padding: 15,
@@ -25,7 +28,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
     },
-    itemLeft: {
+    groupLeft: {
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'wrap',
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
         marginRight: 5,
-    }
+    },
 });
 
-export default groupName;
+export default GroupName;
