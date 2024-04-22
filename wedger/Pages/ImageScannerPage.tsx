@@ -44,7 +44,7 @@ export function ImageScannerPage() {
   };
 
   const sailTo = () => {
-    navigation.navigate('AddExspenseItems');
+    navigation.navigate('AddExpensePage');
   };
 
   return (
