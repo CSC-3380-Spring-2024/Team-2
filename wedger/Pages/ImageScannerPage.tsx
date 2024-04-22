@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -5,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
@@ -15,7 +15,9 @@ import {imageUpload} from '../Components/imageUpload.tsx';
 
 export function ImageScannerPage() {
   const [image, setImage] = useState<any>(null);
+  const [imageURL, setImageURL] = useState<string | null>(null);
   const navigation = useNavigation();
+
   const openGallery = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
@@ -51,7 +53,16 @@ export function ImageScannerPage() {
   };
 
   const sailTo = () => {
-    navigation.navigate('NextSteps'); // normally this needs to go to NextSteps for user selection/filtering (not currently implemented)
+    if (image) {
+      imageUpload(image)
+        .then(url => {
+          setImageURL(url);
+          navigation.navigate('NextSteps'); // firestore needs fixing, currently crashes app
+        })
+        .catch(error => {
+          console.log('Error uploading image:', error);
+        });
+    }
   };
 
   return (
@@ -64,6 +75,7 @@ export function ImageScannerPage() {
         </View>
         <View style={styles.content}>
           <ImageView image={image} />
+          {imageURL && <Text style={styles.imageURL}>{imageURL}</Text>}
         </View>
         {image && (
           <TouchableOpacity style={styles.button} onPress={sailTo}>
@@ -112,6 +124,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -137,6 +150,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  imageURL: {
+    marginTop: 10,
+    fontSize: 14,
+    color: 'blue',
   },
 });
 
