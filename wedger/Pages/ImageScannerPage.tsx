@@ -1,80 +1,142 @@
-'use strict';
-import React, {useRef} from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {RNCamera} from 'react-native-camera';
+import {Text, View, Image, SafeAreaView, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import ImagePicker from 'react-native-image-crop-picker';
+import StyledButton from '../Components/StyledButton';
+import {LinearGradient} from 'react-native-linear-gradient';
 
-function ImageScannerPage() {
-  const cameraRef = useRef(null);
+export function ImageScannerPage() {
+  const [image, setImage] = useState<any>(null);
 
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      const options = {
-        quality: 0.2,
-        base64: false,
-        exif: false,
-        skipProcessing: true,
-      };
-      const [data] = await Promise.all([
-        cameraRef.current.takePictureAsync(options),
-      ]);
-      console.log(data.uri);
-    }
+  const openGallery = () => {
+    ImagePicker.openPicker({
+      mediaType: 'photo',
+      cropping: true,
+      compressImageQuality: 0.5,
+      includeBase64: true,
+      useFrontCamera: false,
+    })
+      .then(image => {
+        setImage(image);
+        console.log(image);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      compressImageQuality: 0.5,
+      includeBase64: true,
+      useNativeDriver: false,
+      cancelButtonTitle: 'Cancel',
+    })
+      .then(image => {
+        setImage(image);
+        console.log(image);
+      })
+      .catch(error => {
+        console.log('Cancelled camera operation', error);
+      });
   };
 
   return (
-    <View style={styles.container}>
-      <RNCamera
-        ref={cameraRef}
-        style={styles.preview}
-        type={RNCamera.Constants.Type.back}
-        flashMode={RNCamera.Constants.FlashMode.on}
-        androidCameraPermissionOptions={{
-          title: 'Permission to use camera',
-          message: 'We need your permission to use your camera',
-          buttonPositive: 'Ok',
-          buttonNegative: 'Cancel',
-        }}
-        captureAudio={false}
-        onGoogleVisionBarcodesDetected={({barcodes}) => {
-          console.log(barcodes);
-        }}
-      />
-      <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center'}}>
-        <TouchableOpacity onPress={takePicture} style={styles.capture}>
-          <Text style={{fontSize: 14}}> SNAP </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <LinearGradient
+        colors={['#EBF8FE', '#8eb2c0']}
+        style={styles.linearGradient}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header1}>Receipt Scanner</Text>
+        </View>
+        <View style={styles.content}>
+          <View style={styles.imageContainer}>
+            {image && (
+              <Image
+                style={styles.imageBox}
+                source={{uri: `data:${image.mime};base64,${image.data}`}}
+              />
+            )}
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <StyledButton
+            style={styles.cameraButton}
+            onPress={() => {
+              openCamera();
+            }}>
+            Scan from Camera
+          </StyledButton>
+          <StyledButton
+            style={styles.galleryButton}
+            onPress={() => {
+              openGallery();
+            }}>
+            Open from Gallery
+          </StyledButton>
+        </View>
+      </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'black',
+    marginVertical: 0,
   },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
+  headerContainer: {
+    marginTop: 15,
+    marginBottom: 10,
     alignItems: 'center',
   },
-  capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
+  header1: {
+    fontSize: 42,
+    fontWeight: 'bold',
+  },
+  linearGradient: {
+    flex: 1,
+    width: null,
+    height: null,
+    justifyContent: 'space-between',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    marginTop: 8,
+    marginBottom: 8,
     alignSelf: 'center',
-    margin: 20,
+    width: 300,
+    height: 380,
+    alignItems: 'center',
+    alignContent: 'center',
+  },
+  imageBox: {
+    marginTop: 32,
+    marginBottom: 8,
+    borderWidth: 8,
+    borderColor: '#FFFFFF',
+    borderRadius: 30,
+    backgroundColor: '#FFFFFF',
+    width: 240,
+    height: 320,
+    resizeMode: 'contain',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 20,
+  },
+  galleryButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  cameraButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
   },
 });
 
-AppRegistry.registerComponent('ImageScannerPage', () => ImageScannerPage);
 export default ImageScannerPage;
