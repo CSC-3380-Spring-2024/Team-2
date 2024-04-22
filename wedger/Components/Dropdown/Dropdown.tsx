@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import useStyles from './styles';
 import DropDownPicker, {
   ItemType,
   ValueType,
 } from 'react-native-dropdown-picker';
-import { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import {StyleProp, TextStyle, ViewStyle} from 'react-native';
 
 interface Props<T extends ValueType> {
   options: ItemType<T>[];
@@ -68,7 +68,7 @@ export default function Dropdown<T extends ValueType>({
       style={[styles.dropdown, style]}
       containerStyle={[styles.container, containerStyle]}
       labelStyle={[styles.labelStyle, labelStyle]}
-      onChangeValue={(i) => i !== null && onChangeValue(i)}
+      onChangeValue={i => i !== null && onChangeValue(i)}
       placeholder={placeholder}
       zIndex={zIndex} // I think default is something wacky like 5000; beware of that
       zIndexInverse={zIndexInverse}

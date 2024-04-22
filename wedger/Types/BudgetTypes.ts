@@ -32,11 +32,11 @@ export interface ItemObject {
   quantity: number;
   unitCost: number;
   category: SpendCatagories;
-  paymentType?: 'cash' | 'card' | CardWithDetails;
-  addMethod: 'manual' | 'scanner';
+  paymentType?: string;
+  addMethod: string;
   receptRefId?: string;
   receptRefPhotoURL?: URL;
-  Reoccurring: false | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
+  Reoccurring: 'never' | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
 }
 export interface addItemObject {
   name: string;
@@ -45,12 +45,12 @@ export interface addItemObject {
   cost: number;
   quantity?: number;
   unitCost?: number;
-  category?: SpendCatagories;
-  paymentType?: 'cash' | 'card' | CardWithDetails;
-  addMethod: 'manual' | 'scanner';
+  category: SpendCatagories;
+  paymentType?: string;
+  addMethod: string;
   receptRefId?: string;
   receptRefPhotoURL?: URL;
-  Reoccurring?: false | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
+  Reoccurring?: 'never' | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
 }
 
 export interface EditItemObject {
@@ -62,28 +62,22 @@ export interface EditItemObject {
   quantity?: number;
   unitCost?: number;
   category?: SpendCatagories;
-  paymentType?: 'cash' | 'card' | CardWithDetails;
-  addMethod?: 'manual' | 'scanner';
-  Reoccurring?: false | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
+  paymentType?: string;
+  addMethod?: string;
+  Reoccurring?: 'never' | 'monthly' | 'weekly' | 'bi-weekly' | 'daily';
 }
 
 export interface SpendCatagories {
-  category:
-    | 'housing'
-    | 'utilities'
-    | 'transportation'
-    | 'groceries'
-    | 'dinning'
-    | 'householdSupplies'
-    | 'insurance'
-    | 'medicalHealthcare'
-    | 'debtPayments'
-    | 'entertainment'
-    | 'savings'
-    | 'self-care'
-    | 'fun'
-    | 'other';
+  categoryName: string;
+  color: ColorValue;
 }
+export const SpendCatagoriesObjectArray: SpendCatagories[] = [
+  {categoryName: 'other', color: '#8F8F8F'},
+  {categoryName: 'dinning', color: '#83c842'},
+  {categoryName: 'entertainment', color: '#fff222'},
+  {categoryName: 'rent', color: '#112ff4'},
+  {categoryName: 'debt', color: '#f12ff4'},
+];
 
 export interface CardWithDetails {
   cardNickname: string;

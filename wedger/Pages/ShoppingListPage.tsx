@@ -1,14 +1,12 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import {Text, View} from 'react-native';
+import React from 'react';
 
-export class ShoppingListPage extends Component {
-  render() {
-    return (
-      <View>
-        <Text>ShoppingListPage</Text>
-      </View>
-    )
-  }
+function ShoppingListPage() {
+  return (
+    <View>
+      <Text>ShoppingListPage</Text>
+    </View>
+  );
 }
 
-export default ShoppingListPage
+export default ShoppingListPage;
