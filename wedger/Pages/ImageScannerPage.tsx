@@ -3,10 +3,10 @@ import React, {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
+import ImageParsing from '../Components/ImageParsing';
 
 export function ImageScannerPage() {
   const [image, setImage] = useState<any>(null);
-
   const openGallery = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
@@ -50,14 +50,8 @@ export function ImageScannerPage() {
           <Text style={styles.header1}>Receipt Scanner</Text>
         </View>
         <View style={styles.content}>
-          <View style={styles.imageContainer}>
-            {image && (
-              <Image
-                style={styles.imageBox}
-                source={{uri: `data:${image.mime};base64,${image.data}`}}
-              />
-            )}
-          </View>
+          {}
+          <ImageParsing image={image} />
         </View>
         <View style={styles.buttonContainer}>
           <StyledButton
@@ -65,14 +59,14 @@ export function ImageScannerPage() {
             onPress={() => {
               openCamera();
             }}>
-            Scan from Camera
+            Open Camera
           </StyledButton>
           <StyledButton
             style={styles.galleryButton}
             onPress={() => {
               openGallery();
             }}>
-            Open from Gallery
+            Open Gallery
           </StyledButton>
         </View>
       </LinearGradient>

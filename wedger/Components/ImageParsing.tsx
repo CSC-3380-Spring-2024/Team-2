@@ -1,5 +1,40 @@
-import TextRecognition from 'react-native-text-recognition';
+import React from 'react';
+import {Text, View, Image, StyleSheet} from 'react-native';
 
-export async function parsedData() {
-  const result = await TextRecognition.recognize(imagePath);
+export function ImageParsing({image}) {
+  return (
+    <View style={styles.imageContainer}>
+      {image && (
+        <Image
+          style={styles.imageBox}
+          source={{uri: `data:${image.mime};base64,${image.data}`}}
+        />
+      )}
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  imageContainer: {
+    marginTop: 8,
+    marginBottom: 8,
+    alignSelf: 'center',
+    width: 300,
+    height: 380,
+    alignItems: 'center',
+    alignContent: 'center',
+  },
+  imageBox: {
+    marginTop: 32,
+    marginBottom: 8,
+    borderWidth: 8,
+    borderColor: '#FFFFFF',
+    borderRadius: 30,
+    backgroundColor: '#FFFFFF',
+    width: 240,
+    height: 320,
+    resizeMode: 'contain',
+  },
+});
+
+export default ImageParsing;
