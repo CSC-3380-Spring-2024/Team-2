@@ -1,7 +1,7 @@
 import React from 'react';
-import {Text, View, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet} from 'react-native';
 
-export function ImageParsing({image}) {
+export function imageView({image}) {
   return (
     <View style={styles.imageContainer}>
       {image && (
@@ -37,4 +37,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageParsing;
+export default imageView;

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
-import ImageParsing from '../Components/ImageParsing';
+import ImageView from '../Components/ImageView.tsx';
 
 export function ImageScannerPage() {
   const [image, setImage] = useState<any>(null);
@@ -50,8 +50,7 @@ export function ImageScannerPage() {
           <Text style={styles.header1}>Receipt Scanner</Text>
         </View>
         <View style={styles.content}>
-          {}
-          <ImageParsing image={image} />
+          <ImageView image={image} />
         </View>
         <View style={styles.buttonContainer}>
           <StyledButton
