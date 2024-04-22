@@ -18,7 +18,7 @@ const AddExpensePage = () => {
   const [expenseList, setExpedienceList] = useState<addItemObject[]>([]);
   const [addItem, setAddItem] = useState<boolean>(false);
   const {loadingBudget, userBudgetError, addExpendedItems} = useBudget();
-
+  
   const handleRemoveItem = (i: number) => {
     let tempArr = expenseList;
     tempArr.splice(i, 1);
