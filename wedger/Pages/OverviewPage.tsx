@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
-import PopupModal from '../Components/PopupModal';
+import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'react-native-linear-gradient';
 import PieChart from 'react-native-pie-chart';
 import {useNavigation} from '@react-navigation/native';

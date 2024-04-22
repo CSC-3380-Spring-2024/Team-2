@@ -1,14 +1,20 @@
+import React, {useEffect} from 'react';
 import {Text, View} from 'react-native';
-import React, {Component} from 'react';
+import {imageParsing} from '../Components/imageParsing';
+import {imageUpload} from '../Components/imageUpload.tsx';
 
-export class NextStepsPage extends Component {
-  render() {
-    return (
-      <View>
-        <Text>NextStepsPage</Text>
-      </View>
-    );
-  }
-}
+const NextStepsPage = ({route}) => {
+  const {imageURL, userUid, budgetUid} = route.params;
+
+  useEffect(() => {
+    imageUpload(image);
+  }, [imageURL, userUid, budgetUid]);
+
+  return (
+    <View>
+      <Text>Display Recognized Text Here</Text>
+    </View>
+  );
+};
 
 export default NextStepsPage;
