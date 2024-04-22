@@ -1,6 +1,7 @@
 import TextRecognition from '@react-native-ml-kit/text-recognition';
 import {db} from '../environment/firebase';
 import {getDoc, doc} from 'firebase/firestore';
+import {imageUpload} from './imageUpload';
 
 export async function imageParsing(userUid, budgetUid) {
   try {
