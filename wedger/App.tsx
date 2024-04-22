@@ -134,7 +134,7 @@ function TabsScreen() {
             <Icon
               name="view-dashboard"
               type="material-community"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -149,7 +149,7 @@ function TabsScreen() {
             <Icon
               name="list"
               type="font-awesome-5"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -164,7 +164,7 @@ function TabsScreen() {
             <Icon
               name="scan1"
               type="antdesign"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -172,7 +172,7 @@ function TabsScreen() {
       <Tabs.Screen
         name="AnalyticsTab"
         component={
-          userData?.subscription === 'paid'
+          userData && userData.subscription === 'paid'
             ? AnalyticsScreen
             : UpgradeSubscriptionScreen
         }
@@ -184,7 +184,7 @@ function TabsScreen() {
               <Icon
                 name="analytics"
                 type="ionicon"
-                color={focused ? theme.colors.white : theme.colors.grey3}
+                color={focused ? theme.colors.primary : theme.colors.grey2}
               />
               {userData && userData.subscription !== 'paid' ? (
                 <View
@@ -218,7 +218,7 @@ function TabsScreen() {
             <Icon
               name="user"
               type="font-awesome"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -243,9 +243,12 @@ function AuthScreen() {
 
 function Navigator() {
   const {isLoggedIn, userRef, loadingAuth, userData} = useAuth();
-  const {loadingBudget} = useBudget();
+  const {loadingBudget, usersBudgets} = useBudget();
   const getScreen = () => {
-    if (loadingBudget || (loadingAuth && userRef === undefined)) {
+    if (
+      (loadingBudget && usersBudgets.length === 0) ||
+      (loadingAuth && userRef === undefined)
+    ) {
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
     }
 
