@@ -1,4 +1,3 @@
-import Slider from '@react-native-community/slider';
 import React, {useState} from 'react';
 import {Button, Modal, StyleSheet, View} from 'react-native';
 import {ColorPicker, fromHsv} from 'react-native-color-picker';

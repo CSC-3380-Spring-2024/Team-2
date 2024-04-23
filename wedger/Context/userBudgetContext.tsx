@@ -1,4 +1,12 @@
-import React, {ReactNode, createContext, useContext, useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   BudgetType,
   EditBudgetType,
@@ -8,14 +16,10 @@ import {
   createBudgetType,
 } from '../Types/BudgetTypes';
 import {
-  DocumentData,
-  DocumentReference,
-  DocumentSnapshot,
   addDoc,
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   updateDoc,
 } from 'firebase/firestore';
@@ -24,46 +28,47 @@ import {db} from '../environment/firebase';
 
 interface BudgetContextType {
   //budget handle
-  createBudget: (
-    obj: createBudgetType,
-  ) => Promise<DocumentReference<DocumentData, DocumentData> | undefined>;
-  editBudget: (
-    obj: EditBudgetType,
-  ) => Promise<DocumentSnapshot<DocumentData, DocumentData> | undefined>;
+  createBudget: (obj: createBudgetType) => void;
+  editBudget: (obj: EditBudgetType) => void;
   deleteBudget: (budgetToDelete: string) => void;
-  getUsersBudgets: () => Promise<BudgetType[] | undefined>;
-  getAllReceipts: (budgetUID: string) => Promise<URL[] | undefined>;
+  getUsersBudgets: () => Promise<BudgetType[]>;
+  getAllReceipts: (budgetUID: string) => Promise<URL[]>;
   //item handle
   getRecept: (receptRefId: string) => void;
-  getItemsExpended: (budgetUID: string) => Promise<ItemObject[] | undefined>;
+  getItemsExpended: (budgetUID: string) => Promise<ItemObject[]>;
   addExpendedItems: (itemsToAdd: addItemObject[], budgetUID: string) => void;
   editExpendedItem: (item: EditItemObject, budgetUID: string) => void;
   deleteExpendedItems: (itemID: string[], budgetUID: string) => void;
   //util
-  searchItems: (search?: string) => Promise<ItemObject[] | undefined>;
+  searchItems: (search?: string) => Promise<ItemObject[]>;
   loadingBudget: boolean;
   userBudgetError: string;
-  usersBudgets: BudgetType[] | undefined;
+  usersBudgets: BudgetType[];
 }
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
 
 export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loadingBudget, setLoadingBudget] = useState<boolean>(false);
-  const [usersBudgets, setUsersBudgets] = useState<BudgetType[] | undefined>();
+  const [_usersBudgets, set_UsersBudgets] = useState<BudgetType[]>([]);
   const [userBudgetError, setUserBudgetError] = useState<string>('');
-  const {userRef} = useAuth();
+  const {userData, userRef} = useAuth();
 
-  // useEffect(() => {
-  //   getCurrentBudgets();
-  // }, [userRef]);
+  const usersBudgets = useMemo(() => {
+    return _usersBudgets;
+  }, [_usersBudgets]);
+
+  useEffect(() => {
+    getCurrentBudgets();
+  }, [userRef]);
 
   const getCurrentBudgets = async () => {
     if (!userRef) {
       return;
     }
     const bugArr = await getUsersBudgets();
-    setUsersBudgets(bugArr);
+    set_UsersBudgets(bugArr);
+    return bugArr;
   };
 
   const createBudget = async (obj: createBudgetType) => {
@@ -110,9 +115,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       };
       const budgetDocRef = doc(db, 'users', userRef.uid, 'budgets', obj.docId);
       await updateDoc(budgetDocRef, editDocData);
-      const updatedBudget = await getDoc(budgetDocRef);
       getCurrentBudgets();
-      return updatedBudget;
     } catch (e: any) {
       console.error(e);
       addError(e.message);
@@ -120,7 +123,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingBudget(false);
     }
   };
-  const deleteBudget = async (budgetToDelete: string): Promise<void> => {
+  const deleteBudget = async (budgetToDelete: string) => {
     setLoadingBudget(true);
     try {
       if (!userRef) {
@@ -142,7 +145,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingBudget(false);
     }
   };
-  const getUsersBudgets = async (): Promise<BudgetType[] | undefined> => {
+  const getUsersBudgets = async (): Promise<BudgetType[]> => {
     setLoadingBudget(true);
     try {
       if (!userRef) {
@@ -156,27 +159,30 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'budgets',
       );
       const docsSnap = await getDocs(budgetCollectionRef);
-      if (docsSnap.empty) return undefined;
-      docsSnap.forEach(doc => {
-        const curDoc = doc.data() as unknown as BudgetType;
-        getItemsExpended(doc.id);
+      if (docsSnap.empty) {
+        console.log('budgets Empty');
+        return BudgetsReturnArray;
+      }
+      docsSnap.forEach(async el => {
+        let curDoc = el.data() as unknown as BudgetType;
+        curDoc.id = el.id;
         BudgetsReturnArray.push(curDoc);
+        // getItemsExpended(el.id);
       });
+      set_UsersBudgets(BudgetsReturnArray);
       return BudgetsReturnArray;
     } catch (e: any) {
-      console.error(e);
       addError(e.message);
     } finally {
       setLoadingBudget(false);
     }
+    return [];
   };
 
   //TODO: implement
-  const getAllReceipts = async (
-    budgetUID: string,
-  ): Promise<URL[] | undefined> => {
+  const getAllReceipts = async (budgetUID: string): Promise<URL[]> => {
     console.log(budgetUID, 'get recipes');
-    return undefined;
+    return [];
   };
 
   //item handle
@@ -186,9 +192,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
     console.log(receptRefId, 'recept id');
   };
 
-  const getItemsExpended = async (
-    budgetUID: string,
-  ): Promise<ItemObject[] | undefined> => {
+  const getItemsExpended = async (budgetUID: string): Promise<ItemObject[]> => {
     setLoadingBudget(true);
     try {
       if (!userRef) {
@@ -204,26 +208,35 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         'expendedItems',
       );
       const docsSnap = await getDocs(budgetItemCollectionRef);
-      if (docsSnap.empty) return undefined;
+      if (docsSnap.empty) {
+        //console.log('Items Empty in', budgetUID);
+        return [];
+      }
       docsSnap.forEach(item => {
-        const currItem = item as unknown as ItemObject;
+        const currItem = item.data() as unknown as ItemObject;
+        //console.log(currItem);
         ItemReturnArray.push(currItem);
       });
 
       // attach to userBudgets
       try {
-        if (usersBudgets) {
-          let tempBudgets = usersBudgets;
+        if (_usersBudgets) {
+          let tempBudgets = [..._usersBudgets];
           const budgetSelectIndex = tempBudgets.findIndex(
             budget => budget.id === budgetUID,
           );
-          tempBudgets[budgetSelectIndex].itemsExpended.concat(ItemReturnArray);
-          setUsersBudgets(tempBudgets);
+          if (budgetSelectIndex !== -1) {
+            tempBudgets[budgetSelectIndex].itemsExpended.concat(
+              ItemReturnArray,
+            );
+            //console.log(tempBudgets[budgetSelectIndex].itemsExpended);
+            
+            set_UsersBudgets(tempBudgets);
+          }
         }
       } catch (e) {
-        console.log(e);
+        console.log(e, 'attach');
       }
-
       //return
       return ItemReturnArray;
     } catch (e: any) {
@@ -232,20 +245,25 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
     } finally {
       setLoadingBudget(false);
     }
+    return [];
   };
 
   const addExpendedItems = async (
     itemsToAdd: addItemObject[],
     budgetUID: string,
-  ): Promise<void> => {
+  ) => {
     setLoadingBudget(true);
     try {
       if (!userRef) {
         throw Error('No User Ref');
       }
-      const currentBudget = usersBudgets?.find(
+      const currentBudget = [..._usersBudgets].find(
         budget => budget.id === budgetUID,
       );
+
+      if (!currentBudget) {
+        console.log('ooof');
+      }
       const budgetItemCollectionRef = collection(
         db,
         'users',
@@ -262,25 +280,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         });
         return tempTotal;
       };
-      const addArrayBuilder = itemsToAdd.map(item => {
-        const tempObj = {
-          name: item.name,
-          cost: item.cost,
-          quantity: item.quantity ? item.quantity : 1,
-          unitCost: item.cost / (item.quantity ? item.quantity : 1),
-          category: item.category ? item.category : {category: 'other'},
-          date: item.date ? item.date : '-1',
-          location: item.location ? item.location : '',
-          paymentType: item.paymentType ? item.paymentType : 'cash',
-          addMethod: item.addMethod,
-          receptRefId: item.receptRefId ? item.receptRefId : '-1',
-          receptRefPhotoURL: item.receptRefPhotoURL
-            ? item.receptRefPhotoURL
-            : '-1',
-          Reoccurring: item.Reoccurring ? item.Reoccurring : false,
-        };
-        return tempObj;
-      });
+      const addArrayBuilder = itemsToAdd;
 
       const tempBudget = {
         spendCurrent: currentSpend(),
@@ -298,10 +298,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingBudget(false);
     }
   };
-  const editExpendedItem = async (
-    item: EditItemObject,
-    budgetUID: string,
-  ): Promise<void> => {
+  const editExpendedItem = async (item: EditItemObject, budgetUID: string) => {
     setLoadingBudget(true);
     try {
       if (!userRef) {
@@ -337,10 +334,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingBudget(false);
     }
   };
-  const deleteExpendedItems = async (
-    itemIDs: string[],
-    budgetUID: string,
-  ): Promise<void> => {
+  const deleteExpendedItems = async (itemIDs: string[], budgetUID: string) => {
     setLoadingBudget(true);
     try {
       if (!userRef) {
@@ -370,12 +364,9 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
   //util
 
   //TODO: implement
-  const searchItems = async (
-    search?: string,
-  ): Promise<ItemObject[] | undefined> => {
+  const searchItems = async (search?: string): Promise<ItemObject[]> => {
     console.log(search, 'search');
-
-    return undefined;
+    return [];
   };
 
   function addError(arg0: string) {

@@ -4,7 +4,7 @@ module.exports = {
     [
       'module:react-native-dotenv',
       {
-        envName: 'APP_ENV',
+        envName: 'wedger',
         moduleName: '@env',
         path: '.env',
         blocklist: null,
@@ -16,5 +16,6 @@ module.exports = {
         verbose: false,
       },
     ],
+    [  'react-native-reanimated/plugin',], //note this plugin MUST be last
   ],
 };

@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   inputContainerStyle: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    backgroundColor: theme.colors.grey5,
+    backgroundColor: theme.colors.background,
     borderRadius: 15,
     borderColor: theme.colors.greyOutline,
     borderWidth: 1,

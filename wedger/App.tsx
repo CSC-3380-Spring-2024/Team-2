@@ -20,11 +20,13 @@ import AnalyticsPage from './Pages/AnalyticsPage';
 import ImageScannerPage from './Pages/ImageScannerPage';
 import ShoppingListPage from './Pages/ShoppingListPage';
 import {AuthProvider, useAuth} from './Context/userAuthContext';
-import {BudgetProvider} from './Context/userBudgetContext';
+import {BudgetProvider, useBudget} from './Context/userBudgetContext';
 import {User} from 'firebase/auth';
 import UpgradePage from './Pages/UpgradePage';
 import {View} from 'react-native';
 import CreateBudgetPage from './Pages/CreateBudgetPage';
+import AddExpensePage from './Pages/AddExpensePage';
+import {ShoppingListProvider} from './Context/userShoppingListContext';
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
@@ -57,6 +59,8 @@ function ScannerScreen() {
   return (
     <ContentStack.Navigator screenOptions={defaultScreenOptions}>
       <ContentStack.Screen name="ScannerHome" component={ImageScannerPage} />
+      <ContentStack.Screen name="NextSteps" component={NextStepsPage} />
+      <ContentStack.Screen name="AddExpensePage" component={AddExpensePage} />
     </ContentStack.Navigator>
   );
 }
@@ -131,7 +135,7 @@ function TabsScreen() {
             <Icon
               name="view-dashboard"
               type="material-community"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -146,7 +150,7 @@ function TabsScreen() {
             <Icon
               name="list"
               type="font-awesome-5"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -161,7 +165,7 @@ function TabsScreen() {
             <Icon
               name="scan1"
               type="antdesign"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -169,7 +173,7 @@ function TabsScreen() {
       <Tabs.Screen
         name="AnalyticsTab"
         component={
-          userData?.subscription === 'paid'
+          userData && userData.subscription === 'paid'
             ? AnalyticsScreen
             : UpgradeSubscriptionScreen
         }
@@ -181,9 +185,9 @@ function TabsScreen() {
               <Icon
                 name="analytics"
                 type="ionicon"
-                color={focused ? theme.colors.white : theme.colors.grey3}
+                color={focused ? theme.colors.primary : theme.colors.grey2}
               />
-              {userData && userData.subscription === 'free' ? (
+              {userData && userData.subscription !== 'paid' ? (
                 <View
                   style={{
                     height: 20,
@@ -215,7 +219,7 @@ function TabsScreen() {
             <Icon
               name="user"
               type="font-awesome"
-              color={focused ? theme.colors.white : theme.colors.grey3}
+              color={focused ? theme.colors.primary : theme.colors.grey2}
             />
           ),
         }}
@@ -240,8 +244,12 @@ function AuthScreen() {
 
 function Navigator() {
   const {isLoggedIn, userRef, loadingAuth, userData} = useAuth();
+  const {loadingBudget, usersBudgets} = useBudget();
   const getScreen = () => {
-    if (loadingAuth && userRef === undefined) {
+    if (
+      (loadingBudget && usersBudgets.length === 0) ||
+      (loadingAuth && userRef === undefined)
+    ) {
       return <ContentStack.Screen name="Loading" component={LoadingScreen} />;
     }
 
@@ -265,9 +273,11 @@ function App(): React.JSX.Element {
     <ThemeProvider theme={customTheme}>
       <AuthProvider>
         <BudgetProvider>
-          <NavigationContainer>
-            <Navigator />
-          </NavigationContainer>
+          <ShoppingListProvider>
+            <NavigationContainer>
+              <Navigator />
+            </NavigationContainer>
+          </ShoppingListProvider>
         </BudgetProvider>
       </AuthProvider>
     </ThemeProvider>
