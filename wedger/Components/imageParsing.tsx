@@ -1,7 +1,9 @@
+// function requires a URL, cannot decode from base64 data, implement Firebase Storage
+
 import TextRecognition from '@react-native-ml-kit/text-recognition';
 import {db} from '../environment/firebase';
 import {getDoc, doc} from 'firebase/firestore';
-import {imageUpload} from './imageUpload.tsx';
+import {ImageUpload} from './imageUpload.tsx';
 
 export async function imageParsing(
   userUid: string,
@@ -11,7 +13,7 @@ export async function imageParsing(
   try {
     const docRefPath = `users/${userUid}/budgets/${budgetUid}/imageData`;
 
-    const imageURL = await imageUpload({image, userUid, budgetUid});
+    const imageURL = await ImageUpload({image, userUid, budgetUid});
 
     if (!imageURL) {
       console.error('Failed to upload image');

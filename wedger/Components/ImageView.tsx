@@ -1,40 +1,36 @@
 import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {Text, Image, View, StyleSheet} from 'react-native';
 
-export function imageView({image}) {
+const ImageView = ({image, imageURL}) => {
   return (
-    <View style={styles.imageContainer}>
+    <View style={styles.container}>
       {image && (
         <Image
-          style={styles.imageBox}
-          source={{uri: `data:${image.mime};base64,${image.data}`}}
+          source={{uri: image.path}}
+          style={styles.image}
+          resizeMode="contain"
         />
       )}
+      {imageURL && <Text style={styles.imageURL}>{imageURL}</Text>}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    marginTop: 8,
-    marginBottom: 8,
-    alignSelf: 'center',
-    width: 300,
-    height: 380,
+  container: {
+    flex: 1,
     alignItems: 'center',
-    alignContent: 'center',
+    justifyContent: 'center',
   },
-  imageBox: {
-    marginTop: 32,
-    marginBottom: 8,
-    borderWidth: 8,
-    borderColor: '#FFFFFF',
-    borderRadius: 30,
-    backgroundColor: '#FFFFFF',
-    width: 240,
-    height: 320,
-    resizeMode: 'contain',
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  imageURL: {
+    fontSize: 14,
+    color: 'blue',
   },
 });
 
-export default imageView;
+export default ImageView;

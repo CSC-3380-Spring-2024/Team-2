@@ -27,6 +27,8 @@ import {View} from 'react-native';
 import CreateBudgetPage from './Pages/CreateBudgetPage';
 import AddExpensePage from './Pages/AddExpensePage';
 import {ShoppingListProvider} from './Context/userShoppingListContext';
+import {decode} from 'base-64';
+(global as any).atob = decode;
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
