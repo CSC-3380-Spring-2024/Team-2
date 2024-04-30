@@ -1,7 +1,9 @@
 import storage from '@react-native-firebase/storage';
+import {useAuth} from '../Context/userAuthContext.tsx';
 
-async function ImageUpload(image: string, userRef: any) {
-  if (userRef) {
+async function ImageUpload(image: string) {
+  const {userData} = useAuth();
+  if (userData) {
     try {
       const reference = storage().ref('images').child(Date.now().toString());
 

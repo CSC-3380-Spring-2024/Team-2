@@ -17,19 +17,24 @@ import {useAuth} from '../Context/userAuthContext';
 export function ImageScannerPage() {
   const [image, setImageData] = useState<any>(undefined);
   const navigation = useNavigation();
-  const {userRef} = useAuth();
+  const {uid} = useAuth();
+  console.log(uid); // debug auth
 
   const handleConfirm = async () => {
-    if (userRef && image) {
-      try {
-        const imageURL = await ImageUpload(image.data, userRef);
+    if (image) {
+      if (uid) {
+        try {
+          const imageURL = await ImageUpload(image.data);
 
-        navigation.navigate('NextSteps');
-      } catch (error) {
-        console.error('Error uploading image or adding document:', error);
+          navigation.navigate('NextSteps');
+        } catch (error) {
+          console.error('Error uploading image or adding document:', error);
+        }
+      } else {
+        console.log('User auth check failed.');
       }
     } else {
-      console.log('User reference is undefined or image is not selected.');
+      console.log('Image not found');
     }
   };
 
