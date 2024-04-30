@@ -1,24 +1,18 @@
-import {addDoc, collection, getDoc} from 'firebase/firestore';
-import {db} from '../environment/firebase';
+import storage from '@react-native-firebase/storage';
 
-export const ImageUpload = async (setImage: string): Promise<string> => {
-  try {
-    const base64Data = setImage;
+async function ImageUpload(image: string, userRef: any) {
+  if (userRef) {
+    try {
+      const reference = storage().ref('images').child(Date.now().toString());
 
-    const imagesCollectionRef = collection(db, 'images');
-    const docRef = await addDoc(imagesCollectionRef, {imageData: base64Data});
+      await reference.putString(image, 'base64');
 
-    const docSnapshot = await getDoc(docRef);
-    if (docSnapshot.exists()) {
-      const imageURL = docSnapshot.data().imageData;
-      console.log('Image URL:', imageURL);
-      return imageURL;
-    } else {
-      throw new Error('Uploaded image document does not exist.');
+      return await reference.getDownloadURL();
+    } catch (error) {
+      throw new Error('Error uploading image: ' + error);
     }
-  } catch (error) {
-    console.error('Cannot proceed:', error);
-    throw error;
+  } else {
+    console.log('User auth check failed');
   }
 };
 

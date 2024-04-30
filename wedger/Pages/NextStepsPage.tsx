@@ -1,33 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {ImageUpload} from '../Components/imageUpload.tsx';
-import getImage from '../Components/getImage';
 import {LinearGradient} from 'react-native-linear-gradient';
 
-const NextStepsPage = ({route}) => {
-  useEffect(() => {
-    const {imageURL} = route.params || {};
-    if (imageURL) {
-      processImageData(imageURL);
-    } else {
-      console.error('No imageURL provided in route params.');
-    }
-  }, [route.params]);
-
-  const processImageData = async (imageURL: string) => {
-    try {
-      const data = await getImage(imageURL);
-      if (data) {
-        await ImageUpload(data);
-        console.log('Image uploaded successfully.');
-      } else {
-        console.error('No image data received.');
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-  };
-
+export function NextStepsPage() {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -39,7 +14,7 @@ const NextStepsPage = ({route}) => {
       </LinearGradient>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

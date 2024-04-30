@@ -28,7 +28,7 @@ import CreateBudgetPage from './Pages/CreateBudgetPage';
 import AddExpensePage from './Pages/AddExpensePage';
 import {ShoppingListProvider} from './Context/userShoppingListContext';
 import {decode} from 'base-64';
-(global as any).atob = decode;
+(global as any).atob = decode; // base 64 decode param, will not be needed after fb storage refactoring
 
 const ContentStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
