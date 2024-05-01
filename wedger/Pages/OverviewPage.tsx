@@ -95,15 +95,6 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
     totalSliceSpent.value = withTiming(spent, {duration: 1000});
     deciamls.value = [...decimalSlice];
     setSlice(sliceData);
-
-  //   console.log({
-  //     sliceData,
-  //     generateSlice,
-  //     total,
-  //     spent,
-  //     percentages,
-  //     decimalSlice,
-  //   });
     };
 
   const [currentBudgetName, setBudgetName] = useState<string | undefined>('');
@@ -187,7 +178,6 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
   }
   async function getItems() {
     if (budget.id) {
-      //console.log('ran');
       await getItemsExpended(budget.id).then(el => setCurrentExpenseItems(el));
     }
   }
