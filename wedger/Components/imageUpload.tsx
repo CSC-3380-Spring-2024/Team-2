@@ -14,23 +14,42 @@ export async function ImageUpload(image: string): Promise<string> {
   }
 }
 
-export async function ImageParsing(imageURL: any): Promise<string[]> {
+export async function ImageParsing(
+  imageURL: any,
+): Promise<{item: string; price: string}[]> {
   try {
     if (imageURL) {
       console.log('Retrieved imageURL:', imageURL);
 
       const result = await TextRecognition.recognize(imageURL);
-      const recognizedLines: string[] = [];
+      const itemsAndPrices: {item: string; price: string}[] = [];
 
       for (let block of result.blocks) {
+        let foundPriceInBlock = false;
+
         for (let line of block.lines) {
-          recognizedLines.push(line.text);
+          const itemPriceRegex = /^(.*?)\s*\$?\s*([\d.]+)$/; //using regex for filtering, but not working very well :/
+
+          const match = line.text.match(itemPriceRegex);
+
+          if (match && match.length === 3) {
+            const itemName = match[1].trim(); // Extract item name
+            const price = match[2].trim(); // Extract price
+
+            itemsAndPrices.push({item: itemName, price: price});
+
+            foundPriceInBlock = true;
+          }
+        }
+
+        if (foundPriceInBlock) {
+          break;
         }
       }
 
-      console.log('Recognized text lines:', recognizedLines);
+      console.log('Extracted items and prices:', itemsAndPrices);
 
-      return recognizedLines;
+      return itemsAndPrices;
     } else {
       console.error('Invalid data structure or imageURL not found');
       return [];

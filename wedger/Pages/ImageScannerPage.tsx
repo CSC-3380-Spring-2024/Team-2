@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   image: {
-    width: 500,
-    height: 500,
+    width: 380,
+    height: 400,
     resizeMode: 'contain',
   },
 });
