@@ -81,7 +81,7 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
     const percentageTotal = 100 - percentageSpent;
     const decimalSlice = [percentageTotal / 100, percentageSpent / 100];
     const percentages = [percentageSpent, percentageTotal];
-    const revcolors = ['#7FB5C1', '#2F88bd'];
+    const revcolors = ['#7FB5C1', budget.labelColor];
     const values = [spent, total - spent]
 
     const sliceData = generateSlice.map((value, index) => ({
@@ -105,7 +105,7 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
   );
   const Seperator = () => <View style={seperatorStyles} />;
   const [expenseModalOpen, setExpenseModalOpen] = useState<boolean>(false);
-  const colors = ["#2F88bd", "#7FB5C1"]; //#7FB5C1, #C4D2DF, #2F88bd color for original blue
+  const colors = [budget.labelColor, "#7FB5C1"]; //#7FB5C1, #C4D2DF, #2F88bd color for original blue
 
   useEffect(() => {
     getItems();
@@ -219,7 +219,7 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
             </View>
             <Text
               style={{
-                color: currentLabelColor,
+                color: 'black',
                 marginTop: 0,
                 marginBottom: 8,
                 textAlign: 'center',
@@ -363,6 +363,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 42,
     fontWeight: 'bold',
+    color: 'black',
   },
   header2: {
     marginTop: 8,
@@ -370,6 +371,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
+    color: 'black',
   },
   header3: {
     marginTop: 8,
