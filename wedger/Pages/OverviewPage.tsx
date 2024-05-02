@@ -12,13 +12,12 @@ import {
 import React, {useEffect, useState} from 'react';
 import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
-import PieChart from 'react-native-pie-chart';
 import {useNavigation} from '@react-navigation/native';
 import {useBudget} from '../Context/userBudgetContext';
 import {useSharedValue, withTiming} from 'react-native-reanimated';
 import RenderItem from '../Components/RenderItem';
 import DonutChart from '../Components/DonutChart';
-import {useFont} from '@shopify/react-native-skia';
+import {Color, useFont} from '@shopify/react-native-skia';
 import CarouselCards from '../Components/Carousel/CarouselCards';
 import {BudgetType, ItemObject} from '../Types/BudgetTypes';
 import ExpenseItem from '../Components/ExpenseItem';
@@ -73,7 +72,6 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
   const totalSliceValue = useSharedValue(0);
   const totalSliceSpent = useSharedValue(0);
   const deciamls = useSharedValue<number[]>([]);
-  const colors = ['#2F88bd', '#7FB5C1']; //#7FB5C1, #C4D2DF, #2F88bd color for original blue
 
   const generateSlice = () => {
     const generateSlice = [sliceAmountSpent, sliceTotalBudget];
@@ -84,9 +82,10 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
     const decimalSlice = [percentageTotal / 100, percentageSpent / 100];
     const percentages = [percentageSpent, percentageTotal];
     const revcolors = ['#7FB5C1', '#2F88bd'];
+    const values = [spent, total - spent]
 
     const sliceData = generateSlice.map((value, index) => ({
-      value,
+      value: values[index],
       percentage: percentages[index],
       color: revcolors[index],
     }));
@@ -100,15 +99,13 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
   const [currentBudgetName, setBudgetName] = useState<string | undefined>('');
   const [sliceTotalBudget, setSliceTotal] = useState<number>(0);
   const [sliceAmountSpent, setSliceSpent] = useState<number>(0);
-  const [currentAmountLeft, setAmountLeft] = useState<number | string>(0);
-  const [currentLabelColor, setLabelColor] = useState<string | ColorValue>(
-    '#000',
-  );
+  const [currentLabelColor, setLabelColor] = useState<string | ColorValue>('#000',);
   const [currentExpenseItems, setCurrentExpenseItems] = useState<ItemObject[]>(
     [],
   );
   const Seperator = () => <View style={seperatorStyles} />;
   const [expenseModalOpen, setExpenseModalOpen] = useState<boolean>(false);
+  const colors = ["#2F88bd", "#7FB5C1"]; //#7FB5C1, #C4D2DF, #2F88bd color for original blue
 
   useEffect(() => {
     getItems();
@@ -117,12 +114,10 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
     setBudgetName(getBudgetName());
     setSliceTotal(getTotal());
     setSliceSpent(getAmountSpent());
-    setAmountLeft(getAmountRemaining());
   }, [budget]);
 
   useEffect(() => {
     if (sliceTotalBudget && sliceAmountSpent || sliceAmountSpent === 0) generateSlice();
-    console.log('im running', sliceAmountSpent)
   }, [sliceTotalBudget, sliceAmountSpent, budget, currentExpenseItems]);
 
   // Have functions inside page function and above return statement
@@ -167,15 +162,6 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
     }
   }
 
-  function getAmountRemaining() {
-    if (budget.spendTarget === budget.spendCurrent) {
-      return 0;
-    } else {
-      const amountSpent: number = budget.spendCurrent;
-      const totalAmount: number = budget.spendTarget;
-      return totalAmount - amountSpent;
-    }
-  }
   async function getItems() {
     if (budget.id) {
       await getItemsExpended(budget.id).then(el => setCurrentExpenseItems(el));
@@ -197,7 +183,6 @@ const OverviewCardComponent = (props: OverviewCardComponentProps) => {
       return spent;
     }
   }
-
   if (!font || !smallFont) {
     return <View />;
   }

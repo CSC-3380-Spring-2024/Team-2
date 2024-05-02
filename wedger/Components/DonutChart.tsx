@@ -3,7 +3,6 @@ import React from "react";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { Canvas, Path, SkFont, Skia, Text,} from "@shopify/react-native-skia";
 import DonutPath from "./DonutPath";
-import { color } from "@rneui/base";
 
 type Props = {
     radius: number;
