@@ -17,7 +17,7 @@ import {
 } from '../Components/ProfileIconButton.tsx';
 
 const ProfilePage = () => {
-  const { logout, userData } = useAuth();
+  const userData = useAuth();
   const [loading, setLoading] = useState(true);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isNotificationModalVisible, setIsNotificationModalVisible] = useState(false);
@@ -138,7 +138,7 @@ const ProfilePage = () => {
     <ScrollView contentContainerStyle={dynamicStyles.container}>
 
       <View style={styles.header}>
-        <Text style={dynamicStyles.welcomeText}>Welcome, {newUserName} </Text>
+        <Text style={dynamicStyles.welcomeText}>Welcome, {} </Text>
         <Text style={dynamicStyles.theFeatures}>Features</Text>
 
         {/* Edit Info Button */}
