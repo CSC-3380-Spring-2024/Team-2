@@ -17,7 +17,7 @@ import {
 } from '../Components/ProfileIconButton.tsx';
 
 const ProfilePage = () => {
-  const userData = useAuth();
+  const {logout, userData} = useAuth();
   const [loading, setLoading] = useState(true);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isNotificationModalVisible, setIsNotificationModalVisible] = useState(false);
