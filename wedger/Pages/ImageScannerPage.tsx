@@ -11,22 +11,24 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {LinearGradient} from 'react-native-linear-gradient';
 import StyledButton from '../Components/StyledButton';
 import {useNavigation} from '@react-navigation/native';
-import ImageUpload from '../Components/imageUpload.tsx';
+import {ImageUpload} from '../Components/imageUpload.tsx';
 import {useAuth} from '../Context/userAuthContext';
+import {ImageParsing} from '../Components/imageUpload.tsx';
 
 export function ImageScannerPage() {
   const [image, setImageData] = useState<any>(undefined);
   const navigation = useNavigation();
-  const {uid} = useAuth();
-  console.log(uid); // debug auth
+  const {isLoggedIn} = useAuth();
+  console.log(isLoggedIn); // debug auth
 
   const handleConfirm = async () => {
     if (image) {
-      if (uid) {
+      if (isLoggedIn) {
         try {
           const imageURL = await ImageUpload(image.data);
+          const parsedData = await ImageParsing(imageURL);
 
-          navigation.navigate('NextSteps');
+          navigation.navigate('NextSteps', {parsedData: parsedData});
         } catch (error) {
           console.error('Error uploading image or adding document:', error);
         }
@@ -47,7 +49,9 @@ export function ImageScannerPage() {
       useFrontCamera: false,
     })
       .then(image => {
-        if (!image) return;
+        if (!image) {
+          return;
+        }
         setImageData(image);
         console.log(image);
       })
@@ -66,7 +70,9 @@ export function ImageScannerPage() {
       cancelButtonTitle: 'Cancel',
     })
       .then(image => {
-        if (!image) return;
+        if (!image) {
+          return;
+        }
         setImageData(image);
         console.log(image);
       })
@@ -84,7 +90,12 @@ export function ImageScannerPage() {
           <Text style={styles.header1}>Receipt Scanner</Text>
         </View>
         <View style={styles.content}>
-          {image && <Image source={{uri: `data:${image.mime};base64,${image.data}`}} style={styles.image} />}
+          {image && (
+            <Image
+              source={{uri: `data:${image.mime};base64,${image.data}`}}
+              style={styles.image}
+            />
+          )}
         </View>
         {image && (
           <TouchableOpacity style={styles.button} onPress={handleConfirm}>

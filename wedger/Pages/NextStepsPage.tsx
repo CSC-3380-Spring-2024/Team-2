@@ -2,7 +2,8 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {LinearGradient} from 'react-native-linear-gradient';
 
-export function NextStepsPage() {
+export function NextStepsPage({route}) {
+  const {parsedData} = route.params;
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
