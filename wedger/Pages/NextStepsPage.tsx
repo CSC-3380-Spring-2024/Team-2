@@ -3,7 +3,7 @@ import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {LinearGradient} from 'react-native-linear-gradient';
 
 export function NextStepsPage({route}) {
-  const {parsedData} = route.params;
+  const {parsedData} = route.params; // leaving incomplete until I create a custom trained model for parsing (long term goal)
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient

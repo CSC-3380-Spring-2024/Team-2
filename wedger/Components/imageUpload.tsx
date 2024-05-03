@@ -28,13 +28,13 @@ export async function ImageParsing(
         let foundPriceInBlock = false;
 
         for (let line of block.lines) {
-          const itemPriceRegex = /^(.*?)\s*\$?\s*([\d.]+)$/; //using regex for filtering, but not working very well :/
+          const itemPriceRegex = /^(.*?)\s*\$?\s*([\d.]+)$/; //using regex for filtering, future goal will be to use a custom trained model
 
           const match = line.text.match(itemPriceRegex);
 
           if (match && match.length === 3) {
-            const itemName = match[1].trim(); // Extract item name
-            const price = match[2].trim(); // Extract price
+            const itemName = match[1].trim();
+            const price = match[2].trim();
 
             itemsAndPrices.push({item: itemName, price: price});
 

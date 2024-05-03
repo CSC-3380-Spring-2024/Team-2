@@ -28,7 +28,7 @@ export function ImageScannerPage() {
           const imageURL = await ImageUpload(image.data);
           const parsedData = await ImageParsing(imageURL);
 
-          navigation.navigate('NextSteps', {parsedData: parsedData});
+          navigation.navigate('NextSteps');
         } catch (error) {
           console.error('Error uploading image or adding document:', error);
         }
