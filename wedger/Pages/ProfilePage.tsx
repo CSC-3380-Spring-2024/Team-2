@@ -103,13 +103,6 @@ const ProfilePage = () => {
       fontWeight: 'bold',
       color: theme === 'light' ? '#000000' : '#FFFFFF',
     },
-    thePrivacy: {
-      marginTop: 15,
-      marginBottom: 20,
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: theme === 'light' ? '#000000' : '#FFFFFF',
-    },
   });
 
   const handleEditInfo = () => {
@@ -135,29 +128,12 @@ const ProfilePage = () => {
   const handleCloseNotificationModal = () => {
     setIsNotificationModalVisible(false);
   };
-
-  const handleSettings = () => {
-    setIsSettingModalVisible(true);
-  };
-
-  const handleCloseSettingsModal = () => {
-    setIsSettingModalVisible(false);
-  };
-
   const handleOpenAppearenceModal = () => {
     setIsAppearenceModalVisible(true);
   };
 
   const handleCloseAppearenceModal = () => {
     setIsAppearenceModalVisible(false);
-  };
-
-  const handleOpenDevicesModal = () => {
-    setIsDevicesModalVisible(true);
-  };
-
-  const handleCloseDevicesModal = () => {
-    setIsDevicesModalVisible(false);
   };
 
   const enableNotifications = () => {
@@ -198,27 +174,10 @@ const ProfilePage = () => {
           iconColor="#000"
         />
 
-        {/* Settings, Appearance, Privacy, Devices Icons */}
-        <AntIcon
-          onPress={handleSettings}
-          iconName="setting"
-          text="Settings"
-          iconSize={24}
-          iconColor="#000"
-        />
         <EntypoIcon
           onPress={handleOpenAppearenceModal}
           iconName="light-up"
           text="Appearance"
-          iconSize={24}
-          iconColor="#000"
-        />
-
-        <Text style={dynamicStyles.thePrivacy}>Privacy</Text>
-        <FeatherIcon
-          onPress={handleOpenDevicesModal}
-          iconName="smartphone"
-          text="Devices"
           iconSize={24}
           iconColor="#000"
         />
@@ -282,25 +241,6 @@ const ProfilePage = () => {
         </View>
       </Modal>
 
-      {/* Settings Modal */}
-      <Modal
-        visible={isSettingModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleCloseSettingsModal}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.buttonTitle}>Settings</Text>
-            <Text>Setting options go here</Text>
-            <View style={styles.modalButtons}>
-              <StyledButton onPress={handleCloseSettingsModal}>
-                Close
-              </StyledButton>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
       {/* Appearance Modal */}
       <Modal
         visible={isAppearenceModalVisible}
@@ -327,25 +267,6 @@ const ProfilePage = () => {
                 Midnight (OLED)
               </StyledButton>
               <StyledButton onPress={handleCloseAppearenceModal}>Close</StyledButton>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Devices Modal */}
-      <Modal
-        visible={isDevicesModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleCloseDevicesModal}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.buttonTitle}>Devices Settings</Text>
-            <Text>Devices functions go here</Text>
-            <View style={styles.modalButtons}>
-              <StyledButton onPress={handleCloseDevicesModal}>
-                Close
-              </StyledButton>
             </View>
           </View>
         </View>
