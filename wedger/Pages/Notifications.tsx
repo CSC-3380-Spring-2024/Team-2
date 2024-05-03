@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {collection, doc, getDoc} from 'firebase/firestore';
+import {
+  collection,
+  query,
+  doc,
+  getDoc,
+  getDocs,
+  where,
+} from 'firebase/firestore';
 import {useAuth} from '../Context/userAuthContext';
 import {db} from '../environment/firebase';
 import {View, Button} from 'react-native';
@@ -14,8 +21,8 @@ async function Screen() {
   });
 
   await notifee.displayNotification({
-    title: 'Notification Title',
-    body: 'Main body content of the notification',
+    title: 'Watch Out!',
+    body: 'You are almost at your budget limit',
     android: {
       channelId,
       pressAction: {
@@ -25,31 +32,42 @@ async function Screen() {
   });
 }
 
-function Notifications(budgetUID: string) {
+async function Notifications(budgetUID: string) {
   const {getSpendGoal} = useBudget();
   const {userRef} = useAuth();
   const [_usersBudgets, setUsersBudgets] = useState<BudgetType[]>([]);
 
-  // commenting this out for now
-  /*useEffect(() => {
-    getSpendGoal(budgetUID);
-    const unsubscribe = collection(
-      db,
-      'users',
-      userRef.uid,
-      'budgets',
-      budgetUID,
-      'expendedItems',
-    );
-    const updatedBudgets: BudgetType[] = [];
-    // i forgot how to grab snapshots from db but this is the general idea
-    snapshot.forEach(doc => {
-      updatedBudgets.push({...doc.data(), id: doc.id} as BudgetType);
-    });
-    setUsersBudgets(updatedBudgets);
+  const docRef = await collection(
+    db,
+    'users',
+    userRef?.uid,
+    'budgets',
+    budgetUID,
+  );
 
-    return () => unsubscribe();
-  }, [budgetUID, getSpendGoal, userRef]); */
+  const snapshot = await getDocs();
+  snapshot.forEach(doc => {});
+
+  function listenTo() {
+    if (userRef) {
+      getSpendGoal(budgetUID);
+      const unsubscribe = collection(
+        db,
+        'users',
+        userRef.uid,
+        'budgets',
+        budgetUID,
+        'expendedItems',
+      );
+      const updatedBudgets: BudgetType[] = [];
+      snapshot.forEach(doc => {
+        updatedBudgets.push({id: doc.id} as BudgetType);
+      });
+      setUsersBudgets(updatedBudgets);
+
+      return unsubscribe;
+    }
+  }
 
   useEffect(() => {
     if (_usersBudgets.length > 0) {
