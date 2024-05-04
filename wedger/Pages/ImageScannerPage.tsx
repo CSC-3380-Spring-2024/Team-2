@@ -5,29 +5,54 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import StyledButton from '../Components/StyledButton';
 import {LinearGradient} from 'react-native-linear-gradient';
-import ImageView from '../Components/ImageView.tsx';
+import StyledButton from '../Components/StyledButton';
 import {useNavigation} from '@react-navigation/native';
-import {imageUpload} from '../Components/imageUpload.tsx';
+import {ImageUpload} from '../Components/imageUpload.tsx';
+import {useAuth} from '../Context/userAuthContext';
+import {ImageParsing} from '../Components/imageUpload.tsx';
 
 export function ImageScannerPage() {
-  const [image, setImage] = useState<any>(null);
-  const [imageURL, setImageURL] = useState<string | null>(null);
+  const [image, setImageData] = useState<any>(undefined);
   const navigation = useNavigation();
+  const {isLoggedIn} = useAuth();
+  console.log(isLoggedIn); // debug auth
+
+  const handleConfirm = async () => {
+    if (image) {
+      if (isLoggedIn) {
+        try {
+          const imageURL = await ImageUpload(image.data);
+          const parsedData = await ImageParsing(imageURL);
+
+          navigation.navigate('NextSteps');
+        } catch (error) {
+          console.error('Error uploading image or adding document:', error);
+        }
+      } else {
+        console.log('User auth check failed.');
+      }
+    } else {
+      console.log('Image not found');
+    }
+  };
 
   const openGallery = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
       cropping: true,
-      compressImageQuality: 0.5,
+      compressImageQuality: 0.1,
       includeBase64: true,
       useFrontCamera: false,
     })
       .then(image => {
-        setImage(image);
+        if (!image) {
+          return;
+        }
+        setImageData(image);
         console.log(image);
       })
       .catch(error => {
@@ -37,32 +62,23 @@ export function ImageScannerPage() {
 
   const openCamera = () => {
     ImagePicker.openCamera({
+      mediaType: 'photo',
       cropping: true,
-      compressImageQuality: 0.5,
+      compressImageQuality: 0.1,
       includeBase64: true,
       useNativeDriver: false,
       cancelButtonTitle: 'Cancel',
     })
       .then(image => {
-        setImage(image);
+        if (!image) {
+          return;
+        }
+        setImageData(image);
         console.log(image);
       })
       .catch(error => {
         console.log('Cancelled camera operation', error);
       });
-  };
-
-  const sailTo = () => {
-    if (image) {
-      imageUpload(image)
-        .then(url => {
-          setImageURL(url);
-          navigation.navigate('NextSteps'); // firestore needs fixing, currently crashes app
-        })
-        .catch(error => {
-          console.log('Error uploading image:', error);
-        });
-    }
   };
 
   return (
@@ -74,11 +90,15 @@ export function ImageScannerPage() {
           <Text style={styles.header1}>Receipt Scanner</Text>
         </View>
         <View style={styles.content}>
-          <ImageView image={image} />
-          {imageURL && <Text style={styles.imageURL}>{imageURL}</Text>}
+          {image && (
+            <Image
+              source={{uri: `data:${image.mime};base64,${image.data}`}}
+              style={styles.image}
+            />
+          )}
         </View>
         {image && (
-          <TouchableOpacity style={styles.button} onPress={sailTo}>
+          <TouchableOpacity style={styles.button} onPress={handleConfirm}>
             <Text style={styles.buttonText}>Confirm</Text>
           </TouchableOpacity>
         )}
@@ -151,10 +171,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  imageURL: {
-    marginTop: 10,
-    fontSize: 14,
-    color: 'blue',
+  image: {
+    width: 380,
+    height: 400,
+    resizeMode: 'contain',
   },
 });
 
