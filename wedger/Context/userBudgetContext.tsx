@@ -44,6 +44,7 @@ interface BudgetContextType {
   loadingBudget: boolean;
   userBudgetError: string;
   usersBudgets: BudgetType[];
+  getSpendGoal: (budgetUID: string) => Promise<BudgetType[]>;
 }
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
@@ -358,6 +359,11 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setLoadingBudget(false);
     }
   };
+  const getSpendGoal = (budgetUID: string): number | undefined => {
+    const budget = _usersBudgets.find(budget => budget.id === budgetUID);
+    return budget ? budget.spendTarget : undefined;
+  };
+
   //util
 
   //TODO: implement
@@ -389,6 +395,7 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
         searchItems,
         loadingBudget,
         userBudgetError,
+        getSpendGoal,
       }}>
       {children}
     </BudgetContext.Provider>

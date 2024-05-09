@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,39 +8,77 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { useAuth } from '../Context/userAuthContext';
+import {useAuth} from '../Context/userAuthContext';
 import StyledButton from '../Components/StyledButton';
 import {
   AntIcon,
   EntypoIcon,
   FeatherIcon,
 } from '../Components/ProfileIconButton.tsx';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
+import {db} from '../environment/firebase.ts';
 
 const ProfilePage = () => {
-  const { logout, userData } = useAuth();
+  const {logout, userRef, userData} = useAuth();
   const [loading, setLoading] = useState(true);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isNotificationModalVisible, setIsNotificationModalVisible] = useState(false);
+  const [isNotificationModalVisible, setIsNotificationModalVisible] =
+    useState(false);
   const [isSettingModalVisible, setIsSettingModalVisible] = useState(false);
-  const [isAppearenceModalVisible, setIsAppearenceModalVisible] = useState(false);
+  const [isAppearenceModalVisible, setIsAppearenceModalVisible] =
+    useState(false);
   const [isDevicesModalVisible, setIsDevicesModalVisible] = useState(false);
+  const [userName, setUserName] = useState('');
   const [newUserName, setNewUserName] = useState('');
   const [newUserEmail, setNewUserEmail] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [theme, setTheme] = useState('light'); // Theme state
+  const [theme, setTheme] = useState('light');
 
-  useEffect(() => {
-    if (userData) {
-      setNewUserName(userData.name);
-      setNewUserEmail(userData.email);
+  const updateUserName = async (newName: string) => {
+    if (loading) {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [userData]);
+    if (userRef) {
+      try {
+        await setDoc(
+          doc(db, 'users', userRef.uid),
+          {name: newName},
+          {merge: true},
+        );
+        setNewUserName('');
+      } catch (error) {
+        console.error("Error updating user's name:", error);
+      }
+    }
+  };
+  // function to allow name change
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
   };
+
+  useEffect(() => {
+    fetchUserName();
+  }, []);
+
+  const fetchUserName = async () => {
+    try {
+      const userDocRef = doc(db, 'users', userRef.uid);
+      const docSnapshot = await getDoc(userDocRef);
+      if (docSnapshot.exists()) {
+        const userData = docSnapshot.data();
+        setUserName(userData.name);
+      } else {
+        console.error('User document does not exist');
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user name:', error);
+      setLoading(false);
+    }
+  };
+  // fetches the user's name from their docRef
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -65,13 +103,6 @@ const ProfilePage = () => {
       fontWeight: 'bold',
       color: theme === 'light' ? '#000000' : '#FFFFFF',
     },
-    thePrivacy: {
-      marginTop: 15,
-      marginBottom: 20,
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: theme === 'light' ? '#000000' : '#FFFFFF',
-    },
   });
 
   const handleEditInfo = () => {
@@ -80,7 +111,9 @@ const ProfilePage = () => {
 
   const handleSaveChanges = () => {
     console.log('New Username:', newUserName);
+    updateUserName(newUserName);
     console.log('New Email:', newUserEmail);
+    fetchUserName(); // fetches updated username
     setIsEditModalVisible(false);
   };
 
@@ -95,29 +128,12 @@ const ProfilePage = () => {
   const handleCloseNotificationModal = () => {
     setIsNotificationModalVisible(false);
   };
-
-  const handleSettings = () => {
-    setIsSettingModalVisible(true);
-  };
-
-  const handleCloseSettingsModal = () => {
-    setIsSettingModalVisible(false);
-  };
-
   const handleOpenAppearenceModal = () => {
     setIsAppearenceModalVisible(true);
   };
 
   const handleCloseAppearenceModal = () => {
     setIsAppearenceModalVisible(false);
-  };
-
-  const handleOpenDevicesModal = () => {
-    setIsDevicesModalVisible(true);
-  };
-
-  const handleCloseDevicesModal = () => {
-    setIsDevicesModalVisible(false);
   };
 
   const enableNotifications = () => {
@@ -136,9 +152,8 @@ const ProfilePage = () => {
 
   return (
     <ScrollView contentContainerStyle={dynamicStyles.container}>
-
       <View style={styles.header}>
-        <Text style={dynamicStyles.welcomeText}>Welcome, {newUserName} </Text>
+        <Text style={dynamicStyles.welcomeText}>Welcome, {userName}</Text>
         <Text style={dynamicStyles.theFeatures}>Features</Text>
 
         {/* Edit Info Button */}
@@ -159,27 +174,10 @@ const ProfilePage = () => {
           iconColor="#000"
         />
 
-        {/* Settings, Appearance, Privacy, Devices Icons */}
-        <AntIcon
-          onPress={handleSettings}
-          iconName="setting"
-          text="Settings"
-          iconSize={24}
-          iconColor="#000"
-        />
         <EntypoIcon
           onPress={handleOpenAppearenceModal}
           iconName="light-up"
           text="Appearance"
-          iconSize={24}
-          iconColor="#000"
-        />
-
-        <Text style={dynamicStyles.thePrivacy}>Privacy</Text>
-        <FeatherIcon
-          onPress={handleOpenDevicesModal}
-          iconName="smartphone"
-          text="Devices"
           iconSize={24}
           iconColor="#000"
         />
@@ -201,7 +199,7 @@ const ProfilePage = () => {
             <Text style={styles.buttonTitle}>Edit Info</Text>
             <TextInput
               style={styles.input}
-              placeholder="Username"
+              placeholder="Name"
               value={newUserName}
               onChangeText={setNewUserName}
             />
@@ -232,25 +230,12 @@ const ProfilePage = () => {
             <Text>Do you want to enable or disable notifications?</Text>
             <View style={styles.modalButtons}>
               <StyledButton onPress={enableNotifications}>Enable</StyledButton>
-              <StyledButton onPress={disableNotifications}>Disable</StyledButton>
-              <StyledButton onPress={handleCloseNotificationModal}>Cancel</StyledButton>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Settings Modal */}
-      <Modal
-        visible={isSettingModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleCloseSettingsModal}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.buttonTitle}>Settings</Text>
-            <Text>Setting options go here</Text>
-            <View style={styles.modalButtons}>
-              <StyledButton onPress={handleCloseSettingsModal}>Close</StyledButton>
+              <StyledButton onPress={disableNotifications}>
+                Disable
+              </StyledButton>
+              <StyledButton onPress={handleCloseNotificationModal}>
+                Cancel
+              </StyledButton>
             </View>
           </View>
         </View>
@@ -267,26 +252,21 @@ const ProfilePage = () => {
             <Text style={styles.buttonTitle}>Appearance Settings</Text>
             {/* Light-Mode and Dark-Mode Buttons */}
             <View style={styles.modalButtons}>
-              <StyledButton onPress={() => { setTheme('light'); handleCloseAppearenceModal(); }}>Light-Mode</StyledButton>
-              <StyledButton onPress={() => { setTheme('dark'); handleCloseAppearenceModal(); }}>Dark-Mode</StyledButton>
+              <StyledButton
+                onPress={() => {
+                  setTheme('light');
+                  handleCloseAppearenceModal();
+                }}>
+                Light
+              </StyledButton>
+              <StyledButton
+                onPress={() => {
+                  setTheme('dark');
+                  handleCloseAppearenceModal();
+                }}>
+                Midnight (OLED)
+              </StyledButton>
               <StyledButton onPress={handleCloseAppearenceModal}>Close</StyledButton>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Devices Modal */}
-      <Modal
-        visible={isDevicesModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleCloseDevicesModal}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.buttonTitle}>Devices Settings</Text>
-            <Text>Devices functions go here</Text>
-            <View style={styles.modalButtons}>
-              <StyledButton onPress={handleCloseDevicesModal}>Close</StyledButton>
             </View>
           </View>
         </View>
