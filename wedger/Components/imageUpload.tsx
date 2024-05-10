@@ -1,30 +1,61 @@
-import {getStorage, ref, uploadString, getDownloadURL} from 'firebase/storage';
-import {db} from '../environment/firebase';
-import {useBudget} from '../Context/userBudgetContext.tsx';
+import storage from '@react-native-firebase/storage';
+import TextRecognition from '@react-native-ml-kit/text-recognition';
 
-export async function imageUpload({image}) {
+export async function ImageUpload(image: string): Promise<string> {
   try {
-    const {getUsersBudgets} = useBudget();
-    const userBudgets = await getUsersBudgets();
+    const reference = storage().ref('images').child(Date.now().toString());
 
-    const userUid = userBudgets.length > 0 ? userBudgets[0].userRef.uid : '';
-    const budgetUid = userBudgets.length > 0 ? userBudgets[0].id : '';
+    await reference.putString(image, 'base64');
 
-    const storage = getStorage();
-    const storageRef = ref(
-      storage,
-      `users/${userUid}/budgets/${budgetUid}/images/${image.fileName}`,
-    );
-
-    await uploadString(storageRef, image.data, 'base64');
-    console.log('Uploaded image from base64!');
-
-    const imageURL = await getDownloadURL(storageRef);
-    console.log('Download URL:', imageURL);
-
+    const imageURL = await reference.getDownloadURL();
     return imageURL;
   } catch (error) {
-    console.error('Error uploading image:', error);
-    return null;
+    throw new Error('Error uploading image: ' + error);
+  }
+}
+
+export async function ImageParsing(
+  imageURL: any,
+): Promise<{item: string; price: string}[]> {
+  try {
+    if (imageURL) {
+      console.log('Retrieved imageURL:', imageURL);
+
+      const result = await TextRecognition.recognize(imageURL);
+      const itemsAndPrices: {item: string; price: string}[] = [];
+
+      for (let block of result.blocks) {
+        let foundPriceInBlock = false;
+
+        for (let line of block.lines) {
+          const itemPriceRegex = /^(.*?)\s*\$?\s*([\d.]+)$/; //using regex for filtering, future goal will be to use a custom trained model
+
+          const match = line.text.match(itemPriceRegex);
+
+          if (match && match.length === 3) {
+            const itemName = match[1].trim();
+            const price = match[2].trim();
+
+            itemsAndPrices.push({item: itemName, price: price});
+
+            foundPriceInBlock = true;
+          }
+        }
+
+        if (foundPriceInBlock) {
+          break;
+        }
+      }
+
+      console.log('Extracted items and prices:', itemsAndPrices);
+
+      return itemsAndPrices;
+    } else {
+      console.error('Invalid data structure or imageURL not found');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error parsing image:', error);
+    return [];
   }
 }

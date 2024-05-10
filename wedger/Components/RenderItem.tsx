@@ -19,9 +19,10 @@ type Props = {
   index: number;
 };
 
-const List: any = ['Amount Spent', 'Total Amount'];
+const List: string[] = ['Amount Spent', 'Amount Left'];
 
 const RenderItem = ({item, index}: Props) => {
+
   const {width} = useWindowDimensions();
   return (
     <Animated.View

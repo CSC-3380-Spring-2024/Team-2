@@ -2,8 +2,8 @@
  
 
 
-Dev Branch -> main
-Production Branch -> Prod
++ Dev-Branch -> main
++ Production-Branch -> Prod
 
 ### To Run Dev
 + Contact Max Shroyer For .env file and the google-services.json, JL you have it on element
@@ -13,7 +13,7 @@ Production Branch -> Prod
 + npm install
 + `npm start` then in another window run `npm run android`  or (*EDIT DO NOT `npm run ios` ) 
 
-+ to run the debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
++ To run the debugger (not flipper) run the app with `npx react-native start --experimental-debugger`
 
 
 ### Core Features

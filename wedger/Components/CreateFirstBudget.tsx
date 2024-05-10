@@ -15,7 +15,7 @@ const CreateFirstBudget = () => {
         <Header logo paddingTop />
         <View style={styles.container}>
           <Text h1 style={styles.text}>
-            Looks like you dont have any bugets. Lets get you all set up with
+            Looks like you dont have any budgets. Lets get you all set up with
             saving!
           </Text>
 
