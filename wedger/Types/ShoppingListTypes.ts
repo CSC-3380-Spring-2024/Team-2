@@ -20,10 +20,12 @@ export interface ListItemObject {
   checkedOff: boolean;
 }
 export interface addListItemObject {
+  id: string; 
   itemName: string;
   checked?: boolean;
 }
 export interface createShoppingListType {
+  id?: string;
   listName: string;
   itemsArray: addListItemObject[];
 }
