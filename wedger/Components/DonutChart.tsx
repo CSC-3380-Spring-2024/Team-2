@@ -1,9 +1,8 @@
-import { StyleSheet, View } from "react-native";
+import { ColorValue, StyleSheet, View } from "react-native";
 import React from "react";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { Canvas, Path, SkFont, Skia, Text,} from "@shopify/react-native-skia";
 import DonutPath from "./DonutPath";
-import { color } from "@rneui/base";
 
 type Props = {
     radius: number;
@@ -16,7 +15,7 @@ type Props = {
     n: number;
     gap: number;
     decimals: SharedValue<number[]>;
-    colors: string[];
+    colors: any;
 };
 
 

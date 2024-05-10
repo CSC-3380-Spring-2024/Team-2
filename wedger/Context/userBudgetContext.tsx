@@ -220,22 +220,19 @@ export const BudgetProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
       // attach to userBudgets
       try {
-        if (_usersBudgets) {
+        if (_usersBudgets && ItemReturnArray) {
           let tempBudgets = [..._usersBudgets];
           const budgetSelectIndex = tempBudgets.findIndex(
             budget => budget.id === budgetUID,
           );
           if (budgetSelectIndex !== -1) {
-            tempBudgets[budgetSelectIndex].itemsExpended.concat(
-              ItemReturnArray,
-            );
-            //console.log(tempBudgets[budgetSelectIndex].itemsExpended);
-            
-            set_UsersBudgets(tempBudgets);
+            (tempBudgets[budgetSelectIndex].itemsExpended = ItemReturnArray),
+              // console.log(tempBudgets[budgetSelectIndex].itemsExpended);
+              set_UsersBudgets(tempBudgets);
           }
         }
       } catch (e) {
-        console.log(e, 'attach');
+        console.error(e);
       }
       //return
       return ItemReturnArray;

@@ -31,10 +31,7 @@ const SubscriptionButton = () => {
             reducedTransparencyFallbackColor="white"
           />
           <Text h1 style={styles.buttonText}>
-            Upgrade to Wedger{' '}
-            <Text h1 style={styles.plus}>
-              +
-            </Text>
+            Upgrade to Wedger +
           </Text>
         </Pressable>
       </View>
