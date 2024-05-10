@@ -19,19 +19,19 @@
 ### Core Features
 + Scan receipts-> Scanner/Immage Parssing -> Store Scanned Receipts > table/sheet breakdown > access to the original image > add purchases without a receipt, (item name store cost)
 + Budget -> set grocery/{other categories} budgets >suggested stores for saving money > price tracking on items
-+ Spending Analytics -> month-to-month charts > spending habits > store spent breakdown > categories of spending 
-+ Coupon Snipper > takes photos of coupons and links them to stores > keeps track of exp. Dates  > Integrate connections to find coupons for the users > Notify users when in a store that they 	have coupons they can use
-+ Shopping lists -> link to recurring purchases from spending analytics 
+X(not yet) Spending Analytics -> month-to-month charts > spending habits > store spent breakdown > categories of spending 
+X(not yet) Coupon Snipper > takes photos of coupons and links them to stores > keeps track of exp. Dates  > Integrate connections to find coupons for the users > Notify users when in a store that they 	have coupons they can use
++ Shopping lists -> X(not yet)link to recurring purchases from spending analytics 
 
 
 ### Other Features
-+ meal suggestion based on food bought, API for this 
-+ pantry tracker - update with receipt
-+ widget integration
-+ diet-> food sugestions
-+ related/often bought together
+X(not yet)  meal suggestion based on food bought, API for this 
+X(not yet) pantry tracker - update with receipt
+X(not yet) widget integration
+X(not yet) diet-> food sugestions
+X(not yet) related/often bought together
 + light mod/dark mode
-+ Are you low on this/ expired 
+X(not yet) Are you low on this/ expired 
 + monetization - Paid Version/Free user 
-+ AD placement 
+X(not yet) AD placement 
 
