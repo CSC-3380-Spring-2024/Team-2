@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -7,30 +8,16 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
-  Animated,
   ScrollView,
   Keyboard,
   KeyboardAvoidingView,
   TextInput,
-  Button,
-  ViewStyle,
-  GestureResponderEvent,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useShoppingList} from '../Context/userShoppingListContext';
 import GroupName from '../Components/GroupName';
 import GroupItem from '../Components/GroupItems';
-import {PanGestureHandler} from 'react-native-gesture-handler';
-import {ListItem} from '@rneui/themed';
-import {Swipeable} from 'react-native-gesture-handler';
 import {
-  useFonts,
-  Roboto_400Regular,
-  Bangers_400Regular,
-  OpenSans_400Regular,
-} from '@expo-google-fonts/dev';
-import {
-  ShoppingListType,
   addListItemObject,
   createShoppingListType,
 } from '../Types/ShoppingListTypes';
@@ -43,19 +30,13 @@ if (Platform.OS === 'android') {
 }
 
 function ShoppingListPage() {
-  const Seperator = () => <View style={seperatorStyles} />;
   const {
-    usersShoppingLists,
     createShoppingList,
-    loadingShoppingList,
     userShoppingListError,
     addListItems,
     get_UsersShoppingLists,
-    deleteListItems,
-    deleteShoppingList,
   } = useShoppingList();
   const [groupName, setGroupName] = useState('');
-  const [groupItems, setGroupItems] = useState<string[]>([]);
   const [text, setText] = useState<string>('');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [shoppingListArray, setShoppingListArray] = useState<
@@ -111,11 +92,11 @@ function ShoppingListPage() {
   const toggleGroup = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     if (openIndex === index) {
-        setOpenIndex(null);  
+      setOpenIndex(null);
     } else {
-        setOpenIndex(index); 
+      setOpenIndex(index);
     }
-};
+  };
 
   return (
     <LinearGradient
@@ -145,11 +126,15 @@ function ShoppingListPage() {
                 {openIndex === index && list.itemsArray && (
                   <>
                     <View style={styles.itemContainer}>
-                      {list.itemsArray.map((item, itemIndex: number) => {
-                        return <GroupItem
-                          key={item.id}
-                          text={item.itemName}
-                          itemData={item} itemID={''}/>
+                      {list.itemsArray.map(item => {
+                        return (
+                          <GroupItem
+                            key={item.id}
+                            text={item.itemName}
+                            itemData={item}
+                            itemID={item.id}
+                          />
+                        );
                       })}
                     </View>
                     <View style={styles.container}>
@@ -178,27 +163,27 @@ function ShoppingListPage() {
           })}
         </View>
         {/* Make a group section */}
-        </ScrollView>
+      </ScrollView>
 
-        <View style={styles.container}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.writeGroupWrapper}>
-            <TextInput
-              maxLength={20}
-              style={styles.input}
-              placeholder={'Create a Group!'}
-              value={groupName}
-              onChangeText={e => setGroupName(e)}
-            />
-            <TouchableOpacity onPress={() => handleAddGroup(groupName)}>
-              <View style={styles.addWrapper}>
-                <Text style={styles.addText}>+</Text>
-              </View>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
-          {userShoppingListError && <Error error={userShoppingListError} />}
-        </View>
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.writeGroupWrapper}>
+          <TextInput
+            maxLength={20}
+            style={styles.input}
+            placeholder={'Create a Group!'}
+            value={groupName}
+            onChangeText={e => setGroupName(e)}
+          />
+          <TouchableOpacity onPress={() => handleAddGroup(groupName)}>
+            <View style={styles.addWrapper}>
+              <Text style={styles.addText}>+</Text>
+            </View>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+        {userShoppingListError && <Error error={userShoppingListError} />}
+      </View>
     </LinearGradient>
   );
 }
@@ -294,10 +279,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-const seperatorStyles: ViewStyle = {
-  height: 2,
-  width: '100%',
-  backgroundColor: '#C0C0C0',
-};
 
 export default ShoppingListPage;

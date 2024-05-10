@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   ReactNode,
   createContext,
@@ -17,12 +18,10 @@ import {
 import {
   DocumentData,
   DocumentReference,
-  DocumentSnapshot,
   addDoc,
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   updateDoc,
 } from 'firebase/firestore';
@@ -43,7 +42,7 @@ interface ShoppingListContextType {
     ShoppingListUID: string,
   ) => void;
   editListItem: (item: EditListItemObject, ShoppingListUID: string) => void;
-  deleteListItems: (itemID: string[], ShoppingListUID: string) => void;
+  deleteListItems: (itemID: string, ShoppingListUID: string) => void;
   //util
   loadingShoppingList: boolean;
   userShoppingListError: string;
@@ -64,7 +63,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
   >([]);
   const [userShoppingListError, setUserShoppingListError] =
     useState<string>('');
-  const {userRef, userData} = useAuth();
+  const {userRef} = useAuth();
 
   const usersShoppingLists = useMemo(() => {
     return [..._usersShoppingLists];
@@ -172,26 +171,32 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
         db,
         'users',
         userRef.uid,
-        'ShoppingLists'
-
+        'ShoppingLists',
       );
       const querySnapshot = await getDocs(ShoppingListCollectionRef);
-      for (const doc of querySnapshot.docs) {
-        const curDoc = doc.data() as ShoppingListType;
-        curDoc.id = doc.id; // Make sure curDoc includes id
-        const itemsCollectionRef = collection(db, 'users', userRef.uid, 'ShoppingLists', doc.id, 'ListItems');
+      for (const item of querySnapshot.docs) {
+        const curDoc = item.data() as ShoppingListType;
+        curDoc.id = item.id; // Make sure curDoc includes id
+        const itemsCollectionRef = collection(
+          db,
+          'users',
+          userRef.uid,
+          'ShoppingLists',
+          item.id,
+          'ListItems',
+        );
         const itemsSnapshot = await getDocs(itemsCollectionRef);
         curDoc.itemsArray = itemsSnapshot.docs.map(itemDoc => {
           return {
             id: itemDoc.id,
             itemName: itemDoc.data().itemName,
-            checkedOff: itemDoc.data().checkedOff
+            checkedOff: itemDoc.data().checkedOff,
           } as ListItemObject;
         });
         ShoppingListsReturnArray.push(curDoc);
       }
       return ShoppingListsReturnArray;
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to fetch shopping lists:', e);
       setUserShoppingListError(e.message);
     } finally {
@@ -255,7 +260,10 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
     return [];
   };
 
-  const addListItems = async (itemsToAdd: addListItemObject[], ShoppingListUID: string): Promise<void> => {
+  const addListItems = async (
+    itemsToAdd: addListItemObject[],
+    ShoppingListUID: string,
+  ): Promise<void> => {
     setLoadingShoppingList(true);
     try {
       if (!userRef) {
@@ -315,7 +323,7 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
     }
   };
   const deleteListItems = async (
-    itemIDs: string[],
+    itemIDs: string,
     ShoppingListUID: string,
   ): Promise<void> => {
     setLoadingShoppingList(true);
@@ -323,19 +331,16 @@ export const ShoppingListProvider: React.FC<{children: ReactNode}> = ({
       if (!userRef) {
         throw Error('No User Ref');
       }
-
-      itemIDs.forEach(async itemID => {
-        const ItemsDocRef = doc(
-          db,
-          'users',
-          userRef.uid,
-          'ShoppingLists',
-          ShoppingListUID,
-          'ListItems',
-          itemID,
-        );
-        await deleteDoc(ItemsDocRef);
-      });
+      const ItemsDocRef = doc(
+        db,
+        'users',
+        userRef.uid,
+        'ShoppingLists',
+        ShoppingListUID,
+        'ListItems',
+        itemIDs,
+      );
+      await deleteDoc(ItemsDocRef);
       getListItems(ShoppingListUID);
     } catch (e: any) {
       console.error(e);
