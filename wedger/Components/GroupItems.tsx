@@ -1,64 +1,129 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+  import React, {ReactNode, useEffect, useState} from 'react';
+  import {View, Text, StyleSheet} from 'react-native';
+  import {Button, ListItem} from '@rneui/themed';
+  import PopupModal from './PopupModal';
+  import {useShoppingList} from '../Context/userShoppingListContext';
+  import {ListItemObject, addListItemObject} from '../Types/ShoppingListTypes';
+
+  interface Props {
+    text: ReactNode;
+    itemData: ListItemObject | addListItemObject;
+    itemID: string;
+    disableSwipe?: boolean;
+    removeTempObj?: () => void;
+  }
+  const GroupItem = (props: Props) => {
+    const {itemData, itemID} = props;
+    const {deleteListItems, loadingShoppingList, userShoppingListError} = useShoppingList();
+    const [deleteItem, setDeleteItem] = useState<boolean>(false);
+    const [modal, setModal] = useState<Element | null>(null);
+
+    useEffect(() => {
+      setModal(getModal());
+    }, [deleteItem]);
 
 
-const GroupItem = (props) => {
+    const getModal = () => {
+      if (deleteItem) {
+        return (
+          <PopupModal
+            description="Are you sure you want to delete this item? Once this item is deleted there is no way to recover it."
+            firstButtonPress={() => {
+                const temp = itemData as ListItemObject;
+                deleteListItems([temp.id], itemID);
+                console.log('item deleted')
+            }}
+            firstButtonText="Delete"
+            cancelButtonPress={() => setDeleteItem(false)}
+            cancelButtonText="Cancel"
+            isVisible={deleteItem}
+            buttonsLoading={loadingShoppingList}
+            errorMessage={userShoppingListError}
+          />
+        );
+      } else {
+        return null;
+      }
+    };
+
     return (
-        <>
-        <View style = {styles.container}>
-        <View style={styles.item}>
-            <View style={styles.itemLeft}>
+      <>
+        <ListItem.Swipeable
+          rightContent={reset => {
+            return (
+              <>
+              <Button
+                onPress={() => {
+                  reset();
+                  setDeleteItem(true);
+                }}
+                icon={{name: 'delete', color: 'white'}}
+                buttonStyle={{
+                  backgroundColor: 'red',
+                  minHeight: '80%',
+                }}
+              /></>
+            );
+          }} style = {{
+              backgroundColor: '#FFFFFF',
+          borderColor: '#C0C0C0',
+          padding: 15,
+          borderRadius: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 10,}}>
+              <View style={styles.itemLeft}>
                 <View style={styles.square}></View>
                 <Text style={styles.itemNameText}> {props.text} </Text>
             </View>
-            </View>
-        </View></>
-    )
-}
+        </ListItem.Swipeable>
+        {modal}
+      </>
+    );
+  };
 
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        paddingHorizontal: 20,
-        paddingBottom: 0,
+      flex: 1,
+      paddingHorizontal: 0,
+      paddingBottom: 0,
     },
     item: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#C0C0C0',
-        padding: 15,
-        borderRadius: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 10,
+      backgroundColor: '#FFFFFF',
+      borderColor: '#C0C0C0',
+      padding: 15,
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 10,
     },
     itemLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flexWrap: 'wrap',
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
     },
     square: {
-        width: 24,
-        height: 24, 
-        backgroundColor: '#F69286',
-        opacity: 0.4,
-        borderRadius: 20,
-        marginRight: 15,
+      width: 24,
+      height: 24,
+      backgroundColor: '#F69286',
+      opacity: 0.4,
+      borderRadius: 20,
+      marginRight: 15,
     },
     itemNameText: {
-        maxWidth: '80%',
-        color: 'black',
+      maxWidth: '80%',
+      color: 'black',
     },
     circular: {
-        width: 12,
-        height: 12,
-        borderColor: 'black',
-        borderWidth: 2,
-        borderRadius: 5,
-        marginRight: 5,
+      width: 12,
+      height: 12,
+      borderColor: 'black',
+      borderWidth: 2,
+      borderRadius: 5,
+      marginRight: 5,
     },
-    
-});
+  });
 
-export default GroupItem;
+  export default GroupItem;
